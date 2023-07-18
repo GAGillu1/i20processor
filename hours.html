@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enrollment operations</title>
+
+    <link
+      rel="icon"
+      href="https://www.newhaven.edu/_resources/images/favicons/favicon-64.png"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/build.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/template.css') }}"
+    />
+  </head>
+
+  <body>
+    <!-- HEADER - UNIVERSITY AND UIS LOGO -->
+    <section
+      class="flex justify-center text-xl"
+      aria-label="University Of New Haven, University Immigration Services"
+    >
+      <div id="page">
+        <div class="c_page c_landing c_interior-default cr">
+          <a id="c_top" href="#content" class="cr">Skip to main content</a>
+          <header id="c_site-header" role="banner" class="cr">
+            <div class="c_container cr">
+              <div id="c_wordmark" class="cr">
+                <a href="" class="cr pointer-events-none">
+                  <span class="c_sr-only cr">University of New Haven</span>
+                </a>
+              </div>
+              <div id="c_navband" class="cr">
+                <nav id="c_utility-nav" class="cr" />
+              </div>
+            </div>
+          </header>
+          <section id="c_section-menu" class="c_snippet cr">
+            <div class="c_container cr">
+              <div id="c_section-topband" class="cr">
+                <h2 class="c_section-menu-title cr">Enrollement Operations</h2>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+    <!-- NAV - NAVIGATION STRIP -->
+    <nav
+      id="nav"
+      class="tab mb-4 flex justify-between bg-slate-200 p-2 font-semibold"
+    >
+      <div id="menuIconDiv" class="justify-left left-4 flex w-64 items-center">
+        <p id="menu" class="">Menu</p>
+        <button
+          id="closeNav"
+          class="m-2 rounded bg-white px-3 py-2"
+          onclick="toggleNav()"
+          aria-label="Menu toggle"
+        >
+          <svg viewBox="0 0 100 80" width="20" height="20" class="">
+            <rect width="100" height="20" rx="8"></rect>
+            <rect y="30" width="100" height="20" rx="8"></rect>
+            <rect y="60" width="100" height="20" rx="8"></rect>
+          </svg>
+        </button>
+      </div>
+      <div class="flex gap-3">
+        <button
+          id="dashboardT"
+          class="tabL w-64 rounded-md bg-unhBlue p-3 text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+          onclick="openTab(event,'dashboard')"
+          aria-label="Dashboard Tab"
+        >
+          Dashboard
+        </button>
+        <button
+          id="statusT"
+          class="tabL w-64 rounded bg-white p-3 hover:bg-blue-100 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+          onclick="openTab(event,'status'), getStatus()"
+          aria-label="Status Tab"
+        >
+          Status
+        </button>
+        <button
+          id="logsT"
+          class="tabL w-64 rounded bg-white p-3 hover:bg-blue-100 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+          onclick="openTab(event,'logs'), getLogs()"
+          aria-label="Logs Tab"
+        >
+          Logs
+        </button>
+      </div>
+      <div class="w-64"></div>
+    </nav>
+    <!-- MAIN -->
+    <main class="py-4">
+      <!-- DASHBOARD TAB -->
+      <section id="dashboard" class="tabC">
+        <h2
+          class="col-span-2 py-9 text-center text-5xl font-semibold text-unhBlue"
+        >
+          Timesheet Tracker
+        </h2>
+        <!-- TEMPLATES -->
+        <div class="absolute right-4 flex flex-col gap-2 ">
+          <button
+            class="rounded-md bg-unhBlue px-4 py-2 font-semibold text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+            onclick="updateHours(7)"
+          >
+            +7
+          </button>
+          <button
+            class="rounded-md bg-unhBlue px-4 py-2 font-semibold text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+            onclick="updateHours(-7)"
+          >
+            -7
+          </button>
+          <button
+            class="rounded-md bg-unhBlue px-4 py-2 font-semibold text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+            onclick="updateHours(5)"
+          >
+            +5
+          </button>
+          <button
+            class="rounded-md bg-unhBlue px-4 py-2 font-semibold text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+            onclick="updateHours(-5)"
+          >
+            -5
+          </button>
+        </div>
+        <form id="inputForm" onsubmit="event.preventDefault()">
+          <table id="hoursTable" class="mx-auto mt-8">
+            <thead class="">
+              <tr>
+                <th class="font-semibold text-unhBlue">Employee Name</th>
+                <th class="font-semibold text-unhBlue">Start Time</th>
+                <th class="font-semibold text-unhBlue">End Time</th>
+                <th class="font-semibold text-unhBlue">Hours</th>
+                <th class="font-semibold text-unhBlue">Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="updateActiveRow(1)">
+                <td>
+                  <select
+                    name="empName"
+                    id="empNameDrop"
+                    class="col-span-2 rounded-sm border border-black py-2"
+                  >
+                    <option value="">Select Employee</option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    class="rounded-sm border border-black p-1"
+                    type="datetime-local"
+                    name="startTime"
+                    id="startTime1"
+                    onchange="validateEndTime(1)"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rounded-sm border border-black p-1"
+                    type="datetime-local"
+                    name="endTime"
+                    id="endTime1"
+                    onchange="validateEndTime(1)"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rounded-sm border border-black p-1"
+                    type="number"
+                    name="hours"
+                    id="hours1"
+                    step="0.01"
+                    style="width: 60px;"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rounded-sm border border-black p-1"
+                    type="text"
+                    name="comments"
+                    style="width: 400px;"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <br />
+          <div class="flex items-center justify-center gap-3">
+            <select
+              name=""
+              id="rowsDrop"
+              class="mx-1 h-14 w-20 rounded border border-black px-1"
+            >
+              <option value="1">1</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="25">25</option>
+              <option value="30">30</option>
+              <option value="35">35</option>
+              <option value="40">40</option>
+            </select>
+            <button
+              class="rounded-md bg-unhBlue px-4 py-2 font-semibold text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+              onclick="addRows()"
+            >
+              Add Row
+            </button>
+            <button
+              class="rounded-md bg-unhBlue px-4 py-2 font-semibold text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+              onclick="deleteRow()"
+            >
+              Delete Row
+            </button>
+
+            <button
+              class="rounded-md bg-unhBlue px-4 py-2 font-semibold text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:pointer-events-none"
+              type="submit"
+              id = "submitBt"
+              onclick="submitUpdate()"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </section>
+      <!-- STATUS TAB -->
+      <section id="status" class="tabC w-1/3 mx-auto" hidden>
+        <h2
+          class="col-span-2 py-9 text-center text-5xl font-semibold text-unhBlue"
+        >
+          Status
+        </h2>
+        <div
+          class="text-md flex items-center justify-around gap-4 rounded-t-lg bg-slate-200 py-2 font-bold shadow`"
+        >
+          <h5>Name</h5>
+          <p></p>
+          <h5>Hours</h5>
+        </div>
+        <div
+          id="sHoursBody"
+          class="rounded-b-lg border-x border-b border-slate-200 px-4 py-2"
+        >
+          <!-- JS -->
+        </div>
+        <div class=""></div>
+      </section>
+      <!-- LOGS TAB -->
+      <section id="logs" class="tabC w-3/4 mx-auto text-center" hidden>
+        <h2
+          class="col-span-2 py-9 text-center text-5xl font-semibold text-unhBlue"
+        >
+          Logs
+        </h2>
+        <div class="">
+          <form class="pb-4" onsubmit="event.preventDefault()">
+            <select
+              name="empName"
+              id="searchEmp"
+              class="rounded border border-black p-2"
+            >
+              <option value="">Select Employee</option>
+            </select>
+            <button
+              class="rounded-md bg-unhBlue px-4 py-2 font-semibold text-white shadow-lg hover:text-yellow-300 hover:transition hover:duration-500 disabled:opacity-70 disabled:hover:bg-white disabled:hover:text-black"
+              onclick="getLogs()"
+            >
+              Search
+            </button>
+          </form>
+        </div>
+        <div
+          class="text-md grid grid-cols-7 gap-4 rounded-t-lg bg-slate-200 py-2 font-bold shadow `"
+        >
+          <h5>Employee Name</h5>
+          <h5 class="col-span-2">Start Time</h5>
+          <h5 class="col-span-2">End Time</h5>
+          <h5>Hours</h5>
+          <h5>Comments</h5>
+        </div>
+        <div
+          id="logsBody"
+          class="rounded-b-lg border-x border-b border-slate-200 px-4 py-2 max-h-96 overflow-scroll"
+        >
+          <!-- JS -->
+        </div>
+      </section>
+      <!-- PROMPT - MESSAGE -->
+      <section class="z-50 flex justify-center pt-4">
+        <div
+          id="msg"
+          class="absolute hidden rounded bg-green-500/70 p-4 text-center text-black/80"
+        >
+          <!-- JS -->
+        </div>
+      </section>
+      <!-- NOTE -->
+      <section class="flex justify-center pt-20">
+        <div class="rounded p-4 bg-unhYellow shadow">
+          <div
+            class="border-b border-b-yellow-800 py-2 text-center font-semibold"
+          >
+            <p>Note</p>
+          </div>
+          <div class="grid grid-cols-6 pl-4 py-2">
+            <p>+</p>
+            <p class="col-span-5">: Office owes hours to student</p>
+            <p>-</p>
+            <p class="col-span-5">: Student owes hours to office</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- FOOTER -->
+    <footer
+      class="flex items-center justify-around bg-unhBlue"
+      aria-hidden="true"
+      aria-label="Footer"
+    >
+      <img
+        src="https://www.newhaven.edu/_resources/images/_email/logos/unewhaven_stacked_logo_white.png"
+        alt="University of New Haven Logo"
+        class="w-48"
+      />
+      <p class="uppercase text-white">
+        300 Boston Post Rd, <br />West Haven, CT 06516
+      </p>
+    </footer>
+    <!-- SCRIPT -->
+    <script src="{{ url_for('static', filename='js/tsScript.js') }}"></script>
+  </body>
+</html>

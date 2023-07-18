@@ -1,0 +1,7 @@
+pandas	
+flask
+openpyxl
+pypdf2
+PyMuPDF
+datetime
+cryptography
