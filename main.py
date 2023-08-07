@@ -31,7 +31,7 @@ from postToSlate import post
 import datetime
 import base64
 from datetime import timedelta
-
+import asyncio
 from sendemail import get_credentials, send_email, send_email1, get_emails
 from split import splitting
 from totalpages import pages
@@ -39,6 +39,7 @@ import http
 import time
 import jwt
 import os
+from flask_cors import CORS
 
 
 today = datetime.datetime.today()
@@ -47,7 +48,8 @@ timestamp=datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 log_folder = os.path.join(os.getcwd(),'log')
 
 cwd = os.getcwd()
-app = Flask(__name__, template_folder=cwd, static_folder='static')
+app = Flask(__name__,template_folder=cwd,static_folder='static')
+CORS(app)
 app.secret_key = secrets.token_bytes(32)
 
 """Default route"""
@@ -55,7 +57,17 @@ app.secret_key = secrets.token_bytes(32)
 def home():
 
     return render_template('issm.html')
+status_updates = {}
+def event_stream():
+    user = session.get('name')
+    while True:
+        user_status = status_updates.get(user, "")
+        yield f"data: {user_status}\n\n"
+        time.sleep(1)
 
+@app.route('/events')
+def sse():
+    return Response(event_stream(), content_type='text/event-stream')
 """Displays all the names of DSO .
 Gets all the names from names_list() function which is defined in name.py .
 Returns all the names in json format to frontend """
@@ -116,12 +128,14 @@ def upload():
             i20type=request.form['i20Type']
 
             user=session.get('name')
+            status_updates[user] = {"status": "Starting processing..."}
             issm_log.logger.info(f"User logged in  :{user}")
             issm_log.logger.info(f"Intial I20. Received post request with files :{pdf_filename,issm,slate}")
             # Total number of pages in i20
             num_pages = pages(pdf_filename)
             sevid=""
             try:
+                status_updates[user] = {"status": "Starting upload process..."}
                 #calling sign_details() function and taking all the coordinates
                 length, width, xcoordinate, ycoordinate = sign_details(name)
                 #Getting signature file name
@@ -129,9 +143,11 @@ def upload():
                 # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
                 sevid,totalpages,totalsigns=splitsignature(pdf_filename, signature_file, length, width, xcoordinate, ycoordinate)
 
+
                 #sevid, totalpagessplit = splitting(pdf_filename)
                 totalpagessplit = totalpages / 3
                 numberoffiles = totalpagessplit
+                status_updates[user]["status"] = "Signature and Splitting done "
                 # Storing total pages, total files afte splitting , total signatures added to session
                 session['Total_Pages']=f"{num_pages}"
                 session['Total_Files']=f"{int(numberoffiles)}"
@@ -139,6 +155,7 @@ def upload():
                 session['sevis_id']=f"{sevid}"
                 issm_log.logger.info(f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
             except Exception as e:
+                status_updates[user]["status"] = f"Failed during adding signature and splitting {e} "
                 session['Split_Failure']=f"Splitting of file is failed {e}"
                 issm_log.logger.error(f"Splitting of file is failed {e}")
             try:
@@ -158,6 +175,7 @@ def upload():
                     session["index_size"] = f"{sizeOfIndexfile}"
                     session["missing_records"] = f"{missing}"
                     print("Size of index file is ",sizeOfIndexfile)
+                    status_updates[user]["status"] = "Index file created "
                     if missing :
                         sender, password = get_credentials('email')
                         email,cc=get_emails('emails')
@@ -170,10 +188,12 @@ def upload():
                     print("Result",result)
                     msg=result
                     session["index_error"] = f"Index file creation failed {msg}"
+                    status_updates[user]["status"] = f"Index file creation failed {msg} "
                     issm_log.logger.error(f"Index file creation failed {msg}")
                 #sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
             except Exception as e:
                 session["index_error"]=f"Index file creation failed {e}"
+                status_updates[user]["status"] = f"Index file creation failed {e} "
                 issm_log.logger.error(f"Index file creation failed {e}")
 
             try:
@@ -187,6 +207,7 @@ def upload():
                 response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
                 response.headers['Content-Type'] = 'application/zip'
                 issm_log.logger.info("Files Zipped")
+                status_updates[user]["status"] = f"Files Zipped "
                 session['zipmsg'] = "Success"
                 #if slate request is yes then depending on program the post function is called
                 if slaterequest=='y':
@@ -194,15 +215,18 @@ def upload():
                     if stream=='g':
                         output=post(zip_filename, 'GR')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
+                        status_updates[user]["status"] = f"Sent to slate  Grad instance "
                         print(output)
                     else:
                         print("goign to UG")
                         output=post(zip_filename, 'UG')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
+                        status_updates[user]["status"] = f"Sent to slate Under Grad Instance "
                         print(output)
             except Exception as e:
                 session['zipmsg']=f"Files Zipping failed {e}"
                 issm_log.logger.error(f"Files Zipping failed {e}")
+                status_updates[user]["status"] = f"Files Zipping failed "
 
 #or ('index_' in file_name and file_name.endswith('.txt'))
             # deleting all the files which were just created in the directory except index file and zip file
@@ -405,19 +429,25 @@ def Test():
         sign=request.form.get('sign')
         split=request.form.get('split')
         dso=request.form.get('dsoName')
+        username = session.get('name')
+        status_updates[username] = {"status": "Starting processing..."}
         print(sign,split)
         # if sign and split are selected then below condition is execcuted
         if sign=='on' and split== 'on':
             print(" in Both ON")
             issm_log.logger.info(f"Selected  Signature and Splitting")
             issm_log.logger.info(f"Received file {pdf_filename} , DSO  {dso}")
+            status_updates[username] = {"status": "Selected to split and add signature"}
             try:
                 # getting coordinates of signature and signature file
                 length, width, xco, yco = sign_details(dso)
                 signature_file = signaturefile(dso)
                 output_file = pdf_filename.split(".pdf")[0] + "_signed" + ".pdf"
+                status_updates[username] = {"status": "Splitting done "}
                 # signature is added in first page of each i20
                 result=depi20signature(pdf_filename, signature_file, length, width, xco, yco)
+                status_updates[username] = {"status": "Signature added "}
+
 
                 #add_signature1(pdf_filename, signature_file, output_file, length, width, xco, yco)
                 #splitting is done to the signature added file
@@ -431,6 +461,7 @@ def Test():
                             zip_file.write(filename)
                 response = make_response(send_file(zip_filename, as_attachment=True))
                 response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
+                status_updates[username] = {"status": "Files zipped "}
                 # deleting the files in server which are created
                 for file_name in os.listdir('.'):
                     if file_name.endswith('.pdf') or file_name.endswith(
@@ -440,11 +471,13 @@ def Test():
                 session['signmsg']="Signing and Splitting Successful "
                 issm_log.logger.info("Signing and Splitting Successful ")
                 msg=f"Signing , Splitting is done and total i20's are {result} "
+                status_updates[username] = {"status": f"Signing , Splitting is done and total i20's are {result}  "}
                 print(msg)
                 response.status_code=201
                 return response
             except Exception as e:
                 session['signmsg']=f"Signing and Splitting failed with error {e}"
+                status_updates[username] = {"status": f"Signing and Splitting failed with error {e}  "}
                 issm_log.logger.error(f"Failed in sign=='on' and split== 'on',error{e}")
         # If only signature is selected  then signature is added and zip file is sent as attachment
         elif(sign=='on' and split==None):
@@ -455,6 +488,8 @@ def Test():
             length, width, xco, yco = sign_details(dso)
             signature_file = signaturefile(dso)
             output_file=pdf_filename.split(".pdf")[0]+"_signed"+".pdf"
+            status_updates[username] = {"status": f"Add signature selected ..Processing..."}
+
             try:
                 issm_log.logger.info("Received for Sign ")
                 issm_log.logger.info(f"Received file {pdf_filename} , DSO  {dso}")
@@ -464,16 +499,19 @@ def Test():
                 print(output_file)
                 response = make_response(send_file(output_file, as_attachment=True))
                 session['signmsg']="Sign added "
-                msg="DSO Signature added "
+                status_updates[username] = {"status": f"Signature added..."}
+                msg= 'DSO Signature added '
                 return response
             except Exception as e:
                 session['signmsg']=f"Signing failed with error {e}"
+                status_updates[username] = {"status": f"Adding signature failed with error {e}"}
                 issm_log.logger.error(f"Error in sign=='on' and split==None,error {e}")
         # if only split is selected
         elif (sign == None and split== 'on'):
             print("in split")
             print("ELSE")
             issm_log.logger.info("Splitting selected")
+            status_updates[username] = {"status": f"Splitting selected"}
             issm_log.logger.info(f"Received file {pdf_filename}")
             try:
                 #split the pdf .
@@ -490,14 +528,16 @@ def Test():
                 response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
                 session['splitmsg']="Splitting done "
                 msg="Splitting of file done"
+                status_updates[username] = {"status": f"Splitting selected"}
                 response.status_code=201
 
                 return response
             except Exception as e:
                 issm_log.logger.error(f"Error in Splitting , route /upload3 {e}")
         else:
-            return "Nothing selected in DSO Signature"
+            status_updates[username] = {"status": "Nothing selected in DSO Signature"}
             issm_log.logger.info("Nothing selected in DSO signature")
+            return "Nothing selected in DSO Signature"
 """ This route retunes all the users who are registred in app 
 sending the response in json format
 Function used is users()"""
@@ -613,6 +653,7 @@ def addsign(user):
 
             return response
 
+
 """Route to update user in Admin section """
 @app.route('/updateUser/<string:user>',methods=['PUT','POST'])
 @token_required
@@ -626,13 +667,10 @@ def update(user):
         #updating based on the details given it the function userupdate
         result=userupdate(user,fullname,email,role)
         issm_log.logger.info(result)
-
         return result
-
-
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-   # app1.run()
-
+    # loop = asyncio.get_event_loop()
+    # loop.run_until_complete(asyncio.ensure_future(app.run()))
