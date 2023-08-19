@@ -1,11 +1,11 @@
-import pyodbc
-import pandas as pd
+
 import dba
 import datetime
 today = datetime.datetime.today()
 print(today)
 date = today.strftime('%Y%m%d_%H%M%S')
 timestamp=datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+
 def selectinstitutions():
     dba.connect()
     query = 'SELECT institutionId,institutionName,systemType FROM Institutions'
@@ -146,6 +146,55 @@ def selectinstance(instancetype,universityname):
     else:
         print("No data returned from the query.")
     dba.close()
+
+def updatelogin(user):
+    dba.connect()
+    query="update users set last_login= ? where username=? "
+    dba.execute_query(query,[today,user])
+    dba.close()
+
+
+# def updateactive(user,activeid):
+#     dba.connect()
+#     query="select active from users where username=?"
+#     result = dba.execute_query(query,user)
+#     print(result)
+#     active=result['active'][0]
+#     print(active)
+#
+#     print(active!=activeid)
+#     #print((active==False or active =True))
+#     if (active!= activeid) and (active == False or active ==True):
+#         print("inn")
+#         if active==True:
+#             query="update users set active =0 where username =?"
+#             dba.execute_query(query,user)
+#         elif active==False:
+#             query = "update users set active =1 where username =?"
+#             dba.execute_query(query, user)
+#             print("in")
+#
+#
+#     dba.close()
+
+def updateactive(user, activeid):
+    dba.connect()
+    query = "select  active from  users where username = ?"
+    result = dba.execute_query(query, user)
+    active = result['active'][0]
+
+    if active != activeid and active in (False, True):
+        new_active = 0 if active else 1
+        query = "UPDATE users SET active = ? WHERE username = ?"
+        dba.execute_query(query, [new_active, user])
+    else:
+        print("Unchanged")
+    dba.close()
+
+updateactive("GOV", 1)
+
+
+
 
 # updateuser('test','abc','def','DDSO')
 #insertinstitutions('University of New Haven2',cursor,conn)

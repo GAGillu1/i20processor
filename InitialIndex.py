@@ -33,14 +33,18 @@ def indexFile1(sevid, issm):
             sevisid = merged_df.iloc[i]['SEVIS ID']
             #print(sevisid)
             i20formtype = i20type(cwd+'\\'+sevisid + '.pdf')
-            print(i20formtype)
+            print('i20formtype',i20formtype)
             if 'CONTINUED ATTENDANCE' in i20formtype:
+                print("continued path",cwd + '\\' + sevisid + '.pdf')
                 g = i20type1(cwd+'\\'+sevisid + '.pdf')
-                # print(g)
+                print("passed in g")
                 typeofemployment = i20memo(g,cwd+'\\'+sevisid+'.pdf')
-                #print(f)
-                #print(aa)
-                merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = typeofemployment
+                print(type(typeofemployment))
+                if ('sessionstartdate' and 'sessionenddate' in typeofemployment) and ('dates' and 'types' not in typeofemployment):
+                    print()
+                    typeofemployment='Continued I20'
+                merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = str(typeofemployment)
+                print("type of employment is ",typeofemployment)
             elif "INITIAL ATTENDANCE" in i20formtype:
                 merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = i20formtype
         merged_df.to_csv("index_" + date + ".txt", index=False, sep='\t')
@@ -49,30 +53,31 @@ def indexFile1(sevid, issm):
         #Create an empty DataFrame to store the results
 
         table_html = ''
-        # if not_in_list:
-        #     print("not in list",not_in_list)
-        #     df = pd.read_excel(issm)
-        #     df1 = pd.DataFrame(columns=['Admissions Id', 'Campus Id', 'SEVIS No', 'Lastname', 'First Name'])
-        #     sevisids = (df['SEVIS ID'].values)
-        #     print(len(df))
-        #
-        #     for i in not_in_list:
-        #         print("nooootttt in forrrr")
-        #
-        #         uindex = df[sevisids == i].index.values[0]
-        #         print("uindec",uindex)
-        #         # userindex = df[usernames == user.lower()].index
-        #         lastname = df['Passport Last Name'].iloc[uindex]
-        #         firstname = df['Passport First Name'].iloc[uindex]
-        #         campusid = int(df['Campus Id'].iloc[uindex])
-        #
-        #         df1 = df1._append({'Admissions Id': df['Admissions Id'].iloc[uindex], 'SEVIS No': i,
-        #                            'Last Name': lastname, 'First Name': firstname, 'Campus Id': campusid},
-        #                           ignore_index=True)
-        #
-        #     table_html = df1.to_html(index=False)
-        # print("size is ",size)
+        if not_in_list:
+            print("not in list",not_in_list)
+            df2 = pd.read_excel(issm)
+            df1 = pd.DataFrame(columns=['Admissions Id', 'Campus Id', 'SEVIS No', 'Lastname', 'First Name'])
+            sevisids = (df2['SEVIS ID'].values)
+            print(len(df2))
 
+            for i in not_in_list:
+                print("nooootttt in forrrr")
+                if i in df:
+                    uindex = df2[sevisids == i].index.values[0]
+                    print(df2)
+                    print(uindex)
+                    print("uindec",uindex)
+                    # userindex = df[usernames == user.lower()].index
+                    lastname = df2['Passport Last Name'].iloc[uindex]
+                    firstname = df2['Passport First Name'].iloc[uindex]
+                    campusid = int(df2['Campus Id'].iloc[uindex])
+
+                    df1 = df1._append({'Admissions Id': df['Admissions Id'].iloc[uindex], 'SEVIS No': i,
+                                       'Last Name': lastname, 'First Name': firstname, 'Campus Id': campusid},
+                                      ignore_index=True)
+
+            table_html = df1.to_html(index=False)
+        print("size is ",size)
         if size !=0:
             print("size is not  0")
 

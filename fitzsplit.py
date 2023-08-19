@@ -59,7 +59,7 @@ def splitsignature(pdf_path, signature_path,length,width,xco,yco):
                             # sig_rect = fitz.Rect(user_signature["position"][0], y, user_signature['position'][0] + user_signature['size'][0], z)
                             # first_page.insert_image(sig_rect, pixmap=signature_image)
                             out_doc.save(sevis_id+".pdf")
-                            print(cwd+sevis_id)
+                            print(cwd+'\\'+sevis_id+'.pdf')
                             count=count+1
 
             print("Count is in split file  ",count)

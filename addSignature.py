@@ -1,3 +1,5 @@
+import asyncio
+
 import pandas as pd
 import fitz
 
@@ -21,6 +23,7 @@ def sign_details(name):
 
 """Defnition to add signature to the file """
 def add_signature(pdf_path, signature_path, output_path,length,width,xco,yco):
+
     doc = fitz.open(pdf_path)
     num_pages = doc.page_count
     output_pdf=fitz.open()
@@ -46,6 +49,8 @@ def add_signature(pdf_path, signature_path, output_path,length,width,xco,yco):
 
     print("addsign",output_path)
     output_pdf.save(output_path)
+    return output_pdf
+
 """Addubg sugnature to the pdf file """
 
 def add_signature1(pdf_path, signature_path, output_path, length, width, xco, yco):
@@ -54,6 +59,7 @@ def add_signature1(pdf_path, signature_path, output_path, length, width, xco, yc
     doc = fitz.open(pdf_path)
     num_pages = doc.page_count
     output_pdf = fitz.open()
+    print("ininijninn")
 
     user_signatures = {"elisa": {"size": (length, width), "position": (xco, yco)}}
     user_signature = user_signatures["elisa"]
@@ -71,9 +77,11 @@ def add_signature1(pdf_path, signature_path, output_path, length, width, xco, yc
             page.insert_image(sig_rect, pixmap=signature_image)
 
         output_pdf.insert_pdf(doc, from_page=page_num, to_page=page_num)
-
+    print(output_path)
     output_pdf.save(output_path)
     issm_log.logger.info(f"Output file saved ,{output_path}")
+    return output_path
+
 
 
 # pdf_filename='i20.pdf'

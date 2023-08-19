@@ -10,7 +10,7 @@ from flask import jsonify
 
 import dba
 import issm_log
-from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers
+from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers, updatelogin
 from sendemail import get_credentials, send_email
 
 # Generate a random integer between 1 and 100
@@ -100,9 +100,12 @@ def checklogin(username, password):
                 if password_hash == stored_hash:
                     roles=user_df['userRole'].values[0]
                     institution=user_df['institutionId'].values[0]
+                    fullname=user_df['fullname'].values[0]
+                    updatelogin(username)
                     print(institution)
                     print(roles)
-                    return http.HTTPStatus.OK,roles,institution  # return 200 if login successful
+
+                    return http.HTTPStatus.OK,roles,institution,fullname  # return 200 if login successful
         return http.HTTPStatus.UNAUTHORIZED  # return 401 if login unsuccessful
 
 

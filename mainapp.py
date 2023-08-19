@@ -8,7 +8,7 @@ All the routes are defined in this file
 /signup: This is for new user signup/register
 /forgot: This is when user clicks on forgot password
 /upload3: Thi is for DSO Admin for adhoc works
-/getallusers:returns all the users who are registred in this App
+/getallusers:returns all the users who are registered in this App
 /getUser/<string:user>: Returns all the  details of the selected user
 
 
@@ -67,6 +67,7 @@ def home():
 """Displays all the names of DSO .
 Gets all the names from names_list() function which is defined in name.py .
 Returns all the names in json format to frontend """
+
 @app.route('/getNames', methods=['GET', 'POST'])
 
 def names():
@@ -137,6 +138,7 @@ def upload():
             num_pages = pages(pdf_filename)
             sevid=""
             try:
+
                 #calling sign_details() function and taking all the coordinates
                 length, width, xcoordinate, ycoordinate = sign_details(name)
                 #Getting signature file name
@@ -147,12 +149,14 @@ def upload():
                 #sevid, totalpagessplit = splitting(pdf_filename)
                 totalpagessplit = totalpages / 3
                 numberoffiles = totalpagessplit
+
                 # Storing total pages, total files afte splitting , total signatures added to session
                 session['Total_Pages']=f"{num_pages}"
                 session['Total_Files']=f"{int(numberoffiles)}"
                 session['Total_Signatures']=f"{totalsigns}"
                 issm_log.logger.info(f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
             except Exception as e:
+
                 session['Split_Failure']=f"Splitting of file is failed {e}"
                 issm_log.logger.error(f"Splitting of file is failed {e}")
             try:
@@ -163,6 +167,7 @@ def upload():
                 #if i20type is continued i20 then index file1 is called for creating index file
                 elif(i20type=='contdI20'):
                     result=indexFile1(sevid, issm, slate)
+
                 # if index file returns a tuple then the values in tuple are assigned as size of indexfile , missing records
                 if isinstance(result,tuple):
 
@@ -171,13 +176,14 @@ def upload():
                     session["index_size"] = f"{sizeOfIndexfile}"
                     session["missing_records"] = f"{missing}"
                     print("Size of index file is ",sizeOfIndexfile)
+
                     if missing:
                         sender, password = get_credentials('email')
                         email,cc=get_emails('emails')
                         print(email)
                         print(cc)
                         email, cc = get_emails('emails')
-                        send_email1(sender, password, email, missing,pdf_filename,tablehtml,cc)
+                        #send_email1(sender, password, email, missing,pdf_filename,tablehtml,cc)
 
                 # if index file doesnot return a tuple then it contains a message string which is assigned to msg
                 else:
@@ -186,10 +192,12 @@ def upload():
                     msg=result
                     print("Result",result)
                     session["index_error"] = f"Index file creation failed {msg}"
+
                     issm_log.logger.error(f"Index file creation failed {msg}")
                 #sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
             except Exception as e:
                 session["index_error"]=f"Index file creation failed {e}"
+
                 issm_log.logger.error(f"Index file creation failed {e}")
 
             try:
@@ -203,6 +211,7 @@ def upload():
                 response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
                 response.headers['Content-Type'] = 'application/zip'
                 issm_log.logger.info("Files Zipped")
+
                 session['zipmsg'] = "Success"
                 #if slate request is yes then depending on program the post function is called
                 if slaterequest=='y':
@@ -210,12 +219,14 @@ def upload():
                     if stream=='g':
                         output=post(zip_filename, 'GR')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
+
                         print(output)
 
                     else:
                         print("goign to UG")
                         output=post(zip_filename, 'UG')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
+
                         print(output)
             except Exception as e:
                 session['zipmsg']=f"Files Zipping failed {e}"
@@ -256,6 +267,7 @@ def get_upload():
 
         response_msg = {
             'Total_Pages': Total_Pages,
+            'Total_Files':Total_Files,
             'Total_Files':Total_Files,
             'Total_Signatures':Total_Signatures,
             'zipmsg':zipmsg,
@@ -566,6 +578,15 @@ def deluser(user):
         issm_log.logger.info(f"Deleted user {user}")
         # message is returned
         return g
+
+
+@app.route('/deactiveuser',methods=['POST'])
+def activeuser():
+    if request.method=='POST':
+        data=request.form.get('active')
+
+
+
 
 """Change Password in Profile dropdown"""
 @app.route('/changePwd/<string:user>',methods=['PUT','POST'])

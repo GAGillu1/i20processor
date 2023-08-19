@@ -265,7 +265,11 @@ def get_upload():
         institution=session.get('institute')
 
         result = [s for s in [Split_Failure, index_error, zipmsg] if s is not None and s != ""]
-        insertprocessed(user, sevisids, institution,str(result))
+        if result is not None:
+            insertprocessed(user, sevisids, institution,str(result))
+        else:
+            result=0
+            insertprocessed(user, sevisids, institution, str(result))
         response_msg = {
             'Total_Pages': Total_Pages,
             'Total_Files':Total_Files,
@@ -318,7 +322,7 @@ def login():
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
             if isinstance(result, tuple):
-                login_result,role,institution_id=result
+                login_result,role,institution_id,fullname=result
                 print("Id is ",institution_id)
                 print("/*/*/*/",result)
                 if login_result == http.HTTPStatus.OK:
@@ -329,9 +333,11 @@ def login():
                     token = jwt.encode(token_payload, 'secret', algorithm='HS256')  # Encode token with secret key
                     print("78",token)
                     #response = make_response()
-                    response = make_response({'message': 'Login successful', 'role': role})
+                    response = make_response({'message': 'Login successful', 'role': role,'username':username,'fullname':fullname})
 
                     response.headers['Role']=role
+                    response.headers['fullname'] = fullname
+                    response.headers['username'] = username
                     response.headers['Authorization'] = f"Bearer {token}"  # Set JWT token in Authorization header
                     print("4124145",response)
                     session['institute']=int(institution_id)
@@ -398,7 +404,7 @@ def forgotpassword():
                 print(email)
                 sender, password = get_credentials('email')
                 # send email
-                send_email(sender, password, email, username, passw)
+                #send_email(sender, password, email, username, passw)
                 response_data = {'message': 'Password reset email sent'}
                 issm_log.logger.info(f"Email Sent")
                 return jsonify(response_data), 200
@@ -601,7 +607,7 @@ def changepwd(user):
                 # get email creds
                 sender, password = get_credentials('email')
                 # send email to as password is changed
-                send_email(sender, password, email, username, pwd)
+                #send_email(sender, password, email, username, pwd)
                 issm_log.logger.info(f"Changed password for user -{user}")
                 return "Password changed Successfully"
             else:
