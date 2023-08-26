@@ -20,6 +20,7 @@ import issm_log
 from InitialIndex import indexFile, indexFile1
 from addSignature import add_signature, add_signature1
 from dbstatements import insertprocessed
+from deletefiles import remove_files
 from dependentsplit import depi20
 from dsodependedntsignature import depensignature
 from dsodependentsignsplit import depi20signature
@@ -71,14 +72,14 @@ def sse():
 """Displays all the names of DSO .
 Gets all the names from names_list() function which is defined in name.py .
 Returns all the names in json format to frontend """
-@app.route('/getNames', methods=['GET', 'POST'])
+@app.route('/dso', methods=['GET', 'POST'])
 def names():
     if request.method == 'GET':
         fullnames = names_list()
         #dataframe is converted to list
         names = fullnames.tolist()
         #list is sent as json format
-        return jsonify({'names': names})
+        return jsonify({'message':'DSO names'}, names)
 
 """Process the i20 pdf file, issm excel file and slate excel file and 
 retuns a zip format of all individual i20 files and index file
@@ -142,8 +143,6 @@ def upload():
                 signature_file = signaturefile(name)
                 # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
                 sevid,totalpages,totalsigns=splitsignature(pdf_filename, signature_file, length, width, xcoordinate, ycoordinate)
-
-
                 #sevid, totalpagessplit = splitting(pdf_filename)
                 totalpagessplit = totalpages / 3
                 numberoffiles = totalpagessplit
@@ -230,9 +229,10 @@ def upload():
 
 #or ('index_' in file_name and file_name.endswith('.txt'))
             # deleting all the files which were just created in the directory except index file and zip file
-            for file_name in os.listdir('.'):
-                if file_name.endswith('.pdf') or file_name.endswith('.xlsx') and file_name != "user.xlsx" and not file_name.startswith('signature') and not file_name.endswith('.py'):
-                    os.remove(file_name)
+            # for file_name in os.listdir('.'):
+            #     if file_name.endswith('.pdf') or file_name.endswith('.xlsx') and file_name != "user.xlsx" and not file_name.startswith('signature') and not file_name.endswith('.py'):
+            #         os.remove(file_name)
+            remove_files()
             time.sleep(60)
             try:
                 return response
@@ -242,21 +242,21 @@ def upload():
             issm_log.logger.error(f"Process failed {e}")
 """This returns a message to front end after the /i20process route 
 After each step in i2oprocess messages are added to session and those are retrived here and returned"""
-@app.route('/getResponse', methods=['GET'])
+@app.route('/i20process', methods=['GET'])
 def get_upload():
     if request.method == 'GET':
         # from the session all the session messages are taken and returned as json
-        Total_Pages = session.get('Total_Pages')
-        Total_Files = session.get('Total_Files')
-        Total_Signatures = session.get('Total_Signatures')
-        zipmsg = session.get('zipmsg')
-        Split_Failure = session.get('Split_Failure')
-        indexmsg = session.get('indexmsg')
-        index_size = session.get('index_size')
-        missing_records = session.get('missing_records')
-        index_error = session.get('index_error')
-        signmsg=session.get('signmsg')
-        splitmsg=session.get('splitmsg')
+        TotalPages = session.get('Total_Pages')
+        TotalFiles = session.get('Total_Files')
+        TotalSignatures = session.get('Total_Signatures')
+        zipMessage = session.get('zipmsg')
+        splitFailure = session.get('Split_Failure')
+        indexMessage = session.get('indexmsg')
+        indexSize = session.get('index_size')
+        missingRecords = session.get('missing_records')
+        indexError = session.get('index_error')
+        signMessage=session.get('signmsg')
+        splitMessage=session.get('splitmsg')
         addSign=session.get('addSign')
         sevisids=session.get('sevis_id')
         print("Sevisids in response/*/*/*",sevisids)
@@ -264,24 +264,27 @@ def get_upload():
         print("user in response",user)
         institution=session.get('institute')
 
-        result = [s for s in [Split_Failure, index_error, zipmsg] if s is not None and s != ""]
+        result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
+        print("result is ",result)
         if result is not None:
             insertprocessed(user, sevisids, institution,str(result))
         else:
             result=0
+            print("sevis is ",sevisids)
+            print("institution is ",institution)
             insertprocessed(user, sevisids, institution, str(result))
         response_msg = {
-            'Total_Pages': Total_Pages,
-            'Total_Files':Total_Files,
-            'Total_Signatures':Total_Signatures,
-            'zipmsg':zipmsg,
-            'Split_Failure':Split_Failure,
-            'indexmsg':indexmsg,
-            'index_size':index_size,
-            'missing_records':missing_records,
-            'index_error':index_error,
-            'signmsg':signmsg,
-            'splitmsg':splitmsg,
+            'Total_Pages': TotalPages,
+            'Total_Files':TotalFiles,
+            'Total_Signatures':TotalSignatures,
+            'zipmsg':zipMessage,
+            'Split_Failure':splitFailure,
+            'indexmsg':indexMessage,
+            'index_size':indexSize,
+            'missing_records':missingRecords,
+            'index_error':indexError,
+            'signmsg':signMessage,
+            'splitmsg':splitMessage,
             'Add_sign':addSign
         }
         issm_log.logger.info(f"Response message at end is {response_msg}")
@@ -311,14 +314,13 @@ def login():
             # getting the username and password from the request header authorization
             encoded_credentials = request.headers.get('Authorization').split(' ')[-1]
             decoded_credentials = base64.b64decode(encoded_credentials).decode().split(':')
+            institutionid = request.headers.get('institutionid')
             username = decoded_credentials[0]
             password = decoded_credentials[1]
-            # name = request.form['usr']
+            #institutionid=session['institutionid']
             print(username)
-            #pwd=request.form['pwd']
             session['name']=decoded_credentials[0]
-            #checklogin function checks whether the username and passsword match in the database/excel
-            result=checklogin(username,password)
+            result=checklogin(username,password,institutionid)
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
             if isinstance(result, tuple):
@@ -332,15 +334,14 @@ def login():
                     token_payload = {'username': username, 'role': role, 'exp': token_exp}
                     token = jwt.encode(token_payload, 'secret', algorithm='HS256')  # Encode token with secret key
                     print("78",token)
-                    #response = make_response()
                     response = make_response({'message': 'Login successful', 'role': role,'username':username,'fullname':fullname})
-
                     response.headers['Role']=role
                     response.headers['fullname'] = fullname
                     response.headers['username'] = username
+                    response.headers['institutionid']=institution_id
                     response.headers['Authorization'] = f"Bearer {token}"  # Set JWT token in Authorization header
                     print("4124145",response)
-                    session['institute']=int(institution_id)
+                    session['institute']=(institution_id)
                     return response, http.HTTPStatus.OK
             else:
                 if result == http.HTTPStatus.UNAUTHORIZED:
@@ -356,7 +357,7 @@ def login():
 function registeruser() is called which is defined in login.py It takes in username, password,email and Role . these are saved in excel  
 At the end it returns the result message and HTTP response 
 """
-@app.route('/signup', methods=['POST', 'GET'])
+@app.route('/users', methods=['POST', 'GET'])
 @token_required
 
 def register():
@@ -367,17 +368,19 @@ def register():
         email=request.form.get('email')
         fullname=request.form.get('fName')
         role=request.form.get('role')
+        institutionid = request.headers.get('institutionid')
+        #institutionid=session['institutionid']
         # registering the user with the definition registeruser
-        register_result=registeruser(username,password,email,role,fullname)
+        register_result=registeruser(username,password,email,role,fullname,institutionid)
         # if register is successful then return the messages
         if register_result == http.HTTPStatus.OK:
             issm_log.logger.info(f"Registered Use {username},{role},{email} ")
-            return 'Register successful', http.HTTPStatus.OK
+            return jsonify({'message':'Registration successful'}, http.HTTPStatus.OK)
         elif register_result == http.HTTPStatus.UNAUTHORIZED:
             issm_log.logger.info(f"user is already resgistered with ")
-            return 'username already registered, Please Login ', http.HTTPStatus.UNAUTHORIZED
+            return jsonify({'message':'username already registered, Please Login '}, http.HTTPStatus.UNAUTHORIZED)
         else:
-            return register_result, http.HTTPStatus.UNAUTHORIZED
+            return jsonify({'message':register_result}, http.HTTPStatus.UNAUTHORIZED)
 """This is for Forgot password.
 If the username which user entered is in excel we send en email with password to their registred email
 and returns a message as successful if mail is sent. If username is not in excel then message will be invalid data"""
@@ -392,7 +395,7 @@ def forgotpassword():
         print(data)
         #checking if username is in request
         if data is None or 'usr' not in data:
-            return jsonify({'error': 'Invalid data'}), 400
+            return jsonify({'message': 'Invalid data'}), 400
 
         else:
             user=data['usr']
@@ -422,7 +425,7 @@ If Split is selected then a zip file is returned with the all the files split in
  add_signature1() which adds signature to each i20
  splitting() which splits the files into individual i20's 
  """
-@app.route('/upload3', methods=['POST', 'GET'])
+@app.route('/dso', methods=['POST', 'GET'])
 @token_required
 def Test():
     if request.method=='POST':
@@ -551,29 +554,31 @@ Function used is users()"""
 def alluser():
     if request.method=='GET':
         # fucntion returns all users in ascending order of fullnames
-        allusers=users()
+        instituteid=session['institute']
+        allusers=users(instituteid)
 
         return jsonify({'usr': allusers.to_dict('records')})
 """ This route returns the details of selected user using the function userpopup() .
  Sending in json format """
-@app.route('/getUser/<string:user>', methods=['POST', 'GET'])
+@app.route('/users/<string:user>', methods=[ 'GET'])
 @token_required
 def userpop(user):
     if request.method=='GET':
         print("In getuser")
         print(user)
+        #institutionid=session['institutionid']
+        institutionid = request.headers.get('institutionid')
         #data=request.get_json()
         # user=data
         # userinformatiomn is populated , all details of user are taken
-        userinf=userpopup(user)
+        userinf=userpopup(user,institutionid)
         issm_log.logger.info(f"Clicked on user info for user- {user}")
         username,email,role,fullname=userinf
         #returning json with all details
-        return jsonify({'name':username,'email':email,'role':role,'fullName':fullname})
+        return jsonify({'message':'User details fetched','data':{'name':username,'email':email,'role':role,'fullName':fullname}})
 
 """Deleting user """
-@app.route('/deleteuser/<string:user>',methods=['POST','GET','DELETE'])
-@token_required
+@app.route('/users/<string:user>',methods=['DELETE'])
 
 def deluser(user):
     if request.method=='DELETE':
@@ -582,7 +587,7 @@ def deluser(user):
         g=deleteuser(user)
         issm_log.logger.info(f"Deleted user {user}")
         # message is returned
-        return g
+        return jsonify({'message':'Deleted user','output':g})
 
 """Change Password in Profile dropdown"""
 @app.route('/changePwd/<string:user>',methods=['PUT','POST'])
@@ -592,6 +597,8 @@ def changepwd(user):
         #getting all details from the form
         pwd=request.form.get('pwd')
         cPwd=request.form.get('cPwd')
+        #institutionid=session['institutionid']
+        institutionid = request.headers.get('institutionid')
         username=user
         print("Password is ",pwd)
         print(username)
@@ -599,7 +606,7 @@ def changepwd(user):
         #check if password and confirm password are same
         if pwd==cPwd:
             #changepassword function will change password and update in excel
-            g=change_password(username,pwd)
+            g=change_password(username,pwd,institutionid)
             print("g is ",g)
             # check if the result of fucntion is tuple
             if isinstance(g,tuple):
@@ -609,11 +616,11 @@ def changepwd(user):
                 # send email to as password is changed
                 #send_email(sender, password, email, username, pwd)
                 issm_log.logger.info(f"Changed password for user -{user}")
-                return "Password changed Successfully"
+                return jsonify({'message':'Password Changed for user'})
             else:
                 # if result is not tuple then it has some error and that error message is returned
                 msg=g
-                return msg
+                return jsonify({'message':msg})
 
         else:
             issm_log.logger.info(f"Password and Current passwod are incorrect")
@@ -645,23 +652,23 @@ def addsign(user):
         # if sign type is test  then we just send the pdf file file with the signature and not put those details in DB
         if sign=='test':
             """Test signature but dont add"""
-            add_signature1(pdf_filename, png_filename, output_file, int(length), int(width),int(xco),int(yco))
+            add_signature1(pdf_filename, user+'.png', output_file, int(length), int(width),int(xco),int(yco))
             response=make_response(send_file(output_file, as_attachment=True))
             session['addSign']='Signature added to I-20.'
             return response
         # if sign type is upload then it will write to excel and download a pdf
         elif sign =='upload':
             """Add signature to excel file """
-            add_signature1(pdf_filename, png_filename, output_file, int(length), int(width),int(xco),int(yco))
+            add_signature1(pdf_filename, user+'.png', output_file, int(length), int(width),int(xco),int(yco))
             response = make_response(send_file(output_file, as_attachment=True))
-            msg=signadd(user,length,width,xco,yco)
+            msg=signadd(user,length,width,xco,yco,institutionid)
             session['addSign']='Signature added to I-20.Updated in Database'
 
             return response
 
 
 """Route to update user in Admin section """
-@app.route('/updateUser/<string:user>',methods=['PUT','POST'])
+@app.route('/users/<string:user>',methods=['PUT','POST'])
 @token_required
 def update(user):
     if request.method=='PUT':
@@ -673,7 +680,7 @@ def update(user):
         #updating based on the details given it the function userupdate
         result=userupdate(user,fullname,email,role)
         issm_log.logger.info(result)
-        return result
+        return  jsonify({'message':'user updated'},result)
 
 
 if __name__ == '__main__':

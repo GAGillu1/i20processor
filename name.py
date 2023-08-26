@@ -22,31 +22,32 @@ def signaturefile(name):
     file=user+".png"
     return file
 
-def signadd(username,length,width,xco,yco):
+def signadd(username,length,width,xco,yco,institutionid):
    try:
-
         #df=pd.read_excel('signature.xlsx')
         #df=selectsignature()
         #df1=pd.read_excel('user.xlsx')
-
-        df1=selectusers()
+        df1=selectusers(institutionid)
         df=selectsignature()
         print(type(df1))
         print(df1)
         print("username is ",username)
         user_df = df1.loc[df1['userName'] == username]
-        sign_df=df.loc[df['userName']==username]
+        #sign_df=df.loc[df['userName']==username] if not df.empty else pd.DataFrame(columns=df.columns)
+        sign_df = df.loc[df['userName'] == username] if df is not None and not df.empty else pd.DataFrame(
+            columns=df.columns if df is not None else [])
+
         print("userdf ",user_df)
 
-        if not user_df.empty and sign_df.empty:
+        if not user_df.empty and (sign_df.empty) :
             print("in ")
             fullname=user_df['fullname'][0]
-            universityid=int(user_df['institutionId'][0])
+            universityid=(user_df['institutionId'].iloc[0])
             print(universityid)
             print(fullname)
             print("46546549874")
             print("full",fullname[0])
-            email=user_df['email'][0]
+            email=user_df['email'].iloc[0]
             #newsign={'Full Name':fullname,'username':username,'Email':email,'signaturelength':length,'signaturewidth':width,'signaturexcoordinate':xco,'signatureycoordinate':yco}
             #df = pd.concat([df, pd.DataFrame(newsign, index=[0])], ignore_index=True)
             insertsignatures(fullname, username, email, length, width, xco,yco,universityid)
@@ -66,5 +67,8 @@ def signadd(username,length,width,xco,yco):
    except Exception as e:
        print(e)
        return e
+
+
+
 
 

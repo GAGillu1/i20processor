@@ -31,11 +31,21 @@ def selectadministrators():
         print("No data returned from the query.")
     dba.close()
 
-
-def selectusers():
+def activeusers():
     dba.connect()
-    query="select userId,fullname,userName,email,institutionId,salt,hash,active,userRole from users where active=1 "
+    query = "select userId,fullname,userName,email,salt,hash,active,userRole from users where active=1 "
     result = dba.execute_query(query)
+    if result is not None:
+        # Use the result DataFrame as needed.
+        print(result)
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query.")
+    dba.close()
+def selectusers(institutionid):
+    dba.connect()
+    query="select userId,fullname,userName,email,salt,hash,active,userRole from users where institutionId=? "
+    result = dba.execute_query(query,[institutionid])
     if result is not None:
         # Use the result DataFrame as needed.
         print(result)
@@ -67,7 +77,6 @@ def insertadmin(fullname,email,institutionname):
     dba.execute_query(query, [fullname,email,institutionname])
 
     dba.close()
-
 def insertusers(fullname,username,email,userrole,institutionname,salt,hash):
     dba.connect()
     query="insert into users(fullname,userName,email,userRole,institutionId,salt,hash,active) values(?,?,?,?,(select institutionId from Institutions where institutionName=?),?,?,1)"
@@ -191,7 +200,7 @@ def updateactive(user, activeid):
         print("Unchanged")
     dba.close()
 
-updateactive("GOV", 1)
+#updateactive("GOV", 1)
 
 
 
@@ -204,6 +213,5 @@ updateactive("GOV", 1)
 #selectadministrators()
 
 
-#insertusers('Govardhan','Illuru','example','User','University of New Haven')
 #selectusers()
 #selectinstitutions()

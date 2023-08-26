@@ -10,7 +10,7 @@ from flask import jsonify
 
 import dba
 import issm_log
-from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers, updatelogin
+from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers, updatelogin, activeusers
 from sendemail import get_credentials, send_email
 
 # Generate a random integer between 1 and 100
@@ -23,8 +23,8 @@ special_char = random.choice(string.punctuation)
 
 
 """Below function is for registering user and parameters required are username, password, enail, role and fullname"""
-def registeruser(username,password,email,role,fullname):
-    df = selectusers()
+def registeruser(username,password,email,role,fullname,institutionid):
+    df = selectusers(institutionid)
     #generating random salt to hash the password
     salt=bcrypt.gensalt()
     stringsalt=salt.decode('utf-8')
@@ -75,14 +75,23 @@ def registeruser(username,password,email,role,fullname):
     #
     # else:
     #     return http.HTTPStatus.UNAUTHORIZED
-#registeruser("GaV","Password","gillu1@unh..edu","GA")
+#registeruser("Gov","Qwerty","gillu1@unh.newhaven.edu","ADMIN",'Govardhan')
+#registeruser('tester','abcde','abcde@email.com','ADMIN','I am tester')
+def confignewuser(username,password,email,role,fullname,university):
+    salt = bcrypt.gensalt()
+    stringsalt = salt.decode('utf-8')
+    password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
+    pwd = password_hash.decode('utf-8')
+    data = insertusers(fullname, username, email, role, university, salt, pwd)
+    return http.HTTPStatus.OK
+#confignewuser('Gov','Qwerty','gillu1@unh.newhaven.edu','ADMIN','Govardhan','University of New Haven')
 
 """This is for login verification we hash the entered password and check if hashed password in DB is equal to this hashed password"""
-def checklogin(username, password):
+def checklogin(username, password,institutionid):
     try:
         #reading excel file
         #df = pd.read_excel('user.xlsx')
-        df=selectusers()
+        df=selectusers(institutionid)
         print(username)
         # filtering the dataframe with the username so we get filtered dataframe
         user_df = df.loc[df['userName'] == username]
@@ -117,9 +126,9 @@ def checklogin(username, password):
         return http.HTTPStatus.INTERNAL_SERVER_ERROR  # return 500 for all other errors
 
 """Definition for forgotpassword . Where We are sending the password in email """
-def forgotpassword1(username):
+def forgotpassword1(username,):
     #df = pd.read_excel('user.xlsx')
-    df=selectusers()
+    df=activeusers()
     #lowercase_usernames = df['username'].astype(str).lower()
 
     #print(type(lowercase_usernames))
@@ -150,11 +159,12 @@ def forgotpassword1(username):
         return "Username not registered"
 
 #g=forgotpassword1('Gov')
+
 """Definition is to retrive all users form DB which is excel here """
-def users():
+def users(instituteid):
     try:
         dba.connect()
-        df=selectusers()
+        df=selectusers(instituteid)
         allUsers=df[['fullname','userName','userRole']]
 
         # retiving all users and changing  sorting based on fullnames
@@ -179,7 +189,7 @@ def users():
 """Delete user from Excel """
 def deleteuser(user):
     #df=pd.read_excel('user.xlsx')
-    df=selectusers()
+    df=activeusers()
     usernames = (df['userName'].str.lower().values)
     print("user is ",user)
     print("usernames is ",usernames)
@@ -202,8 +212,8 @@ def deleteuser(user):
 #deleteuser('Ga')
 #deleteuser('abc')
 """Below definition is to get details of the user and return them """
-def userpopup(user):
-    df=selectusers()
+def userpopup(user,institutionid):
+    df=selectusers(institutionid)
     usernames = (df['userName'].str.lower().values)
     # getting dataframe where the username is matches with the one in excel
     userdf=df[usernames==user.lower()]
@@ -239,9 +249,9 @@ def token_required(f):
     return decorated
 
 """Definition is to change password for user input paramanetrs are username and new password """
-def change_password(username,password):
+def change_password(username,password,institutionid):
     #df=pd.read_excel('user.xlsx')
-    df=selectusers()
+    df=selectusers(institutionid)
     try:
         usernames = (df['userName'].str.lower().values)
         print(type(usernames))

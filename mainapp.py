@@ -268,7 +268,6 @@ def get_upload():
         response_msg = {
             'Total_Pages': Total_Pages,
             'Total_Files':Total_Files,
-            'Total_Files':Total_Files,
             'Total_Signatures':Total_Signatures,
             'zipmsg':zipmsg,
             'Split_Failure':Split_Failure,

@@ -22,11 +22,15 @@ def execute_query(query, params=None):
     global conn
     cursor = conn.cursor()
     try:
-        if 'select' in query:
+       # if 'select' in query:
+        if query.strip().lower().startswith('select'):
             if params :
+                print(query)
+                print("in select params")
                 cursor.execute(query,params)
                 rows=cursor.fetchall()
             else:
+                print("in select no params")
                 cursor.execute(query)
                 rows = cursor.fetchall()
             if rows:
@@ -36,10 +40,8 @@ def execute_query(query, params=None):
                 return data.reset_index(drop=True)
         else:
             cursor.execute(query, params)
-            cursor.commit()
-
-
-
+            print("in commit")
+            conn.commit()
 
 
     except Exception as e:
