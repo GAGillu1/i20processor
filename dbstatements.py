@@ -33,7 +33,7 @@ def selectadministrators():
 
 def activeusers():
     dba.connect()
-    query = "select userId,fullname,userName,email,salt,hash,active,userRole from users where active=1 "
+    query = "select userId,fullname,userName,email,salt,hash,active,userRole,institutionid from users where active=1 "
     result = dba.execute_query(query)
     if result is not None:
         # Use the result DataFrame as needed.
@@ -42,6 +42,17 @@ def activeusers():
     else:
         print("No data returned from the query.")
     dba.close()
+def loginusers():
+    dba.connect()
+    query="SELECT u.userId,u.fullname, u.userName,  u.email,  u.salt, u.hash, u.active, u.userRole, u.institutionid,  i.institutionName  from  users u JOIN   institutions i ON u.institutionid = i.institutionid WHERE   u.active = 1"
+    result=dba.execute_query(query)
+    if result is not None:
+        print(result)
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query.")
+    dba.close()
+
 def selectusers(institutionid):
     dba.connect()
     query="select userId,fullname,userName,email,salt,hash,active,userRole from users where institutionId=? "

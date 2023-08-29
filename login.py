@@ -10,7 +10,8 @@ from flask import jsonify
 
 import dba
 import issm_log
-from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers, updatelogin, activeusers
+from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers, updatelogin, activeusers, \
+    loginusers
 from sendemail import get_credentials, send_email
 
 # Generate a random integer between 1 and 100
@@ -87,11 +88,11 @@ def confignewuser(username,password,email,role,fullname,university):
 #confignewuser('Gov','Qwerty','gillu1@unh.newhaven.edu','ADMIN','Govardhan','University of New Haven')
 
 """This is for login verification we hash the entered password and check if hashed password in DB is equal to this hashed password"""
-def checklogin(username, password,institutionid):
+def checklogin(username, password):
     try:
         #reading excel file
         #df = pd.read_excel('user.xlsx')
-        df=selectusers(institutionid)
+        df=loginusers()
         print(username)
         # filtering the dataframe with the username so we get filtered dataframe
         user_df = df.loc[df['userName'] == username]
@@ -108,13 +109,14 @@ def checklogin(username, password,institutionid):
                 print(password_hash)
                 if password_hash == stored_hash:
                     roles=user_df['userRole'].values[0]
-                    institution=user_df['institutionId'].values[0]
+                    institutionId=user_df['institutionid'].values[0]
                     fullname=user_df['fullname'].values[0]
+                    institutionname=user_df['institutionName'].values[0]
                     updatelogin(username)
-                    print(institution)
+                    print(institutionId)
                     print(roles)
 
-                    return http.HTTPStatus.OK,roles,institution,fullname  # return 200 if login successful
+                    return http.HTTPStatus.OK,roles,institutionId,fullname,institutionname  # return 200 if login successful
         return http.HTTPStatus.UNAUTHORIZED  # return 401 if login unsuccessful
 
 

@@ -314,17 +314,15 @@ def login():
             # getting the username and password from the request header authorization
             encoded_credentials = request.headers.get('Authorization').split(' ')[-1]
             decoded_credentials = base64.b64decode(encoded_credentials).decode().split(':')
-            institutionid = request.headers.get('institutionid')
             username = decoded_credentials[0]
             password = decoded_credentials[1]
-            #institutionid=session['institutionid']
             print(username)
             session['name']=decoded_credentials[0]
-            result=checklogin(username,password,institutionid)
+            result=checklogin(username,password)
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
             if isinstance(result, tuple):
-                login_result,role,institution_id,fullname=result
+                login_result,role,institution_id,fullname,institutionname=result
                 print("Id is ",institution_id)
                 print("/*/*/*/",result)
                 if login_result == http.HTTPStatus.OK:
@@ -334,7 +332,7 @@ def login():
                     token_payload = {'username': username, 'role': role, 'exp': token_exp}
                     token = jwt.encode(token_payload, 'secret', algorithm='HS256')  # Encode token with secret key
                     print("78",token)
-                    response = make_response({'message': 'Login successful', 'role': role,'username':username,'fullname':fullname})
+                    response = make_response({'message': 'Login successful', 'role': role,'username':username,'fullname':fullname,'institutionname':institutionname})
                     response.headers['Role']=role
                     response.headers['fullname'] = fullname
                     response.headers['username'] = username
@@ -350,8 +348,9 @@ def login():
                 else:
                     issm_log.logger.info("Server Error in login route")
                     return 'Internal server error', http.HTTPStatus.INTERNAL_SERVER_ERROR
+
         except Exception as e:
-           issm_log.logger.error(f"Process failed {e}")
+              issm_log.logger.error(f"Process failed {e}")
 
 """This route is for registering a new user.
 function registeruser() is called which is defined in login.py It takes in username, password,email and Role . these are saved in excel  
@@ -561,22 +560,27 @@ def alluser():
 """ This route returns the details of selected user using the function userpopup() .
  Sending in json format """
 @app.route('/users/<string:user>', methods=[ 'GET'])
-@token_required
 def userpop(user):
     if request.method=='GET':
         print("In getuser")
         print(user)
         #institutionid=session['institutionid']
         institutionid = request.headers.get('institutionid')
-        #data=request.get_json()
-        # user=data
-        # userinformatiomn is populated , all details of user are taken
-        userinf=userpopup(user,institutionid)
-        issm_log.logger.info(f"Clicked on user info for user- {user}")
-        username,email,role,fullname=userinf
-        #returning json with all details
-        return jsonify({'message':'User details fetched','data':{'name':username,'email':email,'role':role,'fullName':fullname}})
+        #print(institutionid)
+        if institutionid is not None:
 
+            #data=request.get_json()
+            # user=data
+            # userinformatiomn is populated , all details of user are taken
+            userinf=userpopup(user,institutionid)
+            issm_log.logger.info(f"Clicked on user info for user- {user}")
+            username,email,role,fullname=userinf
+            #returning json with all details
+            issm_log.logger.info(f"Users for particular user fetched {user}")
+            return jsonify({'message':'User details fetched','data':{'name':username,'email':email,'role':role,'fullName':fullname}})
+        else :
+            issm_log.logger.info(f"Users for particular user  not fetched {user}. Institution id is missing ")
+            return jsonify({'message':'institution id is missing '})
 """Deleting user """
 @app.route('/users/<string:user>',methods=['DELETE'])
 
