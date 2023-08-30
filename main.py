@@ -50,7 +50,7 @@ timestamp=datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 log_folder = os.path.join(os.getcwd(),'log')
 
 cwd = os.getcwd()
-app = Flask(__name__,template_folder=cwd,static_folder='static')
+app = Flask(__name__,template_folder='../../',static_folder='../../static')
 CORS(app)
 app.secret_key = secrets.token_bytes(32)
 
@@ -679,7 +679,7 @@ def update(user):
         #updating based on the details given it the function userupdate
         result=userupdate(user,fullname,email,role)
         issm_log.logger.info(result)
-        return  jsonify({'message':'user updated'},result)
+        return  jsonify({'message':'user updated','data':result})
 
 
 if __name__ == '__main__':
