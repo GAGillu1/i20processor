@@ -548,8 +548,9 @@ def alluser():
         # fucntion returns all users in ascending order of fullnames
         institutionid = request.headers.get('institutionid')
         allusers=users(institutionid)
+        print(type(allusers))
 
-        return jsonify({'usr': allusers.to_dict('records')})
+        return jsonify({'message':'user details fetched','data': allusers.to_dict('records')})
 """ This route returns the details of selected user using the function userpopup() .
  Sending in json format """
 @app.route('/users/<string:user>', methods=[ 'GET'])
