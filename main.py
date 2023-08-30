@@ -1,24 +1,26 @@
 """
 Main Flask file
 All the routes are defined in this file
-/getNames : This returns all the DSO names
-/i20process:Processes the i20's and returns index file and individual i20's
-/getResponse: This is for displaying message at end of processing . Messages after each step are taken in and displayed from here
-/login: Route does handle user authentication
-/signup: This is for new user signup/register
-/forgot: This is when user clicks on forgot password
-/upload3: Thi is for DSO Admin for adhoc works
-/getallusers:returns all the users who are registred in this App
-/getUser/<string:user>: Returns all the  details of the selected user
+/dso -GET: This returns all the DSO names
+/dso -POST : This is for DSO Admin for adhoc works
+/i20process -POST:Processes the i20's and returns index file and individual i20's
+/i20process -GET: This is for displaying message at end of processing . Messages after each step are taken in and displayed from here
+/login -POST: Route does handle user authentication
+/forgot -POST: This is when user clicks on forgot password
+/getallusers -GET :returns all the users who are registred in this App
+/users -POST: This is for new user signup/register
+/users/<string:user> -GET: Returns all the  details of the selected user
+/users/<string:user> -DELETE : Deletes the user
+/users/<string:user> - PUT : User update in admin page
+/changePwd/<string:user> -PUT : Changes password of the user
+/addSign/<string:user> - POST : add signature page either TEST or Upload
 """
-import json
 import secrets
 from zipfile import ZipFile
 from flask import Flask, render_template, request, send_file, make_response, jsonify, Response, session
-import os
 import issm_log
 from InitialIndex import indexFile, indexFile1
-from addSignature import add_signature, add_signature1
+from addSignature import add_signature1
 from dbstatements import insertprocessed
 from deletefiles import remove_files
 from dependentsplit import depi20
@@ -32,9 +34,8 @@ from postToSlate import post
 import datetime
 import base64
 from datetime import timedelta
-import asyncio
-from sendemail import get_credentials, send_email, send_email1, get_emails
-from split import splitting
+from sendemail import get_credentials, get_emails
+
 from totalpages import pages
 import http
 import time
@@ -56,7 +57,6 @@ app.secret_key = secrets.token_bytes(32)
 """Default route"""
 @app.route('/')
 def home():
-
     return render_template('issm.html')
 status_updates = {}
 def event_stream():
@@ -101,7 +101,7 @@ In each step log is recorded   """
 def upload():
     if request.method == 'POST':
         try:
-            print("upload1")
+            #print("upload1")
             Total_Pages = None
             Total_Files = None
             Total_Signatures = None
@@ -110,10 +110,8 @@ def upload():
             index_size=None
             missing_records=None
             index_error=None
-
             # issm_log.logger.log_filename=f'response_{timestamp}.log'
             # issm_log.set_new_log_file()
-
             #gettting the files from request, getting name and saving the file with that name
             pdf_file = request.files['i20File']
             issm_file = request.files['issmFile']
@@ -127,7 +125,6 @@ def upload():
             name = request.form['dsoName']
             slaterequest=request.form['toSlate']
             i20type=request.form['i20Type']
-
             user=session.get('name')
             status_updates[user] = {"status": "Starting processing..."}
             issm_log.logger.info(f"User logged in  :{user}")
@@ -159,13 +156,13 @@ def upload():
                 issm_log.logger.error(f"Splitting of file is failed {e}")
             try:
                 # If i20 type is initial i20 then indexFile is called for creating a index file
-                print(sevid,issm,slate)
+               # print(sevid,issm,slate)
                 if i20type=='initI20':
                     result=indexFile(sevid, issm)
                 #if i20type is continued i20 then index file1 is called for creating index file
                 elif(i20type=='contdI20'):
                     result=indexFile1(sevid, issm)
-                    print("Tyoe is result is ",type(result))
+                    #print("Tyoe is result is ",type(result))
                 # if index file returns a tuple then the values in tuple are assigned as size of indexfile , missing records
                 if isinstance(result,tuple):
 
@@ -173,18 +170,18 @@ def upload():
                     issm_log.logger.info(f"Index file created successfully and size is {sizeOfIndexfile}.Record not included in Index but is in ISSM/Slate {missing}")
                     session["index_size"] = f"{sizeOfIndexfile}"
                     session["missing_records"] = f"{missing}"
-                    print("Size of index file is ",sizeOfIndexfile)
+                    #print("Size of index file is ",sizeOfIndexfile)
                     status_updates[user]["status"] = "Index file created "
                     if missing :
                         sender, password = get_credentials('email')
                         email,cc=get_emails('emails')
-                        print(email)
-                        print(cc)
+                       # print(email)
+                       # print(cc)
                         email, cc = get_emails('emails')
                         #send_email1(sender, password, email, missing,pdf_filename,tablehtml,cc)
                 # if index file doesnot return a tuple then it contains a message string which is assigned to msg
                 else:
-                    print("Result",result)
+                   # print("Result",result)
                     msg=result
                     session["index_error"] = f"Index file creation failed {msg}"
                     status_updates[user]["status"] = f"Index file creation failed {msg} "
@@ -215,29 +212,25 @@ def upload():
                         output=post(zip_filename, 'GR')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
                         status_updates[user]["status"] = f"Sent to slate  Grad instance "
-                        print(output)
+                        #print(output)
                     else:
-                        print("goign to UG")
+                       # print("goign to UG")
                         output=post(zip_filename, 'UG')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
                         status_updates[user]["status"] = f"Sent to slate Under Grad Instance "
-                        print(output)
+                       # print(output)
             except Exception as e:
                 session['zipmsg']=f"Files Zipping failed {e}"
                 issm_log.logger.error(f"Files Zipping failed {e}")
                 status_updates[user]["status"] = f"Files Zipping failed "
-
-#or ('index_' in file_name and file_name.endswith('.txt'))
-            # deleting all the files which were just created in the directory except index file and zip file
-            # for file_name in os.listdir('.'):
-            #     if file_name.endswith('.pdf') or file_name.endswith('.xlsx') and file_name != "user.xlsx" and not file_name.startswith('signature') and not file_name.endswith('.py'):
-            #         os.remove(file_name)
             remove_files()
             time.sleep(60)
             try:
                 return response
             except Exception as e:
-                print(e)
+                issm_log.logger.error(f"i20 response failed {e}")
+
+            # print(e)
         except Exception as e:
             issm_log.logger.error(f"Process failed {e}")
 """This returns a message to front end after the /i20process route 
@@ -259,19 +252,19 @@ def get_upload():
         splitMessage=session.get('splitmsg')
         addSign=session.get('addSign')
         sevisids=session.get('sevis_id')
-        print("Sevisids in response/*/*/*",sevisids)
+        #print("Sevisids in response/*/*/*",sevisids)
         user=session.get('name')
-        print("user in response",user)
+       # print("user in response",user)
         institution=session.get('institute')
 
         result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
-        print("result is ",result)
+        #print("result is ",result)
         if result is not None:
             insertprocessed(user, sevisids, institution,str(result))
         else:
             result=0
-            print("sevis is ",sevisids)
-            print("institution is ",institution)
+           # print("sevis is ",sevisids)
+           # print("institution is ",institution)
             insertprocessed(user, sevisids, institution, str(result))
         response_msg = {
             'Total_Pages': TotalPages,
@@ -288,7 +281,7 @@ def get_upload():
             'Add_sign':addSign
         }
         issm_log.logger.info(f"Response message at end is {response_msg}")
-        print(response_msg)
+       # print(response_msg)
         session.pop('Total_Pages', None)
         session.pop('Total_Files', None)
         session.pop('Total_Signatures', None)
@@ -316,29 +309,29 @@ def login():
             decoded_credentials = base64.b64decode(encoded_credentials).decode().split(':')
             username = decoded_credentials[0]
             password = decoded_credentials[1]
-            print(username)
+           # print(username)
             session['name']=decoded_credentials[0]
             result=checklogin(username,password)
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
             if isinstance(result, tuple):
                 login_result,role,institution_id,fullname,institutionname=result
-                print("Id is ",institution_id)
-                print("/*/*/*/",result)
+               # print("Id is ",institution_id)
+              #  print("/*/*/*/",result)
                 if login_result == http.HTTPStatus.OK:
-                    print("in logn ")
+                 #   print("in logn ")
                     issm_log.logger.info(f"Login Successful for  {username}")
                     token_exp = datetime.datetime.utcnow() + timedelta(hours=1)  # Set token expiration time
                     token_payload = {'username': username, 'role': role, 'exp': token_exp}
                     token = jwt.encode(token_payload, 'secret', algorithm='HS256')  # Encode token with secret key
-                    print("78",token)
-                    response = make_response({'message': 'Login successful', 'role': role,'username':username,'fullname':fullname,'institutionname':institutionname})
+                 #   print("78",token)
+                    response = make_response({'message': 'Login successful', 'data':{'role': role,'username':username,'fullname':fullname,'institutionname':institutionname}})
                     response.headers['Role']=role
                     response.headers['fullname'] = fullname
                     response.headers['username'] = username
                     response.headers['institutionid']=institution_id
                     response.headers['Authorization'] = f"Bearer {token}"  # Set JWT token in Authorization header
-                    print("4124145",response)
+                   # print("4124145",response)
                     session['institute']=(institution_id)
                     return response, http.HTTPStatus.OK
             else:
@@ -391,7 +384,7 @@ def forgotpassword():
 
         issm_log.logger.info(f"Forgot Password ")
         data=request.get_json()
-        print(data)
+       # print(data)
         #checking if username is in request
         if data is None or 'usr' not in data:
             return jsonify({'message': 'Invalid data'}), 400
@@ -403,7 +396,7 @@ def forgotpassword():
             res=forgotpassword1(user)
             if isinstance(res,tuple):
                 email, passw, username=res
-                print(email)
+               # print(email)
                 sender, password = get_credentials('email')
                 # send email
                 #send_email(sender, password, email, username, passw)
@@ -439,10 +432,10 @@ def Test():
         dso=request.form.get('dsoName')
         username = session.get('name')
         status_updates[username] = {"status": "Starting processing..."}
-        print(sign,split)
+      #  print(sign,split)
         # if sign and split are selected then below condition is execcuted
         if sign=='on' and split== 'on':
-            print(" in Both ON")
+           # print(" in Both ON")
             issm_log.logger.info(f"Selected  Signature and Splitting")
             issm_log.logger.info(f"Received file {pdf_filename} , DSO  {dso}")
             status_updates[username] = {"status": "Selected to split and add signature"}
@@ -480,7 +473,7 @@ def Test():
                 issm_log.logger.info("Signing and Splitting Successful ")
                 msg=f"Signing , Splitting is done and total i20's are {result} "
                 status_updates[username] = {"status": f"Signing , Splitting is done and total i20's are {result}  "}
-                print(msg)
+               # print(msg)
                 response.status_code=201
                 return response
             except Exception as e:
@@ -489,8 +482,8 @@ def Test():
                 issm_log.logger.error(f"Failed in sign=='on' and split== 'on',error{e}")
         # If only signature is selected  then signature is added and zip file is sent as attachment
         elif(sign=='on' and split==None):
-            print("In sign ON")
-            print(dso)
+           # print("In sign ON")
+            #print(dso)
             issm_log.logger.info("Selected sign ")
             #getting coordinates of signature and signature file
             length, width, xco, yco = sign_details(dso)
@@ -504,7 +497,7 @@ def Test():
                 # signature is added
                 depensignature(pdf_filename, signature_file,output_file, length, width, xco, yco)
                 #add_signature1(pdf_filename, signature_file, output_file, length, width, xco, yco)
-                print(output_file)
+                #print(output_file)
                 response = make_response(send_file(output_file, as_attachment=True))
                 session['signmsg']="Sign added "
                 status_updates[username] = {"status": f"Signature added..."}
@@ -516,8 +509,8 @@ def Test():
                 issm_log.logger.error(f"Error in sign=='on' and split==None,error {e}")
         # if only split is selected
         elif (sign == None and split== 'on'):
-            print("in split")
-            print("ELSE")
+            #print("in split")
+            #print("ELSE")
             issm_log.logger.info("Splitting selected")
             status_updates[username] = {"status": f"Splitting selected"}
             issm_log.logger.info(f"Received file {pdf_filename}")
@@ -553,8 +546,8 @@ Function used is users()"""
 def alluser():
     if request.method=='GET':
         # fucntion returns all users in ascending order of fullnames
-        instituteid=session['institute']
-        allusers=users(instituteid)
+        institutionid = request.headers.get('institutionid')
+        allusers=users(institutionid)
 
         return jsonify({'usr': allusers.to_dict('records')})
 """ This route returns the details of selected user using the function userpopup() .
@@ -562,8 +555,8 @@ def alluser():
 @app.route('/users/<string:user>', methods=[ 'GET'])
 def userpop(user):
     if request.method=='GET':
-        print("In getuser")
-        print(user)
+        #print("In getuser")
+        #print(user)
         #institutionid=session['institutionid']
         institutionid = request.headers.get('institutionid')
         #print(institutionid)
@@ -577,7 +570,7 @@ def userpop(user):
             username,email,role,fullname=userinf
             #returning json with all details
             issm_log.logger.info(f"Users for particular user fetched {user}")
-            return jsonify({'message':'User details fetched','data':{'name':username,'email':email,'role':role,'fullName':fullname}})
+            return jsonify({'message':'User details fetched','data':{'name':username,'email':email,'role':role,'fullname':fullname}})
         else :
             issm_log.logger.info(f"Users for particular user  not fetched {user}. Institution id is missing ")
             return jsonify({'message':'institution id is missing '})
@@ -604,14 +597,14 @@ def changepwd(user):
         #institutionid=session['institutionid']
         institutionid = request.headers.get('institutionid')
         username=user
-        print("Password is ",pwd)
-        print(username)
+        #print("Password is ",pwd)
+        #print(username)
         issm_log.logger.info(f"Received change password for user -{user}")
         #check if password and confirm password are same
         if pwd==cPwd:
             #changepassword function will change password and update in excel
             g=change_password(username,pwd,institutionid)
-            print("g is ",g)
+            #print("g is ",g)
             # check if the result of fucntion is tuple
             if isinstance(g,tuple):
                 email,pwd,username=g
@@ -635,11 +628,11 @@ def changepwd(user):
 @token_required
 #
 def addsign(user):
-    print(user)
+   # print(user)
     if request.method=='POST':
         #getting details from the form
         username=request.form.get('usr')
-        print('username is ',username)
+       # print('username is ',username)
         fullname=request.form.get('fName')
         email=request.form.get('email')
         png_file = request.files['signFile']
@@ -651,6 +644,7 @@ def addsign(user):
         xco=int(request.form.get('x-co'))
         yco=int(request.form.get('y-co'))
         output_file='i20.pdf'
+        institutionid=request.headers.get('institutionid')
         # sample i20 which is saved
         pdf_filename=cwd+r'\Test_sign\i20.pdf'
         # if sign type is test  then we just send the pdf file file with the signature and not put those details in DB

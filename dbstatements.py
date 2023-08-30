@@ -64,7 +64,7 @@ def selectusers(institutionid):
     else:
         print("No data returned from the query.")
     dba.close()
-
+#selectusers('A0494CF8-A800-47B7-93DB-0974B04A4568')
 def deleteusers(user):
     dba.connect()
     query="update users set active =0 where userName=? "

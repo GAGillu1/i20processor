@@ -167,16 +167,14 @@ def users(instituteid):
     try:
         dba.connect()
         df=selectusers(instituteid)
-        allUsers=df[['fullname','userName','userRole']]
-
+        allUsers=df[['fullname','userName','userRole','active']]
+        print(allUsers)
         # retiving all users and changing  sorting based on fullnames
         allUsers = allUsers.rename(columns={'userRole': 'role','userName':'username'})
         allUsers=allUsers.sort_values(by=['fullname'])
-
         #usernames=df['username']
-
+        print(allUsers)
         return allUsers.reset_index(drop=True) if not allUsers.empty else None
-
     except Exception as e:
         print(f"Error reading user data: {e}")
         return None
