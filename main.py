@@ -94,7 +94,7 @@ def names():
         #dataframe is converted to list
         names = fullnames.tolist()
         #list is sent as json format
-        return jsonify({'message':'DSO names'}, names)
+        return jsonify({'message':'DSO names fetched successfully', 'data':names})
 
 
 
