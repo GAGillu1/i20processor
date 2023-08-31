@@ -36,7 +36,7 @@ export const addSignIV = {
   y: 180,
   length: 160,
   width: 60,
-  sign: "",
+  signFile: "",
   action: "",
 };
 

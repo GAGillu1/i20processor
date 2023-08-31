@@ -21,13 +21,7 @@ export async function GET(request: NextRequest) {
   switch (res.status) {
     case 200: {
       const data = await res.json();
-      return NextResponse.json(
-        {
-          message: "Users fetched successfully",
-          data: data,
-        },
-        { status: 200 }
-      );
+      return NextResponse.json(data);
     }
     case 401: {
       return NextResponse.json({ message: "Not Authorized!" }, { status: 401 });

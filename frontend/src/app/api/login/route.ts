@@ -15,33 +15,19 @@ export async function POST(request: NextRequest) {
 
     const data = await res.json();
     console.log("login data", data);
+    if (!res.ok) throw res;
 
-    switch (res.status) {
-      case 200: {
-        res.headers.forEach((e, k) => {
-          console.log("headers", k, e);
-          cookieStore.set(k, e, {
-            secure: true,
-            httpOnly: true,
-            expires: Date.now() + 60 * 60 * 1000,
-          });
-        });
+    res.headers.forEach((e, k) => {
+      console.log("headers", k, e);
+      cookieStore.set(k, e, {
+        secure: true,
+        httpOnly: true,
+        expires: Date.now() + 60 * 60 * 1000,
+      });
+    });
 
-        return NextResponse.json(data, { status: 200 });
-      }
-      case 401: {
-        return NextResponse.json(
-          { message: "Wrong Username or Password" },
-          { status: 401 }
-        );
-      }
-      default:
-        throw res;
-    }
+    return NextResponse.json(data);
   } catch (err: any) {
-    return NextResponse.json(
-      { message: "Something went wrong!" },
-      { status: err.status }
-    );
+    return NextResponse.json(err);
   }
 }

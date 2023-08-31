@@ -23,6 +23,15 @@ export interface i20Model {
   prog: string;
 }
 
+export interface signModel {
+  x: number;
+  y: number;
+  length: number;
+  width: number;
+  signFile: any;
+  action: string;
+}
+
 export interface sParams {
   searchParams: Record<string, string> | null | undefined;
 }

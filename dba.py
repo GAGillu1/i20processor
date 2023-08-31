@@ -2,14 +2,16 @@ import pyodbc
 import pandas as pd
 conn = None
 
+
 def connect():
     global conn
     conn = pyodbc.connect(
         'Driver={SQL Server};'
-        'Server=GOVARDHAN;'
+        'Server=localhost\SQLEXPRESS;'
         'Database=master;'
         'Trusted_Connection=yes;'
     )
+
 
 def close():
     global conn
@@ -24,11 +26,11 @@ def execute_query(query, params=None):
     try:
        # if 'select' in query:
         if query.strip().lower().startswith('select'):
-            if params :
+            if params:
                 print(query)
                 print("in select params")
-                cursor.execute(query,params)
-                rows=cursor.fetchall()
+                cursor.execute(query, params)
+                rows = cursor.fetchall()
             else:
                 print("in select no params")
                 cursor.execute(query)
@@ -42,7 +44,6 @@ def execute_query(query, params=None):
             cursor.execute(query, params)
             print("in commit")
             conn.commit()
-
 
     except Exception as e:
         print('Failed with', e)
