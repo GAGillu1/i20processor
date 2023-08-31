@@ -21,7 +21,6 @@ def signaturefile(name):
     user = filtered_df.iloc[0]["userName"]
     file=user+".png"
     return file
-
 def signadd(username,length,width,xco,yco,institutionid):
    try:
         #df=pd.read_excel('signature.xlsx')
@@ -41,8 +40,11 @@ def signadd(username,length,width,xco,yco,institutionid):
 
         if not user_df.empty and (sign_df.empty) :
             print("in ")
-            fullname=user_df['fullname'][0]
+            print(user_df)
+            fullname=user_df['fullname'].iloc[0]
+            print('fullname is ',fullname)
             universityid=(user_df['institutionId'].iloc[0])
+            print("university id is ",universityid)
             print(universityid)
             print(fullname)
             print("46546549874")
@@ -65,7 +67,7 @@ def signadd(username,length,width,xco,yco,institutionid):
 
 
    except Exception as e:
-       print(e)
+       print("failed in sign adding to db with ",e)
        return e
 
 

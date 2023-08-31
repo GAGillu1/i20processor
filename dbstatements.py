@@ -55,7 +55,7 @@ def loginusers():
 
 def selectusers(institutionid):
     dba.connect()
-    query="select userId,fullname,userName,email,salt,hash,active,userRole from users where institutionId=? "
+    query="select userId,fullname,userName,email,salt,hash,active,userRole,institutionId from users where institutionId=? "
     result = dba.execute_query(query,[institutionid])
     if result is not None:
         # Use the result DataFrame as needed.
