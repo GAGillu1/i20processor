@@ -664,18 +664,17 @@ def addsign(user):
    # print(user)
     if request.method=='POST':
         #getting details from the form
-        username=request.form.get('usr')
        # print('username is ',username)
-        fullname=request.form.get('fName')
+        fullname=request.form.get('fullname')
         email=request.form.get('email')
         png_file = request.files['signFile']
         png_filename = png_file.filename
         png_file.save(user+'.png')
-        sign=request.form['aType']
+        sign=request.form['action']
         length=int(request.form.get('length'))
         width=int(request.form.get('width'))
-        xco=int(request.form.get('x-co'))
-        yco=int(request.form.get('y-co'))
+        xco=int(request.form.get('x'))
+        yco=int(request.form.get('y'))
         output_file='i20.pdf'
         institutionid=request.headers.get('institutionid')
         # sample i20 which is saved
