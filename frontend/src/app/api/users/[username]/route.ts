@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "../../../../components/utils/getTokens";
+import { getToken } from "@/components/utils/getTokens";
 
 // -----------------------
 // GET - USER INFO

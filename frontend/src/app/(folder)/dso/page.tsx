@@ -24,7 +24,7 @@ const getFormData = (val: dsoModel) => {
 
 async function postI20(values: dsoModel) {
   console.log(values);
-  const res = await fetch("http://127.0.0.1:8081/dso", {
+  const res = await fetch("/api/dso", {
     method: "POST",
     body: getFormData(values),
   });

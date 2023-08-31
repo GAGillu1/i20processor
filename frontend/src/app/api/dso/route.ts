@@ -1,15 +1,42 @@
-import { NextRequest } from "next/server";
+import { getToken } from "@/components/utils/getTokens";
+import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const headers = new Headers();
-  const token = request.cookies.get("authorization")?.value;
-  if (token) headers.append("authorization", token);
   const body = await request.formData();
 
   const res = await fetch("https://localhost:8081/dso", {
     method: "POST",
     body: body,
-    headers: headers,
+    headers: getToken(request),
   });
   return res;
+}
+
+export async function GET(request: NextRequest) {
+  const res = await fetch("http://127.0.0.1:8081/dso", {
+    headers: getToken(request),
+  });
+
+  switch (res.status) {
+    case 200: {
+      const data = await res.json();
+      return NextResponse.json(
+        {
+          message: "Users fetched successfully",
+          data: data,
+        },
+        { status: 200 }
+      );
+    }
+    case 401: {
+      return NextResponse.json({ message: "Not Authorized!" }, { status: 401 });
+    }
+    default: {
+      return NextResponse.json(
+        { message: "Something went wrong!" },
+        { status: res.status }
+      );
+    }
+  }
 }

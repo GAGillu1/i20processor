@@ -25,5 +25,15 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/notFound", "/i20", "/users", "/dso", "/login", "/profile"],
+  matcher: [
+    "/",
+    "/notFound",
+    "/i20",
+    "/admin",
+    "/admin/users",
+    "/admin/instance",
+    "/dso",
+    "/login",
+    "/profile",
+  ],
 };

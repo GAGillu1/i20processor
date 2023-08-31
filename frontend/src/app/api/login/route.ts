@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     switch (res.status) {
       case 200: {
         res.headers.forEach((e, k) => {
+          console.log("headers", k, e);
           cookieStore.set(k, e, {
             secure: true,
             httpOnly: true,

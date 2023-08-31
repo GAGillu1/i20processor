@@ -63,7 +63,7 @@ const Page = ({
       >
         {
           <section className="p-12 bg-gray-50 max-h-[60%] my-auto rounded-lg w-[90%] font-semibold text-gray-700">
-            <h2 className=" text-5xl py-6">Login</h2>
+            <h2 className="text-5xl py-6">Login</h2>
             <Form className="flex flex-col gap-1">
               <label htmlFor="username">Username</label>
               <Field name="username" placeholder="john12" autoFocus />
