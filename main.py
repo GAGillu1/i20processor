@@ -65,20 +65,20 @@ def event_stream():
         user_status = status_updates.get(user, "")
         yield f"data: {user_status}\n\n"
         time.sleep(1)
-@socketio.on('connect')
-def handle_connect():
-    print('Client connected')
-
-@socketio.on('register')
-def handle_register(data):
-    user = data.get('user')
-    session_id = request.sid
-    connected_clients[user] = session_id
-    print(f'Registered {user} with session ID {session_id}')
-
-@socketio.on('disconnect')
-def handle_disconnect():
-    print('Client disconnected')
+# @socketio.on('connect')
+# def handle_connect():
+#     print('Client connected')
+#
+# @socketio.on('register')
+# def handle_register(data):
+#     user = data.get('user')
+#     session_id = request.sid
+#     connected_clients[user] = session_id
+#     print(f'Registered {user} with session ID {session_id}')
+#
+# @socketio.on('disconnect')
+# def handle_disconnect():
+#     print('Client disconnected')
 
 @app.route('/events')
 def sse():
