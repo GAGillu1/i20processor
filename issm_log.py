@@ -2,7 +2,7 @@ import logging
 import datetime
 import os
 
-log_folder = os.path.join(os.getcwd(),'log')
+log_folder = os.path.join("../../",'log')
 if not os.path.exists(log_folder):
     os.makedirs(log_folder)
 

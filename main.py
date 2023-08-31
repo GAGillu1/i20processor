@@ -42,7 +42,8 @@ import time
 import jwt
 import os
 from flask_cors import CORS
-# import socketio
+import socketio
+
 
 today = datetime.datetime.today()
 date = today.strftime('%Y%m%d')
@@ -53,7 +54,7 @@ cwd = os.getcwd()
 app = Flask(__name__,template_folder='../../',static_folder='../../static')
 CORS(app)
 app.secret_key = secrets.token_bytes(32)
-
+sio=socketio.Client()
 """Default route"""
 @app.route('/')
 def home():
@@ -65,20 +66,20 @@ def event_stream():
         user_status = status_updates.get(user, "")
         yield f"data: {user_status}\n\n"
         time.sleep(1)
-# @socketio.on('connect')
-# def handle_connect():
-#     print('Client connected')
-#
-# @socketio.on('register')
-# def handle_register(data):
-#     user = data.get('user')
-#     session_id = request.sid
-#     connected_clients[user] = session_id
-#     print(f'Registered {user} with session ID {session_id}')
-#
-# @socketio.on('disconnect')
-# def handle_disconnect():
-#     print('Client disconnected')
+@sio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@sio.on('register')
+def handle_register(data):
+    user = data.get('user')
+    session_id = request.sid
+    connected_clients[user] = session_id
+    print(f'Registered {user} with session ID {session_id}')
+
+@sio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
 
 @app.route('/events')
 def sse():
@@ -272,7 +273,7 @@ def upload():
             # Total number of pages in i20
             num_pages = pages(pdf_filename)
             sevid=""
-            # socketio.emit('update', {'status': 'Starting upload process...'}, room=session_id)
+            socketio.emit('update', {'status': 'Starting upload process...'}, room=session_id)
 
             try:
                 status_updates[user] = {"status": "Starting upload process..."}
