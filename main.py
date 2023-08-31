@@ -7,7 +7,7 @@ All the routes are defined in this file
 /i20process -GET: This is for displaying message at end of processing . Messages after each step are taken in and displayed from here
 /login -POST: Route does handle user authentication
 /forgot -POST: This is when user clicks on forgot password
-/getallusers -GET :returns all the users who are registred in this App
+/users -GET :returns all the users who are registred in this App
 /users -POST: This is for new user signup/register
 /users/<string:user> -GET: Returns all the  details of the selected user
 /users/<string:user> -DELETE : Deletes the user
@@ -65,20 +65,20 @@ def event_stream():
         user_status = status_updates.get(user, "")
         yield f"data: {user_status}\n\n"
         time.sleep(1)
-# @socketio.on('connect')
-# def handle_connect():
-#     print('Client connected')
-#
-# @socketio.on('register')
-# def handle_register(data):
-#     user = data.get('user')
-#     session_id = request.sid
-#     connected_clients[user] = session_id
-#     print(f'Registered {user} with session ID {session_id}')
-#
-# @socketio.on('disconnect')
-# def handle_disconnect():
-#     print('Client disconnected')
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@socketio.on('register')
+def handle_register(data):
+    user = data.get('user')
+    session_id = request.sid
+    connected_clients[user] = session_id
+    print(f'Registered {user} with session ID {session_id}')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
 
 @app.route('/events')
 def sse():
@@ -494,7 +494,7 @@ def login():
 function registeruser() is called which is defined in login.py It takes in username, password,email and Role . these are saved in excel  
 At the end it returns the result message and HTTP response 
 """
-@app.route('/users', methods=['POST'])
+@app.route('/users', methods=['POST','GET'])
 
 def register():
     if request.method == 'POST':
@@ -517,6 +517,17 @@ def register():
             return jsonify({'message':'username already registered, Please Login '}, http.HTTPStatus.UNAUTHORIZED)
         else:
             return jsonify({'message':register_result}, http.HTTPStatus.UNAUTHORIZED)
+        """ This route retunes all the users who are registred in app 
+        sending the response in json format
+        Function used is users()"""
+
+    if request.method == 'GET':
+            # fucntion returns all users in ascending order of fullnames
+            institutionid = request.headers.get('institutionid')
+            allusers = users(institutionid)
+            print(type(allusers))
+
+            return jsonify({'message': 'user details fetched', 'data': allusers.to_dict('records')})
 """This is for Forgot password.
 If the username which user entered is in excel we send en email with password to their registred email
 and returns a message as successful if mail is sent. If username is not in excel then message will be invalid data"""
@@ -563,18 +574,7 @@ If Split is selected then a zip file is returned with the all the files split in
  """
 
 
-""" This route retunes all the users who are registred in app 
-sending the response in json format
-Function used is users()"""
-@app.route('/getallusers', methods=['POST', 'GET'])
-def alluser():
-    if request.method=='GET':
-        # fucntion returns all users in ascending order of fullnames
-        institutionid = request.headers.get('institutionid')
-        allusers=users(institutionid)
-        print(type(allusers))
 
-        return jsonify({'message':'user details fetched','data': allusers.to_dict('records')})
 """ This route returns the details of selected user using the function userpopup() .
  Sending in json format """
 @app.route('/users/<string:user>', methods=[ 'GET','DELETE','PUT'])
@@ -583,10 +583,10 @@ def userpop(user):
         #print("In getuser")
         #print(user)
         #institutionid=session['institutionid']
+
         institutionid = request.headers.get('institutionid')
         #print(institutionid)
         if institutionid is not None:
-
             #data=request.get_json()
             # user=data
             # userinformatiomn is populated , all details of user are taken
@@ -595,7 +595,7 @@ def userpop(user):
             username,email,role,fullname=userinf
             #returning json with all details
             issm_log.logger.info(f"Users for particular user fetched {user}")
-            return jsonify({'message':'User details fetched','data':{'name':username,'email':email,'role':role,'fullname':fullname}})
+            return jsonify({'message':'User details fetched','data':{'username':username,'email':email,'role':role,'fullname':fullname}})
         else :
             issm_log.logger.info(f"Users for particular user  not fetched {user}. Institution id is missing ")
             return jsonify({'message':'institution id is missing '})
@@ -701,6 +701,6 @@ def addsign(user):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=8081)
     # loop = asyncio.get_event_loop()
     # loop.run_until_complete(asyncio.ensure_future(app.run()))
