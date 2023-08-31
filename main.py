@@ -42,7 +42,7 @@ import time
 import jwt
 import os
 from flask_cors import CORS
-
+import socketio
 
 today = datetime.datetime.today()
 date = today.strftime('%Y%m%d')
@@ -65,6 +65,20 @@ def event_stream():
         user_status = status_updates.get(user, "")
         yield f"data: {user_status}\n\n"
         time.sleep(1)
+# @socketio.on('connect')
+# def handle_connect():
+#     print('Client connected')
+#
+# @socketio.on('register')
+# def handle_register(data):
+#     user = data.get('user')
+#     session_id = request.sid
+#     connected_clients[user] = session_id
+#     print(f'Registered {user} with session ID {session_id}')
+#
+# @socketio.on('disconnect')
+# def handle_disconnect():
+#     print('Client disconnected')
 
 @app.route('/events')
 def sse():
@@ -81,6 +95,129 @@ def names():
         #list is sent as json format
         return jsonify({'message':'DSO names'}, names)
 
+
+
+    if request.method == 'POST':
+            # Getting details form the form
+            issm_log.logger.info(f"DSO Signature ")
+            pdf_file = request.files['i20File']
+            pdf_filename = pdf_file.filename
+            pdf_file.save(pdf_filename)
+            data = request.form
+            sign = request.form.get('sign')
+            split = request.form.get('split')
+            dso = request.form.get('dsoName')
+            username = session.get('name')
+            status_updates[username] = {"status": "Starting processing..."}
+            #  print(sign,split)
+            # if sign and split are selected then below condition is execcuted
+            if sign == 'on' and split == 'on':
+                # print(" in Both ON")
+                issm_log.logger.info(f"Selected  Signature and Splitting")
+                issm_log.logger.info(f"Received file {pdf_filename} , DSO  {dso}")
+                status_updates[username] = {"status": "Selected to split and add signature"}
+                try:
+                    # getting coordinates of signature and signature file
+                    length, width, xco, yco = sign_details(dso)
+                    signature_file = signaturefile(dso)
+                    output_file = pdf_filename.split(".pdf")[0] + "_signed" + ".pdf"
+                    status_updates[username] = {"status": "Splitting done "}
+                    # signature is added in first page of each i20
+                    result = depi20signature(pdf_filename, signature_file, length, width, xco, yco)
+                    status_updates[username] = {"status": "Signature added "}
+
+                    # add_signature1(pdf_filename, signature_file, output_file, length, width, xco, yco)
+                    # splitting is done to the signature added file
+                    # sevid ,pages= splitting(output_file)
+                    # zipping the output file
+                    zip_filename = 'sign.zip'
+                    with ZipFile(zip_filename, 'w') as zip_file:
+                        for filename in os.listdir('.'):
+                            if filename.endswith('.pdf') and (filename.startswith(
+                                    "N") or filename.startswith(
+                                'F2-N')) and filename != pdf_filename or filename == "index_" + date + ".xlsx" and not filename == "index_" + date + ".txt":
+                                zip_file.write(filename)
+                    response = make_response(send_file(zip_filename, as_attachment=True))
+                    response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
+                    status_updates[username] = {"status": "Files zipped "}
+                    # deleting the files in server which are created
+                    for file_name in os.listdir('.'):
+                        if file_name.endswith('.pdf') or file_name.endswith(
+                                '.xlsx') and file_name != "user.xlsx" and not file_name.startswith(
+                            'signature') and not file_name.endswith('.py'):
+                            os.remove(file_name)
+                    session['signmsg'] = "Signing and Splitting Successful "
+                    issm_log.logger.info("Signing and Splitting Successful ")
+                    msg = f"Signing , Splitting is done and total i20's are {result} "
+                    status_updates[username] = {"status": f"Signing , Splitting is done and total i20's are {result}  "}
+                    # print(msg)
+                    response.status_code = 201
+                    return response
+                except Exception as e:
+                    session['signmsg'] = f"Signing and Splitting failed with error {e}"
+                    status_updates[username] = {"status": f"Signing and Splitting failed with error {e}  "}
+                    issm_log.logger.error(f"Failed in sign=='on' and split== 'on',error{e}")
+            # If only signature is selected  then signature is added and zip file is sent as attachment
+            elif (sign == 'on' and split == None):
+                # print("In sign ON")
+                # print(dso)
+                issm_log.logger.info("Selected sign ")
+                # getting coordinates of signature and signature file
+                length, width, xco, yco = sign_details(dso)
+                signature_file = signaturefile(dso)
+                output_file = pdf_filename.split(".pdf")[0] + "_signed" + ".pdf"
+                status_updates[username] = {"status": f"Add signature selected ..Processing..."}
+
+                try:
+                    issm_log.logger.info("Received for Sign ")
+                    issm_log.logger.info(f"Received file {pdf_filename} , DSO  {dso}")
+                    # signature is added
+                    depensignature(pdf_filename, signature_file, output_file, length, width, xco, yco)
+                    # add_signature1(pdf_filename, signature_file, output_file, length, width, xco, yco)
+                    # print(output_file)
+                    response = make_response(send_file(output_file, as_attachment=True))
+                    session['signmsg'] = "Sign added "
+                    status_updates[username] = {"status": f"Signature added..."}
+                    msg = 'DSO Signature added '
+                    return response
+                except Exception as e:
+                    session['signmsg'] = f"Signing failed with error {e}"
+                    status_updates[username] = {"status": f"Adding signature failed with error {e}"}
+                    issm_log.logger.error(f"Error in sign=='on' and split==None,error {e}")
+            # if only split is selected
+            elif (sign == None and split == 'on'):
+                # print("in split")
+                # print("ELSE")
+                issm_log.logger.info("Splitting selected")
+                status_updates[username] = {"status": f"Splitting selected"}
+                issm_log.logger.info(f"Received file {pdf_filename}")
+                try:
+                    # split the pdf .
+                    sevid = depi20(pdf_filename)
+                    # sevid = splitting(pdf_filename)
+                    # zipping all the files
+                    zip_filename = 'split.zip'
+                    with ZipFile(zip_filename, 'w') as zip_file:
+                        for filename in os.listdir('.'):
+                            if filename.endswith('.pdf') and (filename.startswith(
+                                    "N") or filename.startswith(
+                                'F2-N')) and filename != pdf_filename or filename == "index_" + date + ".xlsx" and not filename == "index_" + date + ".txt":
+                                zip_file.write(filename)
+                    response = make_response(send_file(zip_filename, as_attachment=True))
+                    response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
+                    session['splitmsg'] = "Splitting done "
+                    msg = "Splitting of file done"
+                    status_updates[username] = {"status": f"Splitting selected"}
+                    response.status_code = 201
+
+                    return response
+                except Exception as e:
+                    issm_log.logger.error(f"Error in Splitting , route /upload3 {e}")
+            else:
+                status_updates[username] = {"status": "Nothing selected in DSO Signature"}
+                issm_log.logger.info("Nothing selected in DSO signature")
+                return "Nothing selected in DSO Signature"
+
 """Process the i20 pdf file, issm excel file and slate excel file and 
 retuns a zip format of all individual i20 files and index file
  Firstly we save the files in local  which are selected in front end. Then we will see the total number of pages in i20 file using function pages() which is definedin totalpages.py
@@ -96,6 +233,8 @@ Then all these inidivial i20's and index file are zipped and made a response .
 If the To Slate is slected as yes then the zip file is sent to slate using  post() function which is defined in postToSlate.py and it takes the zip file and whether it is UG or PG
 At the end all these inidividal i20's , zip file and index files are deleted from directory .
 In each step log is recorded   """
+connected_clients = {}
+
 @app.route('/i20process', methods=['POST', 'GET'])
 @token_required
 def upload():
@@ -110,6 +249,7 @@ def upload():
             index_size=None
             missing_records=None
             index_error=None
+            session_id = connected_clients.get(user)
             # issm_log.logger.log_filename=f'response_{timestamp}.log'
             # issm_log.set_new_log_file()
             #gettting the files from request, getting name and saving the file with that name
@@ -132,6 +272,8 @@ def upload():
             # Total number of pages in i20
             num_pages = pages(pdf_filename)
             sevid=""
+            socketio.emit('update', {'status': 'Starting upload process...'}, room=session_id)
+
             try:
                 status_updates[user] = {"status": "Starting upload process..."}
                 #calling sign_details() function and taking all the coordinates
@@ -233,68 +375,69 @@ def upload():
             # print(e)
         except Exception as e:
             issm_log.logger.error(f"Process failed {e}")
+
+
+    if request.method == 'GET':
+            # from the session all the session messages are taken and returned as json
+            TotalPages = session.get('Total_Pages')
+            TotalFiles = session.get('Total_Files')
+            TotalSignatures = session.get('Total_Signatures')
+            zipMessage = session.get('zipmsg')
+            splitFailure = session.get('Split_Failure')
+            indexMessage = session.get('indexmsg')
+            indexSize = session.get('index_size')
+            missingRecords = session.get('missing_records')
+            indexError = session.get('index_error')
+            signMessage = session.get('signmsg')
+            splitMessage = session.get('splitmsg')
+            addSign = session.get('addSign')
+            sevisids = session.get('sevis_id')
+            # print("Sevisids in response/*/*/*",sevisids)
+            user = session.get('name')
+            # print("user in response",user)
+            institution = session.get('institute')
+
+            result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
+            # print("result is ",result)
+            if result is not None:
+                insertprocessed(user, sevisids, institution, str(result))
+            else:
+                result = 0
+                # print("sevis is ",sevisids)
+                # print("institution is ",institution)
+                insertprocessed(user, sevisids, institution, str(result))
+            response_msg = {
+                'Total_Pages': TotalPages,
+                'Total_Files': TotalFiles,
+                'Total_Signatures': TotalSignatures,
+                'zipmsg': zipMessage,
+                'Split_Failure': splitFailure,
+                'indexmsg': indexMessage,
+                'index_size': indexSize,
+                'missing_records': missingRecords,
+                'index_error': indexError,
+                'signmsg': signMessage,
+                'splitmsg': splitMessage,
+                'Add_sign': addSign
+            }
+            issm_log.logger.info(f"Response message at end is {response_msg}")
+            # print(response_msg)
+            session.pop('Total_Pages', None)
+            session.pop('Total_Files', None)
+            session.pop('Total_Signatures', None)
+            session.pop('zipmsg', None)
+            session.pop('Split_Failure', None)
+            session.pop('indexmsg', None)
+            session.pop('index_size', None)
+            session.pop('missing_records', None)
+            session.pop('index_error', None)
+            session.pop('signmsg', None)
+            session.pop('splitmsg', None)
+            session.pop('addSign', None)
+            return jsonify(response_msg)
 """This returns a message to front end after the /i20process route 
 After each step in i2oprocess messages are added to session and those are retrived here and returned"""
-@app.route('/i20process', methods=['GET'])
-def get_upload():
-    if request.method == 'GET':
-        # from the session all the session messages are taken and returned as json
-        TotalPages = session.get('Total_Pages')
-        TotalFiles = session.get('Total_Files')
-        TotalSignatures = session.get('Total_Signatures')
-        zipMessage = session.get('zipmsg')
-        splitFailure = session.get('Split_Failure')
-        indexMessage = session.get('indexmsg')
-        indexSize = session.get('index_size')
-        missingRecords = session.get('missing_records')
-        indexError = session.get('index_error')
-        signMessage=session.get('signmsg')
-        splitMessage=session.get('splitmsg')
-        addSign=session.get('addSign')
-        sevisids=session.get('sevis_id')
-        #print("Sevisids in response/*/*/*",sevisids)
-        user=session.get('name')
-       # print("user in response",user)
-        institution=session.get('institute')
 
-        result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
-        #print("result is ",result)
-        if result is not None:
-            insertprocessed(user, sevisids, institution,str(result))
-        else:
-            result=0
-           # print("sevis is ",sevisids)
-           # print("institution is ",institution)
-            insertprocessed(user, sevisids, institution, str(result))
-        response_msg = {
-            'Total_Pages': TotalPages,
-            'Total_Files':TotalFiles,
-            'Total_Signatures':TotalSignatures,
-            'zipmsg':zipMessage,
-            'Split_Failure':splitFailure,
-            'indexmsg':indexMessage,
-            'index_size':indexSize,
-            'missing_records':missingRecords,
-            'index_error':indexError,
-            'signmsg':signMessage,
-            'splitmsg':splitMessage,
-            'Add_sign':addSign
-        }
-        issm_log.logger.info(f"Response message at end is {response_msg}")
-       # print(response_msg)
-        session.pop('Total_Pages', None)
-        session.pop('Total_Files', None)
-        session.pop('Total_Signatures', None)
-        session.pop('zipmsg', None)
-        session.pop('Split_Failure', None)
-        session.pop('indexmsg', None)
-        session.pop('index_size', None)
-        session.pop('missing_records', None)
-        session.pop('index_error', None)
-        session.pop('signmsg',None)
-        session.pop('splitmsg',None)
-        session.pop('addSign',None)
-        return jsonify(response_msg)
 """Login Handles user authentication 
 This takes username and password . Password is hashed and checked with the hashed value from excel
 This retuns a token, HTTP response and message 
@@ -337,7 +480,9 @@ def login():
             else:
                 if result == http.HTTPStatus.UNAUTHORIZED:
                     issm_log.logger.info(f"Invalid username or password entered by {username}")
-                    return 'Invalid username or password', http.HTTPStatus.UNAUTHORIZED
+
+                    response=make_response({'message': 'Unauthorized user'},http.HTTPStatus.UNAUTHORIZED)
+                    return response
                 else:
                     issm_log.logger.info("Server Error in login route")
                     return 'Internal server error', http.HTTPStatus.INTERNAL_SERVER_ERROR
@@ -349,8 +494,7 @@ def login():
 function registeruser() is called which is defined in login.py It takes in username, password,email and Role . these are saved in excel  
 At the end it returns the result message and HTTP response 
 """
-@app.route('/users', methods=['POST', 'GET'])
-@token_required
+@app.route('/users', methods=['POST'])
 
 def register():
     if request.method == 'POST':
@@ -417,128 +561,8 @@ If Split is selected then a zip file is returned with the all the files split in
  add_signature1() which adds signature to each i20
  splitting() which splits the files into individual i20's 
  """
-@app.route('/dso', methods=['POST', 'GET'])
-@token_required
-def Test():
-    if request.method=='POST':
-        # Getting details form the form
-        issm_log.logger.info(f"DSO Signature ")
-        pdf_file = request.files['i20File']
-        pdf_filename = pdf_file.filename
-        pdf_file.save(pdf_filename)
-        data=request.form
-        sign=request.form.get('sign')
-        split=request.form.get('split')
-        dso=request.form.get('dsoName')
-        username = session.get('name')
-        status_updates[username] = {"status": "Starting processing..."}
-      #  print(sign,split)
-        # if sign and split are selected then below condition is execcuted
-        if sign=='on' and split== 'on':
-           # print(" in Both ON")
-            issm_log.logger.info(f"Selected  Signature and Splitting")
-            issm_log.logger.info(f"Received file {pdf_filename} , DSO  {dso}")
-            status_updates[username] = {"status": "Selected to split and add signature"}
-            try:
-                # getting coordinates of signature and signature file
-                length, width, xco, yco = sign_details(dso)
-                signature_file = signaturefile(dso)
-                output_file = pdf_filename.split(".pdf")[0] + "_signed" + ".pdf"
-                status_updates[username] = {"status": "Splitting done "}
-                # signature is added in first page of each i20
-                result=depi20signature(pdf_filename, signature_file, length, width, xco, yco)
-                status_updates[username] = {"status": "Signature added "}
 
 
-                #add_signature1(pdf_filename, signature_file, output_file, length, width, xco, yco)
-                #splitting is done to the signature added file
-                #sevid ,pages= splitting(output_file)
-                # zipping the output file
-                zip_filename = 'sign.zip'
-                with ZipFile(zip_filename, 'w') as zip_file:
-                    for filename in os.listdir('.'):
-                        if filename.endswith('.pdf') and (filename.startswith(
-                                "N") or filename.startswith('F2-N')) and filename != pdf_filename or filename == "index_" + date + ".xlsx" and not filename == "index_" + date + ".txt":
-                            zip_file.write(filename)
-                response = make_response(send_file(zip_filename, as_attachment=True))
-                response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
-                status_updates[username] = {"status": "Files zipped "}
-                # deleting the files in server which are created
-                for file_name in os.listdir('.'):
-                    if file_name.endswith('.pdf') or file_name.endswith(
-                            '.xlsx') and file_name != "user.xlsx" and not file_name.startswith(
-                            'signature') and not file_name.endswith('.py'):
-                        os.remove(file_name)
-                session['signmsg']="Signing and Splitting Successful "
-                issm_log.logger.info("Signing and Splitting Successful ")
-                msg=f"Signing , Splitting is done and total i20's are {result} "
-                status_updates[username] = {"status": f"Signing , Splitting is done and total i20's are {result}  "}
-               # print(msg)
-                response.status_code=201
-                return response
-            except Exception as e:
-                session['signmsg']=f"Signing and Splitting failed with error {e}"
-                status_updates[username] = {"status": f"Signing and Splitting failed with error {e}  "}
-                issm_log.logger.error(f"Failed in sign=='on' and split== 'on',error{e}")
-        # If only signature is selected  then signature is added and zip file is sent as attachment
-        elif(sign=='on' and split==None):
-           # print("In sign ON")
-            #print(dso)
-            issm_log.logger.info("Selected sign ")
-            #getting coordinates of signature and signature file
-            length, width, xco, yco = sign_details(dso)
-            signature_file = signaturefile(dso)
-            output_file=pdf_filename.split(".pdf")[0]+"_signed"+".pdf"
-            status_updates[username] = {"status": f"Add signature selected ..Processing..."}
-
-            try:
-                issm_log.logger.info("Received for Sign ")
-                issm_log.logger.info(f"Received file {pdf_filename} , DSO  {dso}")
-                # signature is added
-                depensignature(pdf_filename, signature_file,output_file, length, width, xco, yco)
-                #add_signature1(pdf_filename, signature_file, output_file, length, width, xco, yco)
-                #print(output_file)
-                response = make_response(send_file(output_file, as_attachment=True))
-                session['signmsg']="Sign added "
-                status_updates[username] = {"status": f"Signature added..."}
-                msg= 'DSO Signature added '
-                return response
-            except Exception as e:
-                session['signmsg']=f"Signing failed with error {e}"
-                status_updates[username] = {"status": f"Adding signature failed with error {e}"}
-                issm_log.logger.error(f"Error in sign=='on' and split==None,error {e}")
-        # if only split is selected
-        elif (sign == None and split== 'on'):
-            #print("in split")
-            #print("ELSE")
-            issm_log.logger.info("Splitting selected")
-            status_updates[username] = {"status": f"Splitting selected"}
-            issm_log.logger.info(f"Received file {pdf_filename}")
-            try:
-                #split the pdf .
-                sevid=depi20(pdf_filename)
-                #sevid = splitting(pdf_filename)
-                #zipping all the files
-                zip_filename = 'split.zip'
-                with ZipFile(zip_filename, 'w') as zip_file:
-                    for filename in os.listdir('.'):
-                        if filename.endswith('.pdf') and (filename.startswith(
-                                "N") or filename.startswith('F2-N'))and filename != pdf_filename or filename == "index_" + date + ".xlsx" and not  filename == "index_" + date + ".txt":
-                            zip_file.write(filename)
-                response = make_response(send_file(zip_filename, as_attachment=True))
-                response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
-                session['splitmsg']="Splitting done "
-                msg="Splitting of file done"
-                status_updates[username] = {"status": f"Splitting selected"}
-                response.status_code=201
-
-                return response
-            except Exception as e:
-                issm_log.logger.error(f"Error in Splitting , route /upload3 {e}")
-        else:
-            status_updates[username] = {"status": "Nothing selected in DSO Signature"}
-            issm_log.logger.info("Nothing selected in DSO signature")
-            return "Nothing selected in DSO Signature"
 """ This route retunes all the users who are registred in app 
 sending the response in json format
 Function used is users()"""
@@ -553,7 +577,7 @@ def alluser():
         return jsonify({'message':'user details fetched','data': allusers.to_dict('records')})
 """ This route returns the details of selected user using the function userpopup() .
  Sending in json format """
-@app.route('/users/<string:user>', methods=[ 'GET'])
+@app.route('/users/<string:user>', methods=[ 'GET','DELETE','PUT'])
 def userpop(user):
     if request.method=='GET':
         #print("In getuser")
@@ -575,17 +599,26 @@ def userpop(user):
         else :
             issm_log.logger.info(f"Users for particular user  not fetched {user}. Institution id is missing ")
             return jsonify({'message':'institution id is missing '})
-"""Deleting user """
-@app.route('/users/<string:user>',methods=['DELETE'])
-
-def deluser(user):
-    if request.method=='DELETE':
-        #delete user function will delte user and remove form the excel
-        msg=f'Delete user {user}'
-        g=deleteuser(user)
+    """Deleting user """
+    if request.method == 'DELETE':
+        # delete user function will delte user and remove form the excel
+        msg = f'Delete user {user}'
+        g = deleteuser(user)
         issm_log.logger.info(f"Deleted user {user}")
         # message is returned
-        return jsonify({'message':'Deleted user','output':g})
+        return jsonify({'message': 'Deleted user', 'output': g})
+
+    if request.method == 'PUT':
+            # Getting details from the form
+            fullname = request.form.get('fName')
+            email = request.form.get('email')
+            role = request.form.get('role')
+            issm_log.logger.info(f"Update for user with {user}, Fullname :{fullname}. email:{email} and role :{role}")
+            # updating based on the details given it the function userupdate
+            result = userupdate(user, fullname, email, role)
+            issm_log.logger.info(result)
+            return jsonify({'message': 'user updated', 'data': result})
+
 
 """Change Password in Profile dropdown"""
 @app.route('/changePwd/<string:user>',methods=['PUT','POST'])
@@ -619,13 +652,12 @@ def changepwd(user):
                 # if result is not tuple then it has some error and that error message is returned
                 msg=g
                 return jsonify({'message':msg})
-
         else:
             issm_log.logger.info(f"Password and Current passwod are incorrect")
             return "Password and Current passwod are incorrect  "
 
 """Adding new signature"""
-@app.route('/addSign/<string:user>',methods=['GET','POST'])
+@app.route('/addSign/<string:user>',methods=['POST'])
 @token_required
 #
 def addsign(user):
@@ -667,19 +699,6 @@ def addsign(user):
 
 
 """Route to update user in Admin section """
-@app.route('/users/<string:user>',methods=['PUT','POST'])
-@token_required
-def update(user):
-    if request.method=='PUT':
-        #Getting details from the form
-        fullname=request.form.get('fName')
-        email=request.form.get('email')
-        role=request.form.get('role')
-        issm_log.logger.info(f"Update for user with {user}, Fullname :{fullname}. email:{email} and role :{role}")
-        #updating based on the details given it the function userupdate
-        result=userupdate(user,fullname,email,role)
-        issm_log.logger.info(result)
-        return  jsonify({'message':'user updated','data':result})
 
 
 if __name__ == '__main__':
