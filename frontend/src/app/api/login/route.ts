@@ -9,25 +9,32 @@ export async function POST(request: NextRequest) {
   try {
     const res = await fetch("http://127.0.0.1:8081/login", {
       method: "POST",
-      body: "Login Request",
       headers: headers,
     });
 
     const data = await res.json();
     console.log("login data", data);
-    if (!res.ok) throw res;
 
-    res.headers.forEach((e, k) => {
-      console.log("headers", k, e);
-      cookieStore.set(k, e, {
-        secure: true,
-        httpOnly: true,
-        expires: Date.now() + 60 * 60 * 1000,
-      });
-    });
+    switch (res.status) {
+      case 200: {
+        res.headers.forEach((e, k) => {
+          console.log("headers", k, e);
+          cookieStore.set(k, e, {
+            secure: true,
+            httpOnly: true,
+            expires: Date.now() + 60 * 60 * 1000,
+          });
+        });
 
-    return NextResponse.json(data);
+        return NextResponse.json(data);
+      }
+      default:
+        return NextResponse.json(data, { status: res.status });
+    }
   } catch (err: any) {
-    return NextResponse.json(err);
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
   }
 }

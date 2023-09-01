@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 // -----------------------
 // GET - ALL USERS
 export async function GET(request: NextRequest) {
-  const res = await fetch("http://127.0.0.1:8081/getallusers", {
+  const res = await fetch("http://127.0.0.1:8081/users", {
     headers: getToken(request),
     next: { tags: ["userList"] },
   });

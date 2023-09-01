@@ -59,26 +59,29 @@ export const Toggle = ({ ...props }) => {
   const [enabled, setEnabled] = useState(true);
   const searchParams = useSearchParams();
   const usr = searchParams.get("user");
-  const toggleUser = async (usr: string, enabled: boolean) => {
-    const body = { username: usr, status: enabled };
-    const res = await fetch("/api/users", {
-      method: "DELETE",
-      body: JSON.stringify(body),
-    });
-    console.log(res);
-    const data = await res.json();
-    toast.success(data.message);
+  const toggleUser = async () => {
+    try {
+      const body = { username: usr, status: enabled };
+      const res = await fetch("/api/users", {
+        method: "DELETE",
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw res;
+      const data = await res.json();
+      setEnabled(!enabled);
+      toast.success(data.message);
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    }
   };
-  // useEffect(() => {
-  //   if (usr) toggleUser(usr, enabled);
-  // }, [enabled, usr]);
   return (
     <div className="flex items-center justify-end gap-2">
       <label>{enabled ? "Active" : "Inactive"}</label>
       <div className="group ">
         <Switch
           checked={enabled}
-          onChange={setEnabled}
+          onChange={toggleUser}
           className={`${
             enabled
               ? "bg-green-600 group-hover:bg-green-700"

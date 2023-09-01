@@ -47,7 +47,7 @@ export const addSignSchema = Yup.object({
   width: Yup.number()
     // .max(10, "You may only enter upto 10 digits")
     .required("Please enter width"),
-  sign: Yup.mixed().required("Please attach a signature"),
+  signFile: Yup.mixed().required("Please attach a signature"),
   action: Yup.string().required("Please select an action"),
 });
 

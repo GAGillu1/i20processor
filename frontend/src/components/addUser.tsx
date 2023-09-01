@@ -25,7 +25,7 @@ const AddUser = () => {
   };
   return (
     <section>
-      <h1>Add New user</h1>
+      <h2 className="text-center">Add New user</h2>
       <Formik
         initialValues={addUserIV}
         validationSchema={addUserSchema}

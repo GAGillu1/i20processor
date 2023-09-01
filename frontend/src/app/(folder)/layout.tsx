@@ -2,7 +2,6 @@
 import type { Metadata } from "next";
 import NavBar from "@/components/navBar";
 import Header from "@/components/header";
-import { Toaster } from "react-hot-toast";
 import * as React from "react";
 
 export const metadata: Metadata = {
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <React.Fragment>
-      <Toaster />
       <div className="grid grid-cols-6">
         <NavBar />
         <section className="col-span-5 bg-indigo-200 rounded-l-3xl my-3">

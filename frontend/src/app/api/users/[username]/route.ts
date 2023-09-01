@@ -7,26 +7,18 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { username: string } }
 ) {
-  const usr = params.username;
-  const res = await fetch("http://127.0.0.1:8081/users/" + usr, {
-    headers: getToken(request),
-  });
-
-  const data = await res.json();
-  console.log("userInfo", data);
-  switch (res.status) {
-    case 200: {
-      return NextResponse.json(data);
-    }
-    case 401: {
-      return NextResponse.json({ message: "Not Authorized!" }, { status: 401 });
-    }
-    default: {
-      return NextResponse.json(
-        { message: "Something went wrong!" },
-        { status: res.status }
-      );
-    }
+  try {
+    const usr = params.username;
+    const res = await fetch("http://127.0.0.1:8081/users/" + usr, {
+      headers: getToken(request),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (err: any) {
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
   }
 }
 // -----------------------
@@ -43,45 +35,41 @@ export async function PUT(
       body: body,
       headers: getToken(request),
     });
-    if (!res.ok) throw res;
-    return NextResponse.json({
-      message: "User updated successfully",
-      data: res,
-    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
-    return NextResponse.json(err);
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
   }
 }
 // -----------------------
-// GET - ADD SIGN
+// POST - ADD SIGN
 export async function POST(
   request: NextRequest,
   { params }: { params: { username: string } }
 ) {
-  const usr = params.username;
-  const body = await request.formData();
+  try {
+    const usr = params.username;
+    const body = await request.formData();
+    // body.append("password", "password");
+    // console.log("formData", body);
 
-  const res = await fetch("http://127.0.0.1:8081/addSign/" + usr, {
-    method: "POST",
-    body: body,
-    headers: getToken(request),
-  });
+    const res = await fetch("http://127.0.0.1:8081/addSign/" + usr, {
+      method: "POST",
+      body: body,
+      headers: getToken(request),
+    });
 
-  const data = await res.json();
-  console.log("userInfo", data);
-  return res;
-  // switch (res.status) {
-  //   case 200: {
-  //     return NextResponse.json(data);
-  //   }
-  //   case 401: {
-  //     return NextResponse.json({ message: "Not Authorized!" }, { status: 401 });
-  //   }
-  //   default: {
-  //     return NextResponse.json(
-  //       { message: "Something went wrong!" },
-  //       { status: res.status }
-  //     );
-  //   }
-  // }
+    if (res.ok) return res;
+    const data = await res.json();
+    // console.log("userInfo", data);
+    return NextResponse.json(data, { status: res.status });
+  } catch (err: any) {
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
+  }
 }

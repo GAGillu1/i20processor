@@ -35,5 +35,6 @@ export const config = {
     "/dso",
     "/login",
     "/profile",
+    "/logs",
   ],
 };

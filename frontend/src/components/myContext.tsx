@@ -86,6 +86,13 @@ function MyReducer(data: data, action: any) {
         dsoSign: action.data,
       };
     }
+
+    case "userUpdate": {
+      return {
+        ...data,
+        ...action.data,
+      };
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }

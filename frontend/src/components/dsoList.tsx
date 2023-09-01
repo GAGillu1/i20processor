@@ -12,7 +12,7 @@ const DsoList = () => {
   const getDsoList = async () =>
     await fetch("/api/dso")
       .then((res) => res.json())
-      .then(({ data }) => setDsoList(data.names))
+      .then(({ data }) => setDsoList(data))
       .catch((err) => console.log(err));
 
   return (

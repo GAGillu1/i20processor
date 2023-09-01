@@ -8,27 +8,37 @@ import { AddIcon, BackIcon } from "@/assets/myIcons";
 import { FileInput } from "./utils/myInputs";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { signModel, userModel } from "./utils/models";
+import { signModel } from "./utils/models";
 import getFormData from "./utils/getFormData";
 import { toast } from "react-hot-toast";
+import { useState } from "react";
 
 const AddSign = () => {
   const username = useSearchParams()?.get("user");
   const signIV = addSignIV;
+  const [loading, setLoading] = useState(false);
   const addSign = async (values: signModel) => {
-    const res = await fetch("/api/users/" + username, {
-      method: "POST",
-      body: getFormData(values),
-    });
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const downloadLink = document.createElement("a");
-    downloadLink.href = url;
-    downloadLink.setAttribute("download", "i20.pdf");
-    downloadLink.click();
-    window.URL.revokeObjectURL(url);
-    // const data = await res.json();
-    // toast.success(data.message);
+    try {
+      setLoading(true);
+      const res = await fetch("/api/users/" + username, {
+        method: "POST",
+        body: getFormData(values),
+      });
+      if (!res.ok) throw res;
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.setAttribute("download", "i20.pdf");
+      downloadLink.click();
+      window.URL.revokeObjectURL(url);
+      toast.success("Signature Added Successfully!");
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <section>
@@ -85,8 +95,16 @@ const AddSign = () => {
             <ErrorMsg name="action" className="col-span-2 col-start-2" />
             <div className="flex gap-2 items-center justify-end pt-4">
               <button type="submit">
-                <AddIcon />
-                Add Signature
+                <span
+                  className="animate-ping w-2 h-2 bg-indigo-700 rounded-full absolute"
+                  hidden={!loading}
+                />
+                <span
+                  className=" w-2 h-2 bg-indigo-900 rounded-full"
+                  hidden={!loading}
+                />
+                <AddIcon hidden={loading} />
+                {loading ? "Processing" : "Add Signature"}
               </button>
             </div>
           </Form>

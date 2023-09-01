@@ -1,14 +1,13 @@
-import { instanceModel } from "./models";
 export const addUserIV = {
   username: "",
-  fullName: "",
+  fullname: "",
   email: "",
   role: "USER",
 };
 
 export const userInfoIV = {
   username: "",
-  fullName: "",
+  fullname: "",
   email: "",
   role: "",
   signature: "",

@@ -27,7 +27,6 @@ const Page = ({
       setLoading(true);
       const res = await fetch("/api/login", {
         method: "POST",
-        body: "Login Request",
         headers: {
           Authorization:
             "Basic " + btoa(`${values.username}:${values.password}`),

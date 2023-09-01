@@ -11,6 +11,7 @@ import DsoList from "@/components/dsoList";
 import ErrorMsg from "@/components/errorMsg";
 import { toast } from "react-hot-toast";
 import getFormData from "@/components/utils/getFormData";
+import { ProgressBar } from "@/components/utils/progessBar";
 
 async function postI20(values: i20Model) {
   try {
@@ -107,6 +108,7 @@ const Page = () => {
           </section>
         </Formik>
       </section>
+      <ProgressBar />
     </main>
   );
 };

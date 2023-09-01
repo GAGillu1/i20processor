@@ -1,10 +1,9 @@
 "use client";
-import { DsoIcon } from "@/assets/myIcons";
+import { AdminIcon, DsoIcon } from "@/assets/myIcons";
 import { HomeIcon } from "@/assets/myIcons";
 import { I20Icon } from "@/assets/myIcons";
 import { LogoutIcon } from "@/assets/myIcons";
 import { SupportIcon } from "@/assets/myIcons";
-import { UsersIcon } from "@/assets/myIcons";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMyContext, useContextDispatch } from "./myContext";
@@ -49,7 +48,7 @@ const NavBar = () => {
             className={`navLink ${path === "/users" ? "activeNavLink" : ""}`}
             href={"/admin"}
           >
-            <UsersIcon />
+            <AdminIcon />
             Admin
           </Link>
         )}
@@ -64,7 +63,10 @@ const NavBar = () => {
         <Link href={"/support"} className="navLink">
           <SupportIcon /> Support
         </Link>
-        <button className="navLink" onClick={() => logoutUser()}>
+        <button
+          className="font-normal text-slate-500 bg-indigo-50"
+          onClick={() => logoutUser()}
+        >
           <LogoutIcon />
           Logout
         </button>

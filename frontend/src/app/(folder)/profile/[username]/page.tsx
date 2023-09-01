@@ -1,5 +1,6 @@
 "use client";
 import ErrorMsg from "@/components/errorMsg";
+import { useContextDispatch } from "@/components/myContext";
 import getFormData from "@/components/utils/getFormData";
 import { changePwdIV, updateUserIV } from "@/components/utils/initialValues";
 import { changePwdModel, userModel } from "@/components/utils/models";
@@ -15,7 +16,7 @@ const Profile = ({ params }: { params: { username: string } }) => {
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState<userModel>(updateUserIV);
   const usr = params.username;
-
+  const dispatch = useContextDispatch();
   useEffect(() => {
     setLoading(true);
     getUserInfo(usr);
@@ -25,7 +26,7 @@ const Profile = ({ params }: { params: { username: string } }) => {
     await fetch("/api/users/" + usr)
       .then((res) => res.json())
       .then((usrInfo) => {
-        setUserInfo(usrInfo);
+        setUserInfo(usrInfo.data);
         setLoading(false);
       });
   };
@@ -39,6 +40,7 @@ const Profile = ({ params }: { params: { username: string } }) => {
       });
       if (!res.ok) throw res;
       const data = await res.json();
+      dispatch({ type: "userUpdate", action: data.data });
       toast.success(data.message);
     } catch (err: any) {
       const data = await err.json();
