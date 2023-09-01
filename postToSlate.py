@@ -1,6 +1,8 @@
 import requests
 from cryptography.fernet import Fernet
-from dbstatements import selectinstance
+from dbstatements import selectinstance, insertinstance
+from python.src.encryption_decryption import encryptsalt
+
 """Decrypting the password with the key """
 def decrypt(instancetype,universityname):
     result=selectinstance(instancetype, universityname)
@@ -32,4 +34,16 @@ def post(file, instance):
     # Print the response from the client
     return (response.text)
 
+#insertinstance('tesu', 'grad', 'tester', 'testerpwd' ,'A0494CF8-A800-47B7-93DB-0974B04A4568')
+def instanceinsert(url,type,username,password,universityid):
+    try:
+        print("inin i")
+        password=password.encode('utf-8')
+        encrypetedpwd=encryptsalt(password)
+        print(encrypetedpwd)
+        k=insertinstance(url,type,username,encrypetedpwd,universityid)
+        print(k)
+        return 'Instance inserted successfully'
+    except Exception as e:
+        return f"Error in inserting instance {e}"
 

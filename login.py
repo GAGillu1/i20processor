@@ -12,7 +12,9 @@ import dba
 import issm_log
 from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers, updatelogin, activeusers, \
     loginusers
-from sendemail import get_credentials, send_email
+import random
+import string
+from sendemail import get_credentials, send_email, send_email2
 
 # Generate a random integer between 1 and 100
 random_number1 = random.randint(1, 100)
@@ -23,11 +25,19 @@ special_char = random.choice(string.punctuation)
 
 
 
+def generate_random_string(length=12):
+    characters = string.ascii_letters + string.digits  # includes both letters and numbers
+    random_string = ''.join(random.choice(characters) for i in range(length))
+    return random_string
+
+# Generate a 9-character random string
+
 """Below function is for registering user and parameters required are username, password, enail, role and fullname"""
-def registeruser(username,password,email,role,fullname,institutionid):
+def registeruser(username,email,role,fullname,institutionid):
     df = selectusers(institutionid)
     #generating random salt to hash the password
     salt=bcrypt.gensalt()
+    password=generate_random_string()
     stringsalt=salt.decode('utf-8')
     #hashing the password with the generated salt
     password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
@@ -62,6 +72,9 @@ def registeruser(username,password,email,role,fullname,institutionid):
         #     data.to_excel(writer, sheet_name="Sheet1",header=None, startrow=writer.sheets["Sheet1"].max_row,index=False)
         #     return http.HTTPStatus.OK
         data=insertusers(fullname,username,email,role,'University of New Haven',salt,pwd)
+        sender, emailpassword = get_credentials('email')
+        # send email to as password is changed
+        send_email2(sender, emailpassword, email,fullname, username, password)
         return http.HTTPStatus.OK
     #any errors then unauthorized
     else:

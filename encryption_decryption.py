@@ -63,8 +63,8 @@ def decryptsalt(enctext):
 
     print("Decrypted Message:", plaintext.decode('utf-8'))
 
-message='$2b$12$oMKP9mEMle1soKX4OlGC/O'
-message=message.encode('utf-8')
-print(type(message))
-g=encryptsalt(message)
-decryptsalt(g)
+# message='$2b$12$oMKP9mEMle1soKX4OlGC/O'
+# message=message.encode('utf-8')
+# print(type(message))
+# g=encryptsalt(message)
+# decryptsalt(g)

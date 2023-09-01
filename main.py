@@ -35,7 +35,7 @@ import datetime
 import base64
 from datetime import timedelta
 from sendemail import get_credentials, get_emails
-
+from postToSlate import instanceinsert
 from totalpages import pages
 import http
 import time
@@ -482,7 +482,7 @@ def login():
                 if result == http.HTTPStatus.UNAUTHORIZED:
                     issm_log.logger.info(f"Invalid username or password entered by {username}")
 
-                    response=make_response({'message': 'Unauthorized user'},http.HTTPStatus.UNAUTHORIZED)
+                    response=make_response({'message': 'Incorrect username or password'},http.HTTPStatus.UNAUTHORIZED)
                     return response
                 else:
                     issm_log.logger.info("Server Error in login route")
@@ -501,14 +501,13 @@ def register():
     if request.method == 'POST':
         issm_log.logger.info("Signup")
         username= request.form.get('usr')
-        password=request.form.get('pwd')
         email=request.form.get('email')
         fullname=request.form.get('fName')
         role=request.form.get('role')
         institutionid = request.headers.get('institutionid')
         #institutionid=session['institutionid']
         # registering the user with the definition registeruser
-        register_result=registeruser(username,password,email,role,fullname,institutionid)
+        register_result=registeruser(username,email,role,fullname,institutionid)
         # if register is successful then return the messages
         if register_result == http.HTTPStatus.OK:
             issm_log.logger.info(f"Registered Use {username},{role},{email} ")
@@ -698,7 +697,23 @@ def addsign(user):
             return response
 
 
-"""Route to update user in Admin section """
+@app.route('/instance',methods=['POST'])
+def isntance():
+    if request.method=='POST':
+        url=request.form.get('jsonendpoint')
+        type=request.form.get('jsontype')
+        username=request.form.get('username')
+        password=request.form.get('password')
+        institutionid=request.headers.get('institutionid')
+        print(url,type,username,password,institutionid)
+        msg=instanceinsert(url,type,username,password,institutionid)
+        print(msg)
+        if msg=='Instance inserted successfully':
+            return jsonify({'message':'Instance inserted successfully'})
+        else :
+            return jsonify({'message':'Instance insertion failed'})
+
+
 
 
 if __name__ == '__main__':

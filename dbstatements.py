@@ -150,10 +150,10 @@ def insertprocessed(user,msg,institutionid,result):
     dba.execute_query(query,[today,user,msg,institutionid,result])
     dba.close()
 
-def insterinstance(url,msg,username,password,key,universityname):
+def insertinstance(url,msg,username,password,universityid):
     dba.connect()
-    query="insert into instance(instanceUrl,intanceMsg,username,instancePassword,instanceKey,institutionID) values(?,?,?,?,?,(select institutionId from Institutions where institutionName=?))"
-    dba.execute_query(query,[url,msg,username,password,key,universityname])
+    query="insert into instance(jsonendpoint,jsontype,username,instancePassword,institutionID) values(?,?,?,?,?)"
+    dba.execute_query(query,[url,msg,username,password,universityid])
     dba.close()
 
 def selectinstance(instancetype,universityname):

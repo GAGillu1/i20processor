@@ -57,7 +57,41 @@ def send_email(sender, password, recipients,username,pwd):
     smtp_conn.quit()
     print("email sent successfully")
 
+def send_email2(sender, password, recipients,fullname,username,pwd):
+    # create SMTP connection
+    smtp_server = "smtp.office365.com"
+    smtp_port = 587  # or 465 for SSL
+    smtp_conn = smtplib.SMTP(smtp_server, smtp_port)
+    smtp_conn.ehlo()
+    smtp_conn.starttls()
+    smtp_conn.ehlo()
+    smtp_conn.login(sender, password)
 
+    #cc = ["gillu1@unhnewhaven.edu"]
+    #bcc = ["illurugovardhanreddy@gmail.com","gillu1@unhnewhaven.edu"]
+    subject = 'Welcome!!! ISSM Slate '
+    print("recceipents are ", recipients)
+    print(type(recipients))
+    msg = MIMEMultipart()
+    msg['From'] = sender
+    msg['To'] = recipients
+    msg['Subject'] = subject
+    print(subject)
+    if not isinstance(recipients, list):
+        rec = [recipients]
+
+    main_body = " Hello " + fullname + "," + "\n\nThank you for registering in ISSM to Slate. \nUsername is "+username+"\nPassword is  " + pwd + "" \
+                                                                                "\n\nDo not reply to this email this is not a monitored email\nAdmin\nISSM to Slate "
+    print(main_body)
+    print(type(recipients))
+    msg.attach(MIMEText(main_body))
+    rcpt = rec.copy()
+
+    smtp_conn.sendmail(sender, rcpt, msg.as_string())
+
+    smtp_conn.quit()
+    print("email sent successfully")
+    print("email sent successfully")
 def send_email1(sender, password, recipients,i20,inputpdf,tablehtml,cc):
     # create SMTP connection
     smtp_server = "smtp.office365.com"
