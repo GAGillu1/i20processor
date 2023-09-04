@@ -1,7 +1,7 @@
 import requests
 from cryptography.fernet import Fernet
 from dbstatements import selectinstance, insertinstance
-from python.src.encryption_decryption import encryptsalt
+from encryption_decryption import encryptsalt
 
 """Decrypting the password with the key """
 def decrypt(instancetype,universityname):
