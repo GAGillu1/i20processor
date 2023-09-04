@@ -266,6 +266,7 @@ def change_password(username,password,institutionid):
     #df=pd.read_excel('user.xlsx')
     df=selectusers(institutionid)
     try:
+        print("in")
         usernames = (df['userName'].str.lower().values)
         print(type(usernames))
         #if username is equal to then we are changing the value of hash and salt in excel .
