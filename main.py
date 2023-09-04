@@ -500,9 +500,9 @@ At the end it returns the result message and HTTP response
 def register():
     if request.method == 'POST':
         issm_log.logger.info("Signup")
-        username= request.form.get('usr')
+        username= request.form.get('username')
         email=request.form.get('email')
-        fullname=request.form.get('fName')
+        fullname=request.form.get('fullname')
         role=request.form.get('role')
         institutionid = request.headers.get('institutionid')
         #institutionid=session['institutionid']
