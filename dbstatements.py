@@ -126,7 +126,7 @@ def insertsignatures(fullName,userName,email,signatureLength,signatureWidth,sign
     dba.close()
 def updatepass(username,salt,hash):
     dba.connect()
-    query=" update  users set salt=?,hash=? where username=?"
+    query=" update  users set salt=?,hash=? where userName=?"
     dba.execute_query(query,[salt,hash,username])
     dba.close()
 

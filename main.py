@@ -622,20 +622,22 @@ def userpop(user):
 
 """Change Password in Profile dropdown"""
 @app.route('/changePwd/<string:user>',methods=['PUT','POST'])
-@token_required
+
 def changepwd(user):
     if request.method=='PUT':
         #getting all details from the form
         pwd=request.form.get('npwd')
+        print("passwored is ",pwd)
         cPwd=request.form.get('cPwd')
         #institutionid=session['institutionid']
         institutionid = request.headers.get('institutionid')
         username=user
         #print("Password is ",pwd)
         #print(username)
+        print("in in ")
         issm_log.logger.info(f"Received change password for user -{user}")
         #check if password and confirm password are same
-        if pwd==cPwd:
+        if pwd!=cPwd:
             #changepassword function will change password and update in excel
             g=change_password(username,pwd,institutionid)
             #print("g is ",g)
