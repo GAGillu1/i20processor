@@ -34,13 +34,12 @@ const Profile = ({ params }: { params: { username: string } }) => {
   async function updatePwd(values: changePwdModel) {
     try {
       setLoading(true);
-      const res = await fetch("/api/changePwd/" + usr, {
+      const res = await fetch("/api/users/" + usr, {
         method: "PUT",
         body: getFormData(values),
       });
       if (!res.ok) throw res;
       const data = await res.json();
-      dispatch({ type: "userUpdate", action: data.data });
       toast.success(data.message);
     } catch (err: any) {
       const data = await err.json();
@@ -50,7 +49,7 @@ const Profile = ({ params }: { params: { username: string } }) => {
     }
   }
 
-  async function updateUser(values: changePwdModel) {
+  async function updateUser(values: userModel) {
     try {
       setLoading(true);
       const res = await fetch("/api/users/" + usr, {
@@ -59,6 +58,7 @@ const Profile = ({ params }: { params: { username: string } }) => {
       });
       if (!res.ok) throw res;
       const data = await res.json();
+      dispatch({ type: "userUpdate", action: data.data });
       toast.success(data.message);
     } catch (err: any) {
       const data = await err.json();
