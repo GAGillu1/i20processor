@@ -610,7 +610,7 @@ def userpop(user):
 
     if request.method == 'PUT':
             # Getting details from the form
-            fullname = request.form.get('fName')
+            fullname = request.form.get('fullname')
             email = request.form.get('email')
             role = request.form.get('role')
             issm_log.logger.info(f"Update for user with {user}, Fullname :{fullname}. email:{email} and role :{role}")
