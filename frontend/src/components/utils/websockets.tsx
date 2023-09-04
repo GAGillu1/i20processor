@@ -18,7 +18,7 @@
 
 //     newSocket.on("message", (newMessage) => {
 //       console.log("Received message:", newMessage);
-//       setMessages((prevMessages) => [...prevMessages, newMessage]);
+//       setMessage(newMessage);
 //     });
 
 //     setSocket(newSocket);

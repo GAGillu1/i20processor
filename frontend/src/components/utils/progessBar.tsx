@@ -1,5 +1,21 @@
 // Upload > Split > Sign > Zip > Post to slate > Download
 
+const progress = ["1", "1/6", "2/6", "4/6", "5/6", "full"];
+const bannerArr = [
+  "Add Sign:",
+  "Split Failure:",
+  "Total Files:",
+  "Total Pages:",
+  "Total Signatures:",
+  "Index Error:",
+  "Index Size:",
+  "Index Msg:",
+  "Missing Records:",
+  "Sign Message:",
+  "Split Message",
+  "Zip Message:",
+];
+
 const Steps = () => {
   const stepArr = ["Upload", "Split", "Sign", "Zip", "Post"];
   return stepArr.map((step, i) => {
@@ -18,12 +34,18 @@ const Steps = () => {
 export const ProgressBar = () => {
   return (
     <section className="section">
-      <div className="flex justify-between items-center">
-        <Steps />
-      </div>
-      <div className="mt-4 h-2 w-full rounded-full bg-slate-200">
-        <div className="h-2 w-1/6 bg-indigo-400 rounded-full"></div>
+      <div className="w-[90%] mx-auto">
+        <div className="flex justify-between items-center">
+          <Steps />
+        </div>
+        <div className="mt-4 h-2 w-full rounded-full bg-slate-200">
+          <div
+            className={"h-2 bg-indigo-400 rounded-full " + `w-${progress[1]}`}
+          />
+        </div>
       </div>
     </section>
   );
 };
+
+const Response = () => {};
