@@ -541,11 +541,11 @@ def forgotpassword():
         data=request.get_json()
        # print(data)
         #checking if username is in request
-        if data is None or 'usr' not in data:
+        if data is None or 'username' not in data:
             return jsonify({'message': 'Invalid data'}), 400
 
         else:
-            user=data['usr']
+            user=data['username']
             issm_log.logger.info(f"User {user} ")
             # a random password is generated and emailed to user
             res=forgotpassword1(user)
