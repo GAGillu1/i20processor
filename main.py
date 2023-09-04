@@ -533,7 +533,7 @@ If the username which user entered is in excel we send en email with password to
 and returns a message as successful if mail is sent. If username is not in excel then message will be invalid data"""
 @app.route('/forgot', methods=['POST', 'GET'])
 def forgotpassword():
-    if request.method == 'POST':
+    if request.method == 'PUT':
         issm_log.logger.log_filename = f'response_forgot_{timestamp}.log'
         issm_log.set_new_log_file()
 
