@@ -11,7 +11,7 @@ from flask import jsonify
 import dba
 import issm_log
 from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers, updatelogin, activeusers, \
-    loginusers
+    loginusers, userdata
 import random
 import string
 from sendemail import get_credentials, send_email, send_email2
@@ -262,30 +262,47 @@ def token_required(f):
     return decorated
 
 """Definition is to change password for user input paramanetrs are username and new password """
-def change_password(username,password,institutionid):
+def change_password(username,password,current_password,institutionid):
     #df=pd.read_excel('user.xlsx')
     df=selectusers(institutionid)
     try:
         print("in")
         usernames = (df['userName'].str.lower().values)
+        print(usernames)
         print(type(usernames))
         #if username is equal to then we are changing the value of hash and salt in excel .
         if (usernames == username.lower()).any():
-            #pwd=f"{username}{random_number1}{random_number2}{special_char}"
-            pwd=password
-            salt = bcrypt.gensalt()
-            stringsalt = salt.decode('utf-8')
-            password_hash = bcrypt.hashpw(pwd.encode('utf-8'), salt)
-            password = password_hash.decode('utf-8')
-            # df.loc[df['username'] == username, 'hash'] = password
-            # df.loc[df['username'] == username, 'salt'] = stringsalt
-            #
-            email = df.loc[df['userName'] == username,'email'].iloc[0]
-            fullname=df.loc[df['userName'] == username,'fullname'].iloc[0]
+            user_df=df.loc[df['userName']==username]
+            salt=user_df['salt'].values[0]
 
-            #df.to_excel('user.xlsx', index=False)
-            updatepass(username,stringsalt,password_hash)
-            return [email],pwd,fullname
+            print("in salt")
+            password_hash = bcrypt.hashpw(password.encode('utf-8'), salt.encode('utf-8'))
+            stored_hash = user_df['hash'].values[0].encode('utf-8')
+
+
+            if password_hash ==stored_hash:
+                print(password_hash==stored_hash)
+                print("in password hash")
+                #pwd=f"{username}{random_number1}{random_number2}{special_char}"
+                pwd=password
+                salt = bcrypt.gensalt()
+                stringsalt = salt.decode('utf-8')
+                password_hash = bcrypt.hashpw(pwd.encode('utf-8'), salt)
+                password = password_hash.decode('utf-8')
+                # df.loc[df['username'] == username, 'hash'] = password
+                # df.loc[df['username'] == username, 'salt'] = stringsalt
+                #
+                email = df.loc[df['userName'] == username,'email'].iloc[0]
+                fullname=df.loc[df['userName'] == username,'fullname'].iloc[0]
+
+                #df.to_excel('user.xlsx', index=False)
+                updatepass(username,stringsalt,password_hash)
+
+                return [email],pwd,fullname
+
+
+            else:
+                return("Current password doesnt match ")
         else:
             msg=("Not in excel ")
             return msg
@@ -295,14 +312,7 @@ def change_password(username,password,institutionid):
 """This is update user in excel given user,fullname,email,role """
 def userupdate(user,fullname,email,role):
    try:
-       #replace the fullname, email and role with the new ones provided
-        #df=pd.read_excel('user.xlsx')
 
-        # usernames= (df['userName'].str.lower().values)
-        # df.loc[df['userName'] == user, 'fullname'] = fullname
-        # df.loc[df['userName'] == user, 'email'] = email
-        # df.loc[df['userName'] == user, 'userRole'] = role
-        #df.to_excel('user.xlsx',index=False)
         updateuser(user,fullname,email,role)
         return "user updated successfully"
    except Exception as e:
@@ -310,18 +320,10 @@ def userupdate(user,fullname,email,role):
        return e
 
 
-
-
-#g=change_password('GOV','Abcdefg')
-
-
-
-
-
-# g=userpopup('shirdi')
-# print(g)
-
-#
-# g=users()
-# print(type(g))
-# print(g)
+def updateuserdata(user):
+    data = userdata(user)
+    if data is not None :
+        fullname=data['fullname'].values[0]
+        email=data['email'].values[0]
+        userRole=data['userRole'].values[0]
+        return fullname,email,userRole

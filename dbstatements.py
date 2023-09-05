@@ -173,6 +173,18 @@ def updatelogin(user):
     dba.execute_query(query,[today,user])
     dba.close()
 
+def userdata(username):
+    dba.connect()
+    query="select fullname,email,userRole from users where userName=?"
+    result=dba.execute_query(query,[username])
+
+    if result is not None:
+        # Use the result DataFrame as needed.
+
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query.")
+    dba.close()
 
 # def updateactive(user,activeid):
 #     dba.connect()

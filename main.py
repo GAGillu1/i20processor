@@ -28,7 +28,7 @@ from dsodependedntsignature import depensignature
 from dsodependentsignsplit import depi20signature
 from fitzsplit import splitsignature, sign_details
 from login import checklogin, registeruser, forgotpassword1, users, userpopup, change_password, deleteuser, \
-    token_required, userupdate
+    token_required, userupdate,updateuserdata
 from name import names_list, signaturefile, signadd
 from postToSlate import post
 import datetime
@@ -617,8 +617,12 @@ def userpop(user):
             issm_log.logger.info(f"Update for user with {user}, Fullname :{fullname}. email:{email} and role :{role}")
             # updating based on the details given it the function userupdate
             result = userupdate(user, fullname, email, role)
-            issm_log.logger.info(result)
-            return jsonify({'message': 'user updated', 'data': result})
+            if 'successfully'in result:
+                fullname,email,role=updateuserdata(user)
+                issm_log.logger.info(result)
+                return jsonify({'message': 'user updated', 'data': {'fullname':fullname,'email':email,'role':role}})
+            else:
+                return jsonify(({'message':'user couldnt be updated'}))
 
 
 """Change Password in Profile dropdown"""
@@ -639,7 +643,7 @@ def changepwd(user):
         #check if password and confirm password are same
         if pwd!=cPwd:
             #changepassword function will change password and update in excel
-            g=change_password(username,pwd,institutionid)
+            g=change_password(username,pwd,cPwd,institutionid)
             #print("g is ",g)
             # check if the result of fucntion is tuple
             if isinstance(g,tuple):
