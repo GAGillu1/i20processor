@@ -599,7 +599,7 @@ def userpop(user):
             print('userinf is ',userinf)
             #returning json with all details
             issm_log.logger.info(f"Users for particular user fetched {user}")
-            return jsonify({'message':'User details fetched','data':{'username':username,'email':email,'role':role,'fullname':fullname,'active':str(active)}})
+            return jsonify({'message':'User details fetched','data':{'username':username,'email':email,'role':role,'fullname':fullname,'active':bool(active)}})
         else :
             issm_log.logger.info(f"Users for particular user  not fetched {user}. Institution id is missing ")
             return jsonify({'message':'institution id is missing '})
