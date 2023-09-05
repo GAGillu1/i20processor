@@ -617,13 +617,18 @@ def userpop(user):
             fullname = request.form.get('fullname')
             email = request.form.get('email')
             role = request.form.get('role')
+            status=request.form.get('status')
             issm_log.logger.info(f"Update for user with {user}, Fullname :{fullname}. email:{email} and role :{role}")
             # updating based on the details given it the function userupdate
-            result = userupdate(user, fullname, email, role)
+            result = userupdate(user, fullname, email, role,status)
             if 'successfully'in result:
-                fullname,email,role=updateuserdata(user)
-                issm_log.logger.info(result)
-                return jsonify({'message': 'user updated', 'data': {'fullname':fullname,'email':email,'role':role}})
+                fullname,email,role,upstatus=updateuserdata(user)
+                if status!=upstatus:
+                    issm_log.logger.info(result)
+                    return jsonify({'message': 'User Reactivated !!!', 'data': {'fullname':fullname,'email':email,'role':role,'status':bool(upstatus)}})
+                else:
+                    issm_log.logger.info(result)
+                    return jsonify({'message': 'User updated','data': {'fullname': fullname, 'email': email, 'role': role,'status':bool(status)}})
             else:
                 return jsonify(({'message':'user couldnt be updated'}))
 

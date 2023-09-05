@@ -311,10 +311,10 @@ def change_password(username,password,current_password,institutionid):
         print(e)
         return e
 """This is update user in excel given user,fullname,email,role """
-def userupdate(user,fullname,email,role):
+def userupdate(user,fullname,email,role,status):
    try:
 
-        updateuser(user,fullname,email,role)
+        updateuser(user,fullname,email,role,status)
         return "user updated successfully"
    except Exception as e:
 
@@ -327,4 +327,5 @@ def updateuserdata(user):
         fullname=data['fullname'].values[0]
         email=data['email'].values[0]
         userRole=data['userRole'].values[0]
-        return fullname,email,userRole
+        status=data['active'].values[0]
+        return fullname,email,userRole,status
