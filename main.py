@@ -538,29 +538,30 @@ def forgotpassword():
         issm_log.set_new_log_file()
 
         issm_log.logger.info(f"Forgot Password ")
-        data=request.get_json()
+        username=request.form.get('username')
        # print(data)
         #checking if username is in request
-        if data is None or 'username' not in data:
-            return jsonify({'message': 'Invalid data'}), 400
-
-        else:
-            user=data['username']
-            issm_log.logger.info(f"User {user} ")
+        if username :
+            issm_log.logger.info(f"User {username} ")
             # a random password is generated and emailed to user
-            res=forgotpassword1(user)
-            if isinstance(res,tuple):
-                email, passw, username=res
-               # print(email)
+            res = forgotpassword1(username)
+            if isinstance(res, tuple):
+                email, passw, user = res
+                # print(email)
                 sender, password = get_credentials('email')
                 # send email
-                #send_email(sender, password, email, username, passw)
+                # send_email(sender, password, email, user, passw)
                 response_data = {'message': 'Password reset email sent'}
                 issm_log.logger.info(f"Email Sent")
                 return jsonify(response_data), 200
             else:
                 response_data = {'message': 'Username not Registered'}
-                return response_data,http.HTTPStatus.UNAUTHORIZED
+                return response_data, http.HTTPStatus.UNAUTHORIZED
+
+
+        else:
+            return jsonify({'message': 'Invalid data'}), 400
+
 
 """ This routye is for DSO admin for the Adhoc works . 
 user needs to upload a file and select either Split, signature or both .
@@ -634,7 +635,6 @@ def changepwd(user):
         username=user
         #print("Password is ",pwd)
         #print(username)
-        print("in in ")
         issm_log.logger.info(f"Received change password for user -{user}")
         #check if password and confirm password are same
         if pwd!=cPwd:
