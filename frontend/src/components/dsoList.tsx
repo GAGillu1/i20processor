@@ -9,11 +9,17 @@ const DsoList = () => {
     getDsoList();
   }, []);
 
-  const getDsoList = async () =>
-    await fetch("/api/dso")
-      .then((res) => res.json())
-      .then(({ data }) => setDsoList(data))
-      .catch((err) => console.log(err));
+  const getDsoList = async () => {
+    try {
+      const res = await fetch("/api/dso");
+      if (!res.ok) throw res;
+      const data = res.json();
+      setDsoList(data.data);
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(err.message);
+    }
+  };
 
   return (
     <React.Fragment>

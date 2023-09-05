@@ -62,7 +62,7 @@ const UserInfo = () => {
           onSubmit={(values) => updateUser(values)}
         >
           <section>
-            <Toggle />
+            <Toggle status={userInfo.active} />
             <Form>
               <label htmlFor="username">Username</label>
               <Field name="username" className="" readOnly={editable} />

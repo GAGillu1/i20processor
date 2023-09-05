@@ -13,6 +13,7 @@ import {
   FileInput,
   MyCheckBox,
 } from "@/components/utils/myInputs";
+import { toast } from "react-hot-toast";
 
 const getFormData = (val: dsoModel) => {
   let fD = new FormData();
@@ -36,6 +37,7 @@ async function postI20(values: dsoModel) {
   downloadLink.setAttribute("download", "i20.zip");
   downloadLink.click();
   window.URL.revokeObjectURL(url);
+  toast.success("Download Succesful!");
 }
 
 const dsoSchema = Yup.object({
@@ -62,8 +64,8 @@ const Dso = () => {
             <Form className="grid grid-cols-3 gap-y-2 items-center">
               <label>Actions:</label>
               <div className="flex gap-1 items-center">
-                <Field component={DsoCheckBox} name="sig" className="h-full" />
-                <label htmlFor="sig">Signature</label>
+                <Field component={DsoCheckBox} name="sign" className="h-full" />
+                <label htmlFor="sign">Signature</label>
               </div>
               <div className="flex gap-1 items-center">
                 <Field component={MyCheckBox} name="split" />
@@ -71,18 +73,18 @@ const Dso = () => {
               </div>
               {sign && (
                 <React.Fragment>
-                  <label htmlFor="dsoName">DSO:</label>
-                  <Field as="select" name="dsoName" className="col-span-2">
+                  <label htmlFor="dso">DSO:</label>
+                  <Field as="select" name="dso" className="col-span-2">
                     <option value="">Select DSO</option>
                     <DsoList />
                   </Field>
-                  <ErrorMsg name="dsoName" className="col-span-2 col-start-2" />
+                  <ErrorMsg name="dso" className="col-span-2 col-start-2" />
                 </React.Fragment>
               )}
               <label htmlFor="i20File">I20 File:</label>
               <Field
                 component={FileInput}
-                name="i20F ile"
+                name="i20File"
                 accept=".pdf"
                 className="col-span-2"
               />

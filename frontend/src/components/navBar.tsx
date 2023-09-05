@@ -37,7 +37,7 @@ const NavBar = () => {
           Home
         </Link>
         <Link
-          className={`navLink ${path === "/i20" ? "activeNavLink" : ""}`}
+          className={`navLink ${path.includes("/i20") ? "activeNavLink" : ""}`}
           href={"/i20"}
         >
           <I20Icon />
@@ -45,19 +45,23 @@ const NavBar = () => {
         </Link>
         {userData.role === "ADMIN" && (
           <Link
-            className={`navLink ${path === "/users" ? "activeNavLink" : ""}`}
+            className={`navLink ${
+              path.includes("/admin") ? "activeNavLink" : ""
+            }`}
             href={"/admin"}
           >
             <AdminIcon />
             Admin
           </Link>
         )}
-        <Link
-          className={`navLink ${path === "/dso" ? "activeNavLink" : ""}`}
-          href={"/dso"}
-        >
-          <DsoIcon /> DSO
-        </Link>
+        {userData.role !== "USER" && (
+          <Link
+            className={`navLink ${path === "/dso" ? "activeNavLink" : ""}`}
+            href={"/dso"}
+          >
+            <DsoIcon /> DSO
+          </Link>
+        )}
       </div>
       <div>
         <Link href={"/support"} className="navLink">

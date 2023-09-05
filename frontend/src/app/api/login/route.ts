@@ -38,3 +38,22 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// -----------------------
+// PUT - FORGOT PASSWORD
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.formData();
+    const res = await fetch("http://127.0.0.1:8081/forgot", {
+      method: "PUT",
+      body: body,
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (err: any) {
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
+  }
+}

@@ -10,10 +10,10 @@ const Header = () => {
     <section className="w-[95%] mx-auto flex justify-between items-center py-12">
       <div className="">
         <h1 className="text-3xl font-bold tracking-tight text-slate-800">
-          {greeting} {userData.fullname},
+          {greeting}, {userData.fullname}
         </h1>
         <p className="font-semibold text-lg text-slate-600">
-          Welcome to I20 Processor..
+          Welcome to {userData.institutionname} I20 Processor..
         </p>
       </div>
       <Link

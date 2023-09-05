@@ -59,6 +59,7 @@ function MyReducer(data: data, action: any) {
         username: action.action.username,
         fullname: action.action.fullname,
         role: action.action.role,
+        institutionname: action.action.institutionname,
       };
     }
     case "logout": {
@@ -70,7 +71,6 @@ function MyReducer(data: data, action: any) {
         username: "",
         fullname: "",
         role: "",
-        sessionToken: "",
       };
     }
     case "slateInput": {
@@ -88,9 +88,17 @@ function MyReducer(data: data, action: any) {
     }
 
     case "userUpdate": {
+      console.log(action.data);
       return {
         ...data,
-        ...action.data,
+        fullname: action.action.fullname,
+        username: action.action.username,
+      };
+    }
+    case "responseUpdate": {
+      return {
+        ...data,
+        responseData: action.action,
       };
     }
     default: {
@@ -106,6 +114,7 @@ const initialData = {
   loggedIn: false,
   toSlate: "n",
   dsoSign: false,
+  responseData: "",
 };
 
 interface data {
@@ -115,4 +124,5 @@ interface data {
   loggedIn: boolean;
   toSlate: string;
   dsoSign: boolean;
+  responseData: any;
 }

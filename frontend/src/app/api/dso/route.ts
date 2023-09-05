@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.formData();
-    const res = await fetch("https://localhost:8081/dso", {
+    const res = await fetch("http://127.0.0.1:8081/dso", {
       method: "POST",
       body: body,
       headers: getToken(request),

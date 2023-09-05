@@ -5,6 +5,9 @@ import { forgotPwdIV } from "./utils/initialValues";
 import { forgotPwdSchema } from "./utils/valSchemas";
 import ErrorMsg from "./errorMsg";
 import { useRouter } from "next/navigation";
+import getFormData from "./utils/getFormData";
+import { toast } from "react-hot-toast";
+import { userModel } from "./utils/models";
 
 const bannerArr = [
   "Add Sign:",
@@ -24,6 +27,7 @@ const bannerArr = [
 export default function MyModal() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
   // const [response, setResponse] = useState({});
 
   function closeModal() {
@@ -31,6 +35,23 @@ export default function MyModal() {
     setTimeout(() => router.push("/login"), 200);
   }
 
+  async function forgotPwd(values: userModel) {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/login", {
+        method: "PUT",
+        body: getFormData(values),
+      });
+      if (!res.ok) throw res;
+      const data = await res.json();
+      toast.success(data.message);
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    } finally {
+      setLoading(false);
+    }
+  }
   // useEffect(() => {
   //   getResponse();
   // }, []);
@@ -82,7 +103,7 @@ export default function MyModal() {
                     <Formik
                       initialValues={forgotPwdIV}
                       validationSchema={forgotPwdSchema}
-                      onSubmit={(values) => console.log(values)}
+                      onSubmit={(values) => forgotPwd(values)}
                     >
                       <Form>
                         <label htmlFor="username">Username</label>
@@ -94,7 +115,15 @@ export default function MyModal() {
                         />
                         <ErrorMsg name="username" />
                         <button type="submit" className="my-2">
-                          Send My Password
+                          <span
+                            className="animate-ping w-2 h-2 bg-indigo-700 rounded-full absolute"
+                            hidden={!loading}
+                          />
+                          <span
+                            className=" w-2 h-2 bg-indigo-900 rounded-full"
+                            hidden={!loading}
+                          />
+                          {loading ? "Processing" : "Send My Password"}
                         </button>
                       </Form>
                     </Formik>

@@ -1,61 +1,39 @@
-// import { useEffect, useState } from "react";
-// import io from "socket.io-client";
+"use client";
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+import { useContextDispatch, useMyContext } from "../myContext";
 
-// const Chat = () => {
-//   const [message, setMessage] = useState("");
-//   const [messages, setMessages] = useState([]);
-//   const [socket, setSocket] = useState(null);
+export default function Socket() {
+  const socket = io("http://127.0.0.1:8081/socket", { autoConnect: false });
+  const [status, setStatus] = useState("");
+  const data = useMyContext();
+  const dispatch = useContextDispatch();
+  useEffect(() => {
+    function onConnect() {
+      socket.connect();
+    }
 
-//   useEffect(() => {
-//     console.log("Connecting to WebSocket server...");
-//     const newSocket = io("/", {
-//       transports: ["websocket"],
-//     });
+    function onDisconnect() {
+      socket.disconnect();
+    }
 
-//     newSocket.on("connect", () => {
-//       console.log("Connected to WebSocket server");
-//     });
+    function onStatusUpdate(value: string) {
+      dispatch({ type: "statusUpdate", action: value });
+      setStatus(value);
+    }
 
-//     newSocket.on("message", (newMessage) => {
-//       console.log("Received message:", newMessage);
-//       setMessage(newMessage);
-//     });
+    data.role && onConnect();
 
-//     setSocket(newSocket);
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("statusUpdate", onStatusUpdate);
 
-//     // Clean up the socket connection on unmount
-//     return () => {
-//       console.log("Disconnecting from WebSocket server...");
-//       newSocket.disconnect();
-//     };
-//   }, []);
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("statusUpdate", onStatusUpdate);
+    };
+  }, [socket, data.role, dispatch]);
 
-//   const handleMessageSubmit = (e) => {
-//     e.preventDefault();
-//     if (message.trim() && socket) {
-//       socket.emit("message", message);
-//       setMessage("");
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h1>Chat App</h1>
-//       <div>
-//         {messages.map((msg, index) => (
-//           <div key={index}>{msg}</div>
-//         ))}
-//       </div>
-//       <form onSubmit={handleMessageSubmit}>
-//         <input
-//           type="text"
-//           value={message}
-//           onChange={(e) => setMessage(e.target.value)}
-//         />
-//         <button type="submit">Send</button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default Chat;
+  return status;
+}

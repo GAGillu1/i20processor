@@ -34,7 +34,7 @@ const Profile = ({ params }: { params: { username: string } }) => {
   async function updatePwd(values: changePwdModel) {
     try {
       setLoading(true);
-      const res = await fetch("/api/users/" + usr, {
+      const res = await fetch("/api/changePwd/" + usr, {
         method: "PUT",
         body: getFormData(values),
       });
@@ -58,6 +58,7 @@ const Profile = ({ params }: { params: { username: string } }) => {
       });
       if (!res.ok) throw res;
       const data = await res.json();
+      console.log(data);
       dispatch({ type: "userUpdate", action: data.data });
       toast.success(data.message);
     } catch (err: any) {

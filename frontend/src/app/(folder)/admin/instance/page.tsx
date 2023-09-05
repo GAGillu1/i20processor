@@ -20,16 +20,16 @@ const Instance = () => {
             <Form className="grid grid-cols-3 gap-y-2 items-center">
               <label htmlFor="name">Instance Name:</label>
               <Field name="name" className="col-span-2" />
-              <ErrorMsg name="name" />
+              <ErrorMsg name="name" className="col-start-2 col-span-2" />
               <label htmlFor="username">Username:</label>
               <Field name="username" className="col-span-2" />
-              <ErrorMsg name="username" />
+              <ErrorMsg name="username" className="col-start-2 col-span-2" />
               <label htmlFor="password">Password:</label>
               <Field name="password" className="col-span-2" />
-              <ErrorMsg name="password" />
+              <ErrorMsg name="password" className="col-start-2 col-span-2" />
               <label htmlFor="endpoint">JSON Endpoint:</label>
               <Field name="endpoint" className="col-span-2" />
-              <ErrorMsg name="endpoint" />
+              <ErrorMsg name="endpoint" className="col-start-2 col-span-2" />
               <label htmlFor="toSlate"> Transfer File to Slate:</label>
               <Field component={MyInput} name="toSlate" className="col-span-2">
                 <option value="n">No</option>

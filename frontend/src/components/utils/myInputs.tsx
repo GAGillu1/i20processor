@@ -21,7 +21,15 @@ export const MyInput = ({ ...props }) => {
 // -----------------------
 // CHECKBOX FOR FORMIK
 export const MyCheckBox = ({ ...props }) => {
-  return <input type="checkbox" {...props} />;
+  return (
+    <input
+      type="checkbox"
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        props.form.setFieldValue(props.field.name, e.target.value);
+      }}
+      {...props}
+    />
+  );
 };
 // -----------------------
 // DSO CHECKBOX
@@ -56,15 +64,13 @@ export const FileInput = ({ ...props }) => {
 // -----------------------
 // TOGGLE - HEADLESS UI
 export const Toggle = ({ ...props }) => {
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(props.status);
   const searchParams = useSearchParams();
   const usr = searchParams.get("user");
   const toggleUser = async () => {
     try {
-      const body = { username: usr, status: enabled };
-      const res = await fetch("/api/users", {
+      const res = await fetch("/api/users/" + usr, {
         method: "DELETE",
-        body: JSON.stringify(body),
       });
       if (!res.ok) throw res;
       const data = await res.json();
@@ -81,7 +87,7 @@ export const Toggle = ({ ...props }) => {
       <div className="group ">
         <Switch
           checked={enabled}
-          onChange={toggleUser}
+          onChange={() => toggleUser()}
           className={`${
             enabled
               ? "bg-green-600 group-hover:bg-green-700"

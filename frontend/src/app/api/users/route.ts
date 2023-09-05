@@ -51,16 +51,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-// -----------------------
-// DELETE - TOGGLE USER ACTIVE
-export async function DELETE(request: NextRequest) {
-  const res = await fetch("https://127.0.0.1:8081/users", {
-    method: "DELETE",
-    body: request.body,
-    headers: getToken(request),
-  });
-  return NextResponse.json({
-    message: "User deleted successfully",
-    data: res,
-  });
-}

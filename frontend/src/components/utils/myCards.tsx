@@ -3,6 +3,8 @@ import {
   DsoIcon,
   I20Icon,
   InstanceIcon,
+  PostProcessingIcon,
+  PreProcessingIcon,
   UsersIcon,
 } from "@/assets/myIcons";
 import Link from "next/link";
@@ -81,6 +83,34 @@ export const InstanceCard = () => {
     </Link>
   );
 };
+export const PreProcessingCard = () => {
+  return (
+    <Link href={"/i20/pre-processor"}>
+      <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
+        <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
+          <PreProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+        </div>
+        <div className="flex items-center justify-center h-12">
+          <h3 className="font-semibold text-lg ">Pre-processor</h3>
+        </div>
+      </div>
+    </Link>
+  );
+};
+export const PostProcessingCard = () => {
+  return (
+    <Link href={"/i20/post-processor"}>
+      <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
+        <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
+          <PostProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+        </div>
+        <div className="flex items-center justify-center h-12">
+          <h3 className="font-semibold text-lg ">Post-processor</h3>
+        </div>
+      </div>
+    </Link>
+  );
+};
 
 export const InstanceCardLg = () => {
   return (
@@ -112,6 +142,46 @@ export const UsersCardLg = () => {
         </div>
         <div className="col-span-5 bg-white rounded-r-lg p-2">
           <h3 className="text-indigo-900">Users </h3>
+          <p className="pt-2">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt,
+            natus asperiores nostrum perspiciatis voluptate nam similique
+            debitis ut vel, cupiditate eaque ex beatae et quia minima ipsam ea
+            sapiente sequi.
+          </p>
+        </div>
+      </section>
+    </Link>
+  );
+};
+export const PreProcessorCardLg = () => {
+  return (
+    <Link href={"/i20/pre-processor"}>
+      <section className="grid grid-cols-6 rounded-lg hover:scale-105 duration-300">
+        <div className="bg-indigo-50 rounded-l-lg flex items-center justify-center">
+          <PreProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+        </div>
+        <div className="col-span-5 bg-white rounded-r-lg p-2">
+          <h3 className="text-indigo-900">Pre-processor</h3>
+          <p className="pt-2">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt,
+            natus asperiores nostrum perspiciatis voluptate nam similique
+            debitis ut vel, cupiditate eaque ex beatae et quia minima ipsam ea
+            sapiente sequi.
+          </p>
+        </div>
+      </section>
+    </Link>
+  );
+};
+export const PostProcessingCardLg = () => {
+  return (
+    <Link href={"/i20/post-processor"}>
+      <section className="grid grid-cols-6 rounded-lg hover:scale-105 duration-300">
+        <div className="bg-indigo-50 rounded-l-lg flex items-center justify-center">
+          <PostProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+        </div>
+        <div className="col-span-5 bg-white rounded-r-lg p-2">
+          <h3 className="text-indigo-900">Post-processor </h3>
           <p className="pt-2">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt,
             natus asperiores nostrum perspiciatis voluptate nam similique

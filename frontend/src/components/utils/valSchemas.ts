@@ -85,6 +85,23 @@ export const instanceSchema = Yup.object({
     .max(50, "You may only enter upto 50 characters")
     .required("Please enter a Password"),
   endpoint: Yup.string()
-    .required("Please enter a email address")
-    .max(50, "You may only enter upto 50 characters"),
+    .required("Please enter a endpoint address")
+    .max(100, "You may only enter upto 100 characters"),
+});
+
+export const preProcessorSchema = Yup.object({
+  vpnUsername: Yup.string()
+    .max(20, "You may only enter upto 20 characters")
+    .required("Please enter a VPN username"),
+  vpnPassword: Yup.string()
+    .max(50, "You may only enter upto 50 characters")
+    .required("Please enter VPN Password"),
+  issmUsername: Yup.string()
+    .max(20, "You may only enter upto 20 characters")
+    .required("Please enter ISSM Username"),
+  issmPassword: Yup.string()
+    .max(50, "You may only enter upto 50 characters")
+    .required("Please enter ISSM Password"),
+  excelFile: Yup.object().required("Please attach the Excel file"),
+  instance: Yup.string().required("Please select an Instance"),
 });

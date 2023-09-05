@@ -11,6 +11,7 @@ export async function PUT(
     const usr = params.username;
     const body = await request.formData();
     body.delete("cNPwd");
+    console.log("body", body);
     const res = await fetch("http://127.0.0.1:8081/changePwd/" + usr, {
       method: "PUT",
       body: body,
