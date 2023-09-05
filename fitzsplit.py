@@ -7,20 +7,16 @@ from dbstatements import selectsignature
 import os
 cwd=os.getcwd()
 def sign_details(name):
-
     #df = pd.read_excel('signature.xlsx')
     df=selectsignature()
-
     row = df.loc[df['fullName'] == name]
-
     if len(row) == 0:
         raise ValueError(f"No signature details found for name '{name}'")
-
     length = row['signatureLength'].values[0]
     width = row['signatureWidth'].values[0]
     xcoordinate = row['signatureXCordinate'].values[0]
     ycoordinate = row['signatureYCordinate'].values[0]
-
+    print("sign details aree",length,width,xcoordinate,ycoordinate)
     return length, width, xcoordinate, ycoordinate
 """Split signature """
 def splitsignature(pdf_path, signature_path,length,width,xco,yco):
