@@ -42,6 +42,8 @@ import time
 import jwt
 import os
 from flask_cors import CORS
+import shutil
+
 #import socketio
 
 
@@ -95,9 +97,6 @@ def names():
         names = fullnames.tolist()
         #list is sent as json format
         return jsonify({'message':'DSO names fetched successfully', 'data':names})
-
-
-
     if request.method == 'POST':
             # Getting details form the form
             issm_log.logger.info(f"DSO Signature ")
@@ -107,7 +106,7 @@ def names():
             data = request.form
             sign = request.form.get('sign')
             split = request.form.get('split')
-            dso = request.form.get('dsoName')
+            dso = request.form.get('dso')
             username = session.get('name')
             status_updates[username] = {"status": "Starting processing..."}
             #  print(sign,split)
@@ -120,7 +119,10 @@ def names():
                 try:
                     # getting coordinates of signature and signature file
                     length, width, xco, yco = sign_details(dso)
+                    print("dimensions ")
                     signature_file = signaturefile(dso)
+                    signature_file='../../signatures/'+signature_file
+                    print("signature file done ")
                     output_file = pdf_filename.split(".pdf")[0] + "_signed" + ".pdf"
                     status_updates[username] = {"status": "Splitting done "}
                     # signature is added in first page of each i20
@@ -593,10 +595,11 @@ def userpop(user):
             # userinformatiomn is populated , all details of user are taken
             userinf=userpopup(user,institutionid)
             issm_log.logger.info(f"Clicked on user info for user- {user}")
-            username,email,role,fullname=userinf
+            username,email,role,fullname,active=userinf
+            print('userinf is ',userinf)
             #returning json with all details
             issm_log.logger.info(f"Users for particular user fetched {user}")
-            return jsonify({'message':'User details fetched','data':{'username':username,'email':email,'role':role,'fullname':fullname}})
+            return jsonify({'message':'User details fetched','data':{'username':username,'email':email,'role':role,'fullname':fullname,'active':str(active)}})
         else :
             issm_log.logger.info(f"Users for particular user  not fetched {user}. Institution id is missing ")
             return jsonify({'message':'institution id is missing '})
@@ -664,7 +667,7 @@ def changepwd(user):
 
 """Adding new signature"""
 @app.route('/addSign/<string:user>',methods=['POST'])
-@token_required
+
 #
 def addsign(user):
    # print(user)
@@ -696,6 +699,7 @@ def addsign(user):
         elif sign =='upload':
             """Add signature to excel file """
             add_signature1(pdf_filename, user+'.png', output_file, int(length), int(width),int(xco),int(yco))
+            shutil.move(user+'.png','../../signatures/'+user+'.png')
             response = make_response(send_file(output_file, as_attachment=True))
             msg=signadd(user,length,width,xco,yco,institutionid)
             session['addSign']='Signature added to I-20.Updated in Database'

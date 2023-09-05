@@ -238,8 +238,9 @@ def userpopup(user,institutionid):
     role=userdf.iloc[0]['userRole']
     name=userdf.iloc[0]['userName']
     fullname=userdf.iloc[0]['fullname']
+    active=userdf.iloc[0]['active']
 
-    return name,email,role,fullname
+    return name,email,role,fullname,active
 """Below is a wrap function  to check if user has token in the request or not """
 def token_required(f):
     @wraps(f)
