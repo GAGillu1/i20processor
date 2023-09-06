@@ -18,6 +18,8 @@ All the routes are defined in this file
 import secrets
 from zipfile import ZipFile
 from flask import Flask, render_template, request, send_file, make_response, jsonify, Response, session
+from flask_socketio import SocketIO
+
 import issm_log
 from InitialIndex import indexFile, indexFile1
 from addSignature import add_signature1
@@ -30,11 +32,11 @@ from fitzsplit import splitsignature, sign_details
 from login import checklogin, registeruser, forgotpassword1, users, userpopup, change_password, deleteuser, \
     token_required, userupdate,updateuserdata
 from name import names_list, signaturefile, signadd
-from postToSlate import post
+from postToSlate import post, updateinstance
 import datetime
 import base64
 from datetime import timedelta
-from sendemail import get_credentials, get_emails
+from sendemail import get_credentials, get_emails, send_email
 from postToSlate import instanceinsert
 from totalpages import pages
 import http
@@ -56,6 +58,12 @@ cwd = os.getcwd()
 app = Flask(__name__,template_folder='../../',static_folder='../../static')
 CORS(app)
 app.secret_key = secrets.token_bytes(32)
+socketio = SocketIO(app)
+
+@socketio.on('message')
+def handle_message(message):
+    print('Received message:', message)
+    socketio.emit('message', message)
 #sio=socketio.Client()
 """Default route"""
 @app.route('/')
@@ -252,7 +260,7 @@ def upload():
             index_size=None
             missing_records=None
             index_error=None
-            session_id = connected_clients.get(user)
+            #session_id = connected_clients.get(user)
             # issm_log.logger.log_filename=f'response_{timestamp}.log'
             # issm_log.set_new_log_file()
             #gettting the files from request, getting name and saving the file with that name
@@ -275,7 +283,7 @@ def upload():
             # Total number of pages in i20
             num_pages = pages(pdf_filename)
             sevid=""
-            socketio.emit('update', {'status': 'Starting upload process...'}, room=session_id)
+            #socketio.emit('message', {'status': 'Starting upload process...'}, room=session_id)
 
             try:
                 status_updates[user] = {"status": "Starting upload process..."}
@@ -552,7 +560,7 @@ def forgotpassword():
                 # print(email)
                 sender, password = get_credentials('email')
                 # send email
-                # send_email(sender, password, email, user, passw)
+                send_email(sender, password, email, user, passw)
                 response_data = {'message': 'Password reset email sent'}
                 issm_log.logger.info(f"Email Sent")
                 return jsonify(response_data), 200
@@ -712,7 +720,7 @@ def addsign(user):
             return response
 
 
-@app.route('/instance',methods=['POST'])
+@app.route('/instance',methods=['POST','PUT'])
 def isntance():
     if request.method=='POST':
         url=request.form.get('jsonendpoint')
@@ -729,9 +737,15 @@ def isntance():
             return jsonify({'message':'Instance insertion failed'})
 
 
-
+    if request.method=='PUT':
+        type=request.form.get('jsontype')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        institutionid = request.headers.get('institutionid')
+        updateinstance(password,username,institutionid)
 
 if __name__ == '__main__':
     app.run(debug=True,port=8081)
+   # socketio.run(app, debug=True)
     # loop = asyncio.get_event_loop()
     # loop.run_until_complete(asyncio.ensure_future(app.run()))

@@ -47,8 +47,8 @@ def send_email(sender, password, recipients,username,pwd):
         "Content-Type: text/plain",
     ]
 
-    main_body = " Hi " + username + "," + "\n\nYour password is changed to " + pwd + "" \
-                                                                                     "\n\nDo not reply to this email this is not a monitored email box\nAdmin\nISSM to Slate "
+    main_body = " Hi " + username + "," + "\n\nYour new  password is " + pwd + "" \
+                                                                                     "\n\nDo not reply to this email this is not a monitored email\n\n\nAdmin\nISSM to Slate(Mailman) "
     print(main_body)
     msg = "\r\n".join(headers) + "\r\n\r\n" + main_body
     # send email
