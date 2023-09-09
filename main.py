@@ -246,25 +246,25 @@ def upload():
             index_error=None
             print("here")
             #session_id = connected_clients.get(user)
-            # issm_log.logger.log_filename=f'response_{timestamp}.log'
-            # issm_log.set_new_log_file()
+            issm_log.logger.log_filename=f'response_{timestamp}.log'
+            issm_log.set_new_log_file()
             #gettting the files from request, getting name and saving the file with that name
-            # pdf_file = request.files['i20File']
-            # issm_file = request.files['issmFile']
-            # slate_file = request.files['i20File']
-            pdf_file=cwd+'Jun2923Signed.pdf'
-            issm_file='issmExcel (1).xlsx'
-            slate_file='Initial I20 Batch Indexing 20230629-092740.xlsx'
-            print("files okay")
-            pdf_filename='Jun2923Signed.pdf'
-            issm='issmExcel (1).xlsx'
-            slate='Initial I20 Batch Indexing 20230629-092740.xlsx'
-            # pdf_filename = pdf_file.filename
-            # issm = issm_file.filename
-            # slate = slate_file.filename
-            # issm_file.save(issm)
-            # slate_file.save(slate)
-            # pdf_file.save(pdf_filename)
+            pdf_file = request.files['i20File']
+            issm_file = request.files['issmFile']
+            slate_file = request.files['i20File']
+            # pdf_file=cwd+'Jun2923Signed.pdf'
+            # issm_file='issmExcel (1).xlsx'
+            # slate_file='Initial I20 Batch Indexing 20230629-092740.xlsx'
+            # print("files okay")
+            # pdf_filename='Jun2923Signed.pdf'
+            # issm='issmExcel (1).xlsx'
+            # slate='Initial I20 Batch Indexing 20230629-092740.xlsx'
+            pdf_filename = pdf_file.filename
+            issm = issm_file.filename
+            slate = slate_file.filename
+            issm_file.save(issm)
+            slate_file.save(slate)
+            pdf_file.save(pdf_filename)
             name = request.form['dsoName']
             print("dsoname okay ")
             slaterequest=request.form['toSlate']
