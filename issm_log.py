@@ -2,8 +2,14 @@ import logging
 import datetime
 import os
 
-log_folder = os.path.join("../../",'log')
+from dbstatements import getprocessed
+
+cwd=os.getcwd()
+parent_dir = os.path.dirname(cwd)
+log_folder = os.path.join(parent_dir,'log')
+print(log_folder)
 if not os.path.exists(log_folder):
+
     os.makedirs(log_folder)
 
 
@@ -17,3 +23,7 @@ def set_new_log_file():
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+def processedgetter():
+    result=getprocessed()
+    return result
