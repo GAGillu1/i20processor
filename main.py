@@ -251,7 +251,7 @@ def upload():
             #gettting the files from request, getting name and saving the file with that name
             pdf_file = request.files['i20File']
             issm_file = request.files['issmFile']
-            slate_file = request.files['i20File']
+            slate_file = request.files['slateFile']
             # pdf_file=cwd+'Jun2923Signed.pdf'
             # issm_file='issmExcel (1).xlsx'
             # slate_file='Initial I20 Batch Indexing 20230629-092740.xlsx'
