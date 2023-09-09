@@ -30,7 +30,13 @@ def splitsignature(pdf_path, signature_path,length,width,xco,yco):
                 #initiating count and incrementing it in loop so we get total number of signs added
                 count=0
                 #opening signature image
-                signature_image = fitz.Pixmap(signature_path)
+                print("signature path is ",signature_path)
+                #signaturepath="../../"+signature_path
+                signaturepath = os.path.abspath(os.path.join(os.path.dirname(pdf_path), '../../signatures', signature_path))
+
+                print("signature path is ",signaturepath)
+                signature_image = fitz.Pixmap(signaturepath)
+                print("signature apth is okay ")
                 signature_image.dpi = (50, 50)
                 for i in range(total_pages):
                     if i % 3 == 0:
@@ -64,6 +70,6 @@ def splitsignature(pdf_path, signature_path,length,width,xco,yco):
 
 
 
-#sevid,totalpages,totalsigns=splitsignature('i20.pdf', 'klopez.png', 152, 50, 90, 190)
+#sevid,totalpages,totalsigns=splitsignature('Jun2923Signed.pdf', 'Gov.png', 152, 50, 90, 190)
 # print(sevid,totalpages,totalsigns)
 

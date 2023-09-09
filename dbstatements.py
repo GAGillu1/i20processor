@@ -143,11 +143,11 @@ def updatesignature(username,fullname,email,signaturelength,signaturewidth,signa
     dba.execute_query(query,[fullname,email,signaturelength,signaturewidth,signaturexcordinate,signatureycordinate,username])
     dba.close()
 
-def insertprocessed(user,msg,institutionid,result):
+def insertprocessed(user,msg,institutionid,result,processor):
     dba.connect()
     print(msg)
-    query="insert into processed(processedDate,processedBy,processedMsg,institutionId,result) values(?,?,?,?,?)"
-    dba.execute_query(query,[today,user,msg,institutionid,result])
+    query="insert into processed(processedDate,processedBy,processedMsg,institutionId,result,processor) values(?,?,?,?,?,?)"
+    dba.execute_query(query,[today,user,msg,institutionid,result,processor])
     dba.close()
 
 def insertinstance(url,msg,username,password,universityid):
@@ -225,11 +225,23 @@ def updateactive(user, activeid):
 
 #updateactive("GOV", 1)
 
+def getprocessed():
+    dba.connect()
+    query='select processedDate, processedBy, processedMsg,result,processer from processed'
+    result=dba.execute_query(query)
+    if result is not None:
+        # Use the result DataFrame as needed.
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query.")
+    dba.close()
+
+
 def updateinstancedb(password,username,institutionid):
     dba.connect()
     query="update instance set instancepassword =? ,username=? where institutionID=?"
     dba.execute_query(query,[password,username,institutionid])
-    dba.close()
+
 
 
 

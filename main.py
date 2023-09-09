@@ -46,6 +46,7 @@ import os
 from flask_cors import CORS
 import shutil
 
+
 #import socketio
 
 
@@ -58,24 +59,24 @@ cwd = os.getcwd()
 app = Flask(__name__,template_folder='../../',static_folder='../../static')
 CORS(app)
 app.secret_key = secrets.token_bytes(32)
-socketio = SocketIO(app)
+#socketio = SocketIO(app)
+socketio = SocketIO(app,cors_allowed_origins="*",logger=True, engineio_logger=True)
 
-@socketio.on('message')
-def handle_message(message):
-    print('Received message:', message)
-    socketio.emit('message', message)
+
 #sio=socketio.Client()
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
 """Default route"""
 @app.route('/')
 def home():
     return render_template('issm.html')
-status_updates = {}
-def event_stream():
-    user = session.get('name')
-    while True:
-        user_status = status_updates.get(user, "")
-        yield f"data: {user_status}\n\n"
-        time.sleep(1)
+
+
 # @sio.on('connect')
 # def handle_connect():
 #     print('Client connected')
@@ -87,13 +88,9 @@ def event_stream():
 #     connected_clients[user] = session_id
 #     print(f'Registered {user} with session ID {session_id}')
 #
-# @sio.on('disconnect')
-# def handle_disconnect():
-#     print('Client disconnected')
 
-@app.route('/events')
-def sse():
-    return Response(event_stream(), content_type='text/event-stream')
+
+
 """Displays all the names of DSO .
 Gets all the names from names_list() function which is defined in name.py .
 Returns all the names in json format to frontend """
@@ -116,14 +113,12 @@ def names():
             split = request.form.get('split')
             dso = request.form.get('dso')
             username = session.get('name')
-            status_updates[username] = {"status": "Starting processing..."}
             #  print(sign,split)
             # if sign and split are selected then below condition is execcuted
             if sign == 'on' and split == 'on':
                 # print(" in Both ON")
                 issm_log.logger.info(f"Selected  Signature and Splitting")
                 issm_log.logger.info(f"Received file {pdf_filename} , DSO  {dso}")
-                status_updates[username] = {"status": "Selected to split and add signature"}
                 try:
                     # getting coordinates of signature and signature file
                     length, width, xco, yco = sign_details(dso)
@@ -132,10 +127,8 @@ def names():
                     signature_file='../../signatures/'+signature_file
                     print("signature file done ")
                     output_file = pdf_filename.split(".pdf")[0] + "_signed" + ".pdf"
-                    status_updates[username] = {"status": "Splitting done "}
                     # signature is added in first page of each i20
                     result = depi20signature(pdf_filename, signature_file, length, width, xco, yco)
-                    status_updates[username] = {"status": "Signature added "}
 
                     # add_signature1(pdf_filename, signature_file, output_file, length, width, xco, yco)
                     # splitting is done to the signature added file
@@ -150,7 +143,6 @@ def names():
                                 zip_file.write(filename)
                     response = make_response(send_file(zip_filename, as_attachment=True))
                     response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
-                    status_updates[username] = {"status": "Files zipped "}
                     # deleting the files in server which are created
                     for file_name in os.listdir('.'):
                         if file_name.endswith('.pdf') or file_name.endswith(
@@ -160,13 +152,11 @@ def names():
                     session['signmsg'] = "Signing and Splitting Successful "
                     issm_log.logger.info("Signing and Splitting Successful ")
                     msg = f"Signing , Splitting is done and total i20's are {result} "
-                    status_updates[username] = {"status": f"Signing , Splitting is done and total i20's are {result}  "}
                     # print(msg)
                     response.status_code = 201
                     return response
                 except Exception as e:
                     session['signmsg'] = f"Signing and Splitting failed with error {e}"
-                    status_updates[username] = {"status": f"Signing and Splitting failed with error {e}  "}
                     issm_log.logger.error(f"Failed in sign=='on' and split== 'on',error{e}")
             # If only signature is selected  then signature is added and zip file is sent as attachment
             elif (sign == 'on' and split == None):
@@ -177,7 +167,6 @@ def names():
                 length, width, xco, yco = sign_details(dso)
                 signature_file = signaturefile(dso)
                 output_file = pdf_filename.split(".pdf")[0] + "_signed" + ".pdf"
-                status_updates[username] = {"status": f"Add signature selected ..Processing..."}
 
                 try:
                     issm_log.logger.info("Received for Sign ")
@@ -188,19 +177,16 @@ def names():
                     # print(output_file)
                     response = make_response(send_file(output_file, as_attachment=True))
                     session['signmsg'] = "Sign added "
-                    status_updates[username] = {"status": f"Signature added..."}
                     msg = 'DSO Signature added '
                     return response
                 except Exception as e:
                     session['signmsg'] = f"Signing failed with error {e}"
-                    status_updates[username] = {"status": f"Adding signature failed with error {e}"}
                     issm_log.logger.error(f"Error in sign=='on' and split==None,error {e}")
             # if only split is selected
             elif (sign == None and split == 'on'):
                 # print("in split")
                 # print("ELSE")
                 issm_log.logger.info("Splitting selected")
-                status_updates[username] = {"status": f"Splitting selected"}
                 issm_log.logger.info(f"Received file {pdf_filename}")
                 try:
                     # split the pdf .
@@ -218,14 +204,12 @@ def names():
                     response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
                     session['splitmsg'] = "Splitting done "
                     msg = "Splitting of file done"
-                    status_updates[username] = {"status": f"Splitting selected"}
                     response.status_code = 201
 
                     return response
                 except Exception as e:
                     issm_log.logger.error(f"Error in Splitting , route /upload3 {e}")
             else:
-                status_updates[username] = {"status": "Nothing selected in DSO Signature"}
                 issm_log.logger.info("Nothing selected in DSO signature")
                 return "Nothing selected in DSO Signature"
 
@@ -247,7 +231,7 @@ In each step log is recorded   """
 connected_clients = {}
 
 @app.route('/i20process', methods=['POST', 'GET'])
-@token_required
+
 def upload():
     if request.method == 'POST':
         try:
@@ -260,43 +244,55 @@ def upload():
             index_size=None
             missing_records=None
             index_error=None
+            print("here")
             #session_id = connected_clients.get(user)
             # issm_log.logger.log_filename=f'response_{timestamp}.log'
             # issm_log.set_new_log_file()
             #gettting the files from request, getting name and saving the file with that name
-            pdf_file = request.files['i20File']
-            issm_file = request.files['issmFile']
-            slate_file = request.files['slateFile']
-            pdf_filename = pdf_file.filename
-            issm = issm_file.filename
-            slate = slate_file.filename
-            issm_file.save(issm)
-            slate_file.save(slate)
-            pdf_file.save(pdf_filename)
+            # pdf_file = request.files['i20File']
+            # issm_file = request.files['issmFile']
+            # slate_file = request.files['i20File']
+            pdf_file=cwd+'Jun2923Signed.pdf'
+            issm_file='issmExcel (1).xlsx'
+            slate_file='Initial I20 Batch Indexing 20230629-092740.xlsx'
+            print("files okay")
+            pdf_filename='Jun2923Signed.pdf'
+            issm='issmExcel (1).xlsx'
+            slate='Initial I20 Batch Indexing 20230629-092740.xlsx'
+            # pdf_filename = pdf_file.filename
+            # issm = issm_file.filename
+            # slate = slate_file.filename
+            # issm_file.save(issm)
+            # slate_file.save(slate)
+            # pdf_file.save(pdf_filename)
             name = request.form['dsoName']
+            print("dsoname okay ")
             slaterequest=request.form['toSlate']
             i20type=request.form['i20Type']
+            print("okay till i20type")
+
             user=session.get('name')
-            status_updates[user] = {"status": "Starting processing..."}
             issm_log.logger.info(f"User logged in  :{user}")
             issm_log.logger.info(f"Intial I20. Received post request with files :{pdf_filename,issm,slate}")
             # Total number of pages in i20
+            print("starting process")
             num_pages = pages(pdf_filename)
+
+            print("in")
             sevid=""
-            #socketio.emit('message', {'status': 'Starting upload process...'}, room=session_id)
+            socketio.emit('rom', {'message': 'Starting upload process'})
 
             try:
-                status_updates[user] = {"status": "Starting upload process..."}
                 #calling sign_details() function and taking all the coordinates
                 length, width, xcoordinate, ycoordinate = sign_details(name)
                 #Getting signature file name
                 signature_file = signaturefile(name)
                 # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
                 sevid,totalpages,totalsigns=splitsignature(pdf_filename, signature_file, length, width, xcoordinate, ycoordinate)
+                socketio.emit('rom',{'message':'signature and split done'})
                 #sevid, totalpagessplit = splitting(pdf_filename)
                 totalpagessplit = totalpages / 3
                 numberoffiles = totalpagessplit
-                status_updates[user]["status"] = "Signature and Splitting done "
                 # Storing total pages, total files afte splitting , total signatures added to session
                 session['Total_Pages']=f"{num_pages}"
                 session['Total_Files']=f"{int(numberoffiles)}"
@@ -304,7 +300,6 @@ def upload():
                 session['sevis_id']=f"{sevid}"
                 issm_log.logger.info(f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
             except Exception as e:
-                status_updates[user]["status"] = f"Failed during adding signature and splitting {e} "
                 session['Split_Failure']=f"Splitting of file is failed {e}"
                 issm_log.logger.error(f"Splitting of file is failed {e}")
             try:
@@ -312,6 +307,7 @@ def upload():
                # print(sevid,issm,slate)
                 if i20type=='initI20':
                     result=indexFile(sevid, issm)
+
                 #if i20type is continued i20 then index file1 is called for creating index file
                 elif(i20type=='contdI20'):
                     result=indexFile1(sevid, issm)
@@ -322,9 +318,9 @@ def upload():
                     sizeOfIndexfile, missing,tablehtml=result
                     issm_log.logger.info(f"Index file created successfully and size is {sizeOfIndexfile}.Record not included in Index but is in ISSM/Slate {missing}")
                     session["index_size"] = f"{sizeOfIndexfile}"
+                    socketio.emit('rom', {'status': 'Index file created'})
                     session["missing_records"] = f"{missing}"
                     #print("Size of index file is ",sizeOfIndexfile)
-                    status_updates[user]["status"] = "Index file created "
                     if missing :
                         sender, password = get_credentials('email')
                         email,cc=get_emails('emails')
@@ -337,12 +333,10 @@ def upload():
                    # print("Result",result)
                     msg=result
                     session["index_error"] = f"Index file creation failed {msg}"
-                    status_updates[user]["status"] = f"Index file creation failed {msg} "
                     issm_log.logger.error(f"Index file creation failed {msg}")
                 #sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
             except Exception as e:
                 session["index_error"]=f"Index file creation failed {e}"
-                status_updates[user]["status"] = f"Index file creation failed {e} "
                 issm_log.logger.error(f"Index file creation failed {e}")
 
             try:
@@ -356,7 +350,7 @@ def upload():
                 response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
                 response.headers['Content-Type'] = 'application/zip'
                 issm_log.logger.info("Files Zipped")
-                status_updates[user]["status"] = f"Files Zipped "
+                socketio.emit('rom', {'status': 'Zipping done'})
                 session['zipmsg'] = "Success"
                 #if slate request is yes then depending on program the post function is called
                 if slaterequest=='y':
@@ -364,18 +358,17 @@ def upload():
                     if stream=='g':
                         output=post(zip_filename, 'GR')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
-                        status_updates[user]["status"] = f"Sent to slate  Grad instance "
+                        socketio.emit('rom', {'status': 'Sent to slate Grad'})
                         #print(output)
                     else:
                        # print("goign to UG")
                         output=post(zip_filename, 'UG')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
-                        status_updates[user]["status"] = f"Sent to slate Under Grad Instance "
+                        socketio.emit('rom', {'status': 'sent to slate'})
                        # print(output)
             except Exception as e:
                 session['zipmsg']=f"Files Zipping failed {e}"
                 issm_log.logger.error(f"Files Zipping failed {e}")
-                status_updates[user]["status"] = f"Files Zipping failed "
             remove_files()
             time.sleep(60)
             try:
@@ -411,7 +404,7 @@ def upload():
             result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
             # print("result is ",result)
             if result is not None:
-                insertprocessed(user, sevisids, institution, str(result))
+                insertprocessed(user, sevisids, institution, str(result),processor='ISSM toSlate')
             else:
                 result = 0
                 # print("sevis is ",sevisids)
@@ -496,7 +489,9 @@ def login():
                     return response
                 else:
                     issm_log.logger.info("Server Error in login route")
-                    return 'Internal server error', http.HTTPStatus.INTERNAL_SERVER_ERROR
+                    response = make_response({'message': 'Server Error'},
+                                             http.HTTPStatus.UNAUTHORIZED)
+                    return response
 
         except Exception as e:
               issm_log.logger.error(f"Process failed {e}")
@@ -557,6 +552,7 @@ def forgotpassword():
             res = forgotpassword1(username)
             if isinstance(res, tuple):
                 email, passw, user = res
+                socketio.emit('rom',{'message':'changed password '})
                 # print(email)
                 sender, password = get_credentials('email')
                 # send email
@@ -744,8 +740,19 @@ def isntance():
         institutionid = request.headers.get('institutionid')
         updateinstance(password,username,institutionid)
 
+@app.route('/log',methods=['GET'])
+def processed():
+    if request.method=='GET':
+        result= issm_log.processedgetter()
+        result_dict = result.to_dict(orient='records')
+
+        return jsonify({'data':'logged fetched','result':result_dict})
+
+
+
+
 if __name__ == '__main__':
-    app.run(debug=True,port=8081)
-   # socketio.run(app, debug=True)
+    #app.run(debug=True,port=8081)
+    socketio.run(app, debug=True,port=8081)
     # loop = asyncio.get_event_loop()
     # loop.run_until_complete(asyncio.ensure_future(app.run()))
