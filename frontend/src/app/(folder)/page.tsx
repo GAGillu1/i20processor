@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  AdminCard,
-  DsoCard,
-  I20Card,
+  AddInstanceCard,
+  AddUserCard,
   InstanceCard,
+  LogsCard,
   PostProcessingCard,
   PreProcessingCard,
   UsersCard,
@@ -15,13 +15,17 @@ const Home = () => {
     <main className="w-[95%] mx-auto">
       <h2>The power tools</h2>
       <section className="w-[80%] mx-auto flex justify-around my-6 flex-wrap gap-4">
-        <I20Card />
         <PreProcessingCard />
         <PostProcessingCard />
-        <AdminCard />
-        <DsoCard />
         <UsersCard />
         <InstanceCard />
+      </section>
+      <div className="my-4" />
+      <h2>Quick Links</h2>
+      <section className="w-[80%] mx-auto flex justify-around my-6 flex-wrap gap-4">
+        <LogsCard />
+        <AddUserCard />
+        <AddInstanceCard />
       </section>
     </main>
   );

@@ -13,11 +13,11 @@ const DsoList = () => {
     try {
       const res = await fetch("/api/dso");
       if (!res.ok) throw res;
-      const data = res.json();
-      setDsoList(data.data);
+      const { data } = await res.json();
+      setDsoList(data);
     } catch (err: any) {
       const data = await err.json();
-      toast.error(err.message);
+      toast.error(data.message);
     }
   };
 

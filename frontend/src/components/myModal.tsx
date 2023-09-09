@@ -45,6 +45,7 @@ export default function MyModal() {
       if (!res.ok) throw res;
       const data = await res.json();
       toast.success(data.message);
+      router.push("/login");
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);
@@ -123,7 +124,7 @@ export default function MyModal() {
                             className=" w-2 h-2 bg-indigo-900 rounded-full"
                             hidden={!loading}
                           />
-                          {loading ? "Processing" : "Send My Password"}
+                          {loading ? "Sending" : "Send My Password"}
                         </button>
                       </Form>
                     </Formik>

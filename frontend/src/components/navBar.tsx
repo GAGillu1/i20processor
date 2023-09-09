@@ -16,6 +16,7 @@ const NavBar = () => {
   const router = useRouter();
 
   async function logoutUser() {
+    dispatch({ type: "logout" });
     await fetch("/api/logout");
     toast.success("Logout Successful!");
     router.push("/login");

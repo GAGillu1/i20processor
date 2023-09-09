@@ -9,7 +9,8 @@ import { useContextDispatch } from "@/components/myContext";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import MyModal from "@/components/myModal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { MySubmit } from "@/components/utils/myInputs";
 
 const Page = ({
   searchParams,
@@ -77,17 +78,12 @@ const Page = ({
                 >
                   Forgot Password?
                 </Link>
-                <button type="submit">
-                  <span
-                    className="animate-ping w-2 h-2 bg-indigo-700 rounded-full absolute"
-                    hidden={!loading}
-                  />
-                  <span
-                    className=" w-2 h-2 bg-indigo-900 rounded-full"
-                    hidden={!loading}
-                  />
-                  {loading ? "Processing" : "Login"}
-                </button>
+
+                <MySubmit
+                  loading={loading}
+                  loadingMsg="Processing"
+                  action="Login"
+                />
               </div>
             </Form>
           </section>

@@ -75,7 +75,7 @@ export const changePwdSchema = Yup.object({
 });
 
 export const instanceSchema = Yup.object({
-  name: Yup.string()
+  type: Yup.string()
     .max(20, "You may only enter upto 20 characters")
     .required("Please enter a Instance name"),
   username: Yup.string()
@@ -84,9 +84,7 @@ export const instanceSchema = Yup.object({
   password: Yup.string()
     .max(50, "You may only enter upto 50 characters")
     .required("Please enter a Password"),
-  endpoint: Yup.string()
-    .required("Please enter a endpoint address")
-    .max(100, "You may only enter upto 100 characters"),
+  endpoint: Yup.string().required("Please enter a endpoint address"),
 });
 
 export const preProcessorSchema = Yup.object({

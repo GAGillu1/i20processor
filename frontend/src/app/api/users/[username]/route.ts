@@ -13,6 +13,7 @@ export async function GET(
       headers: getToken(request),
     });
     const data = await res.json();
+    console.log("user details", data);
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     return NextResponse.json(

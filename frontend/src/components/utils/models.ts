@@ -55,11 +55,10 @@ export interface apiModel {
 }
 
 export interface instanceModel {
-  name: string;
+  type: string;
   username?: string;
   password?: string;
   endpoint?: string;
-  toSlate?: string;
 }
 
 export interface preProcessorModel {
@@ -69,4 +68,12 @@ export interface preProcessorModel {
   issmPassword: string;
   excelFile: any;
   instance: string;
+}
+
+export interface logModel {
+  date: string;
+  processedBy: string;
+  message: string;
+  result: string;
+  system: string;
 }

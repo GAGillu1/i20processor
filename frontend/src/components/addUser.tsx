@@ -7,9 +7,14 @@ import { addUserIV } from "./utils/initialValues";
 import { userModel } from "./utils/models";
 import { toast } from "react-hot-toast";
 import getFormData from "./utils/getFormData";
+import { MySubmit } from "./utils/myInputs";
+import { useState } from "react";
+
 const AddUser = () => {
+  const [loading, setLoading] = useState(false);
   const addUser = async (values: userModel) => {
     try {
+      setLoading(true);
       const res = await fetch("/api/users", {
         method: "POST",
         body: getFormData(values),
@@ -21,6 +26,8 @@ const AddUser = () => {
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -57,7 +64,11 @@ const AddUser = () => {
 
             <ErrorMsg name="role" className="col-span-2 col-start-2" />
             <div className="flex items-center justify-end  pt-2">
-              <button type="submit">Register</button>
+              <MySubmit
+                loading={loading}
+                loadingMsg="Adding"
+                action="Register"
+              />
             </div>
           </Form>
         </section>

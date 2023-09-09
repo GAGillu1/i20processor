@@ -1,59 +1,63 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-// const userData = ["username", "fullname", "role", "authorization"];
+const basePath = process.env.BASE_PATH;
+const forgotApi = process.env.FORGOT;
+const loginApi = process.env.LOGIN;
 
 export async function POST(request: NextRequest) {
   const cookieStore = cookies();
   const headers = new Headers(request.headers);
-  try {
-    const res = await fetch("http://127.0.0.1:8081/login", {
-      method: "POST",
-      headers: headers,
-    });
+  if (basePath && loginApi)
+    try {
+      const res = await fetch(basePath + loginApi, {
+        method: "POST",
+        headers: headers,
+      });
 
-    const data = await res.json();
-    console.log("login data", data);
+      const data = await res.json();
+      console.log("login data", data);
 
-    switch (res.status) {
-      case 200: {
-        res.headers.forEach((e, k) => {
-          console.log("headers", k, e);
-          cookieStore.set(k, e, {
-            secure: true,
-            httpOnly: true,
-            expires: Date.now() + 60 * 60 * 1000,
+      switch (res.status) {
+        case 200: {
+          res.headers.forEach((e, k) => {
+            console.log("headers", k, e);
+            cookieStore.set(k, e, {
+              secure: true,
+              httpOnly: true,
+              expires: Date.now() + 60 * 60 * 1000,
+            });
           });
-        });
 
-        return NextResponse.json(data);
+          return NextResponse.json(data);
+        }
+        default:
+          return NextResponse.json(data, { status: res.status });
       }
-      default:
-        return NextResponse.json(data, { status: res.status });
+    } catch (err: any) {
+      return NextResponse.json(
+        { message: "Something went wrong!" },
+        { status: 500 }
+      );
     }
-  } catch (err: any) {
-    return NextResponse.json(
-      { message: "Something went wrong!" },
-      { status: 500 }
-    );
-  }
 }
 
 // -----------------------
 // PUT - FORGOT PASSWORD
 export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.formData();
-    const res = await fetch("http://127.0.0.1:8081/forgot", {
-      method: "PUT",
-      body: body,
-    });
-    const data = await res.json();
-    return NextResponse.json(data, { status: res.status });
-  } catch (err: any) {
-    return NextResponse.json(
-      { message: "Something went wrong!" },
-      { status: 500 }
-    );
-  }
+  if (basePath && forgotApi)
+    try {
+      const body = await request.formData();
+      const res = await fetch(basePath + forgotApi, {
+        method: "PUT",
+        body: body,
+      });
+      const data = await res.json();
+      return NextResponse.json(data, { status: res.status });
+    } catch (err: any) {
+      return NextResponse.json(
+        { message: "Something went wrong!" },
+        { status: 500 }
+      );
+    }
 }

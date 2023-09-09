@@ -5,7 +5,7 @@ import * as React from "react";
 import { addSignSchema } from "./utils/valSchemas";
 import { addSignIV } from "./utils/initialValues";
 import { AddIcon, BackIcon } from "@/assets/myIcons";
-import { FileInput } from "./utils/myInputs";
+import { FileInput, MySubmit } from "./utils/myInputs";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signModel } from "./utils/models";
@@ -94,18 +94,13 @@ const AddSign = () => {
             </Field>
             <ErrorMsg name="action" className="col-span-2 col-start-2" />
             <div className="flex gap-2 items-center justify-end pt-4">
-              <button type="submit">
-                <span
-                  className="animate-ping w-2 h-2 bg-indigo-700 rounded-full absolute"
-                  hidden={!loading}
-                />
-                <span
-                  className=" w-2 h-2 bg-indigo-900 rounded-full"
-                  hidden={!loading}
-                />
-                <AddIcon hidden={loading} />
-                {loading ? "Processing" : "Add Signature"}
-              </button>
+              <MySubmit
+                loading={loading}
+                loadingMsg={"Adding"}
+                action="Add Signature"
+              >
+                <AddIcon />
+              </MySubmit>
             </div>
           </Form>
         </section>

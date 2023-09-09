@@ -61,11 +61,10 @@ export const updateUserIV = {
 };
 
 export const instanceIV = {
-  name: "",
+  type: "",
   username: "",
   password: "",
   endpoint: "",
-  toSlate: "n",
 };
 
 export const preProcessorIV = {

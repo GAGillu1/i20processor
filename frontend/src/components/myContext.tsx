@@ -6,24 +6,35 @@ const MyContext = createContext<any | undefined>(undefined);
 const MyDispatchContext = createContext<any | undefined>(undefined);
 
 export function MyContextProvider({ children }: { children: React.ReactNode }) {
+  const now = new Date();
   const [data, dispatch] = useReducer(MyReducer, initialData);
 
-  useEffect(() => {
-    const ifData = sessionStorage.getItem("data");
+  const getLocalData = async () => {
+    const ifData = localStorage.getItem("data");
     if (ifData) {
-      // console.log("GET", JSON.parse(ifData));
-      dispatch({
-        data: JSON.parse(ifData),
-        type: "firstRender",
-      });
+      console.log("GET", JSON.parse(ifData));
+      const data = JSON.parse(ifData);
+      if (now.getTime() > data.expiry) {
+        localStorage.clear();
+        fetch("/api/logout");
+      } else {
+        dispatch({
+          data: data.value,
+          type: "firstRender",
+        });
+      }
     }
-  }, [dispatch]);
+  };
+
+  useEffect(() => {
+    getLocalData();
+  }, []);
 
   useEffect(() => {
     if (data !== initialData) {
-      // console.log("SET", data);
-      sessionStorage.setItem("data", JSON.stringify(data));
-      // for (const k in data) sessionStorage.setItem(k, data[k]);
+      const ttl = 60 * 60 * 1000;
+      const item = { value: data, expiry: now.getTime() + ttl };
+      localStorage.setItem("data", JSON.stringify(item));
     }
   }, [data]);
 
@@ -47,8 +58,7 @@ export function useContextDispatch() {
 function MyReducer(data: data, action: any) {
   switch (action.type) {
     case "firstRender": {
-      const ifData = sessionStorage.getItem("data");
-      return ifData ? JSON.parse(ifData) : data;
+      return action.data;
     }
 
     case "login": {
@@ -63,14 +73,9 @@ function MyReducer(data: data, action: any) {
       };
     }
     case "logout": {
-      // console.log("in logout", data);
-
+      localStorage.removeItem("data");
       return {
-        ...data,
-        loggedIn: false,
-        username: "",
-        fullname: "",
-        role: "",
+        ...initialData,
       };
     }
     case "slateInput": {
