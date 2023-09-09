@@ -225,6 +225,11 @@ def updateactive(user, activeid):
 
 #updateactive("GOV", 1)
 
+def updateinstancedb(password,username,institutionid):
+    dba.connect()
+    query="update instance set instancepassword =? ,username=? where institutionID=?"
+    dba.execute_query(query,[password,username,institutionid])
+    dba.close()
 
 
 

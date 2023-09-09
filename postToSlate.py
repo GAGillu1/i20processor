@@ -1,6 +1,6 @@
 import requests
 from cryptography.fernet import Fernet
-from dbstatements import selectinstance, insertinstance
+from dbstatements import selectinstance, insertinstance, updateinstancedb
 from encryption_decryption import encryptsalt
 
 """Decrypting the password with the key """
@@ -47,3 +47,12 @@ def instanceinsert(url,type,username,password,universityid):
     except Exception as e:
         return f"Error in inserting instance {e}"
 
+
+def updateinstance(password,username,institutionid):
+    try:
+        password=password.encode('utf-8')
+        encrypetedpwd = encryptsalt(password)
+        k=updateinstancedb(encrypetedpwd,username,institutionid)
+        return "Updated successfully"
+    except Exception as e:
+        return f"Error in updating instance {e}"
