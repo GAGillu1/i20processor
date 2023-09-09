@@ -280,7 +280,7 @@ def upload():
 
             print("in")
             sevid=""
-            socketio.emit('rom', {'message': 'Starting upload process'})
+            socketio.emit('rom', 1)
 
             try:
                 #calling sign_details() function and taking all the coordinates
@@ -289,7 +289,7 @@ def upload():
                 signature_file = signaturefile(name)
                 # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
                 sevid,totalpages,totalsigns=splitsignature(pdf_filename, signature_file, length, width, xcoordinate, ycoordinate)
-                socketio.emit('rom',{'message':'signature and split done'})
+                socketio.emit('rom',2)
                 #sevid, totalpagessplit = splitting(pdf_filename)
                 totalpagessplit = totalpages / 3
                 numberoffiles = totalpagessplit
@@ -318,7 +318,7 @@ def upload():
                     sizeOfIndexfile, missing,tablehtml=result
                     issm_log.logger.info(f"Index file created successfully and size is {sizeOfIndexfile}.Record not included in Index but is in ISSM/Slate {missing}")
                     session["index_size"] = f"{sizeOfIndexfile}"
-                    socketio.emit('rom', {'status': 'Index file created'})
+                    socketio.emit('rom', 3)
                     session["missing_records"] = f"{missing}"
                     #print("Size of index file is ",sizeOfIndexfile)
                     if missing :
@@ -350,7 +350,7 @@ def upload():
                 response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
                 response.headers['Content-Type'] = 'application/zip'
                 issm_log.logger.info("Files Zipped")
-                socketio.emit('rom', {'status': 'Zipping done'})
+                socketio.emit('rom', 4)
                 session['zipmsg'] = "Success"
                 #if slate request is yes then depending on program the post function is called
                 if slaterequest=='y':
@@ -358,13 +358,13 @@ def upload():
                     if stream=='g':
                         output=post(zip_filename, 'GR')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
-                        socketio.emit('rom', {'status': 'Sent to slate Grad'})
+                        socketio.emit('rom', 5)
                         #print(output)
                     else:
                        # print("goign to UG")
                         output=post(zip_filename, 'UG')
                         issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
-                        socketio.emit('rom', {'status': 'sent to slate'})
+                        socketio.emit('rom', 5)
                        # print(output)
             except Exception as e:
                 session['zipmsg']=f"Files Zipping failed {e}"
