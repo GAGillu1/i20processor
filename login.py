@@ -151,8 +151,9 @@ def forgotpassword1(username,):
     email=""
     if username in df['userName'].astype(str).values:
         #a random password with username and two random numbers and a specialcharacter
-        pwd=f"{username}{random_number1}{random_number2}{special_char}"
+        pwd=f"{username}{random_number1}{random_number2}"
         #pwd="Qwerty"
+        print(pwd)
         salt = bcrypt.gensalt()
         stringsalt = salt.decode('utf-8')
         password_hash = bcrypt.hashpw(pwd.encode('utf-8'), salt)
