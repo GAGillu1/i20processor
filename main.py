@@ -60,7 +60,7 @@ app = Flask(__name__,template_folder='../../',static_folder='../../static')
 CORS(app)
 app.secret_key = secrets.token_bytes(32)
 #socketio = SocketIO(app)
-socketio = SocketIO(app,cors_allowed_origins="*",logger=True, engineio_logger=True)
+socketio = SocketIO(app,cors_allowed_origins="*")
 
 
 #sio=socketio.Client()
