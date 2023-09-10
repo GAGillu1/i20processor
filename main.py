@@ -131,7 +131,8 @@ def process():
                 return response, http.HTTPStatus.UNAUTHORIZED
     except Exception as e:
         logger.error("Exception in app.py exception", e)
-        response = None
+        response = "Failed in Server please check the error."
+        logger.error(f"response in main.py preprocessor: {response}")
         return response, http.HTTPStatus.INTERNAL_SERVER_ERROR
 
 
