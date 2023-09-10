@@ -14,11 +14,12 @@ from flask_socketio import SocketIO
 from flask import Flask
 from flask_cors import CORS
 import secrets
+import math
 
-app = Flask(__name__,template_folder='../../',static_folder='../../static')
+app = Flask(__name__, template_folder='../../', static_folder='../../static')
 CORS(app)
 app.secret_key = secrets.token_bytes(32)
-socketio = SocketIO(app,cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 @socketio.on('connect')
 def handle_connect():
@@ -432,8 +433,9 @@ def testing_main(url, driver, excel_file):
             logger.info(f"Index No : {index}, student ID : {student.CampusID}")
             process_student(student, url, config, driver, progress_bar)
             progress_bar.processed_count = index + 1
-            logger.info(f"processed count: {progress_bar.processed_count}")
-            socketio.emit('preProcessor', progress_bar.processed_count)
+            progressBar_value = math.floor((progress_bar.processed_count/progress_bar.max_count)*6)
+            logger.info(f"percentage completed: {progressBar_value}")
+            socketio.emit('preProcessor', progressBar_value)
             logger.info(progress_bar.__str__())
 
         code_end_time = time.time()  # capturing the end time of the code execution
