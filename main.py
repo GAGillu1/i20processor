@@ -123,7 +123,7 @@ def process():
                 response = make_response({'message': text})
                 return response, http.HTTPStatus.CREATED
             elif status and text == "Failed":
-                response = make_response({'message': text}, http.HTTPStatus.BAD_REQUEST)
+                response = make_response({'message': text + " Input issue - please fix the input"}, http.HTTPStatus.BAD_REQUEST)
                 return response, http.HTTPStatus.BAD_REQUEST
             else:
                 logger.error(text)
