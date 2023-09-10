@@ -643,7 +643,7 @@ def userpop(user):
 def changepwd(user):
     if request.method=='PUT':
         #getting all details from the form
-        pwd=request.form.get('npwd')
+        pwd=request.form.get('nPwd')
         print("passwored is ",pwd)
         cPwd=request.form.get('cPwd')
         #institutionid=session['institutionid']
