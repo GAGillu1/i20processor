@@ -48,7 +48,8 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             input_url = ""
             # time.sleep(2)
             if instance == "Prod":
-                input_url = "issm-prod.newhaven.edu"
+                # input_url = "issm-prod.newhaven.edu"
+                input_url = "issm-prod"
             elif instance == "Test":
                 input_url = "issm-test.newhaven.edu"
             else:
