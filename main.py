@@ -753,7 +753,7 @@ def processed():
         result= issm_log.processedgetter()
         result_dict = result.to_dict(orient='records')
 
-        return jsonify({'data':'logged fetched','result':result_dict})
+        return jsonify({'message':'logged fetched','data':result_dict})
 
 
 
