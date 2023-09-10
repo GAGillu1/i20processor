@@ -6,7 +6,7 @@ def connect():
     global conn
     conn = pyodbc.connect(
         'Driver={SQL Server};'
-        #'server=
+        #'Server=localhost\SQLEXPRESS;'
         'Server=GOVARDHAN;'
         'Database=master;'
         'Trusted_Connection=yes;'

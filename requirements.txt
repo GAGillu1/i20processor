@@ -5,3 +5,14 @@ pypdf2
 PyMuPDF
 datetime
 cryptography
+numpy
+pip
+selenium
+flask_socketio
+pyodbc
+pdfminer
+pdfminer.six
+bcrypt
+jwt
+requests
+flask_cors
