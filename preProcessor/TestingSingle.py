@@ -20,6 +20,12 @@ CORS(app)
 app.secret_key = secrets.token_bytes(32)
 socketio = SocketIO(app,cors_allowed_origins="*")
 
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
 class ProgressBar:
     def __init__(self, max_count):
         self.processed_count = 0
@@ -426,9 +432,8 @@ def testing_main(url, driver, excel_file):
             logger.info(f"Index No : {index}, student ID : {student.CampusID}")
             process_student(student, url, config, driver, progress_bar)
             progress_bar.processed_count = index + 1
-            progressBar_value = (progress_bar.processed_count/progress_bar.max_count)*100
-            logger.info(f"percentage completed: {progressBar_value}")
-            socketio.emit('preProcessor', progressBar_value)
+            logger.info(f"processed count: {progress_bar.processed_count}")
+            socketio.emit('preProcessor', progress_bar.processed_count)
             logger.info(progress_bar.__str__())
 
         code_end_time = time.time()  # capturing the end time of the code execution
