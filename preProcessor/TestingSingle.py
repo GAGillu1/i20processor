@@ -14,6 +14,7 @@ from flask_socketio import SocketIO
 from flask import Flask
 from flask_cors import CORS
 import secrets
+
 app = Flask(__name__,template_folder='../../',static_folder='../../static')
 CORS(app)
 app.secret_key = secrets.token_bytes(32)

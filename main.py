@@ -109,19 +109,19 @@ def process():
             status, text = vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file_name, instance)
             print(f"status: {status}, text: {text}")
             if status and text == "Partial success":
-                with ZipFile(zip_filename, 'w') as zipf:
-                    # Add the files to the zip archive
-                    zipf.write('Duplicate.xlsx')
-                    # zipf.write(file_name)
-                response = make_response(send_file(zip_filename, as_attachment=True))
-                response.headers['Content-Disposition'] = 'attachment; filename=output.zip'
+                # with ZipFile(zip_filename, 'w') as zipf:
+                #     # Add the files to the zip archive
+                #     zipf.write('Duplicate.xlsx')
+                #     # zipf.write(file_name)
+                response = make_response(send_file('Duplicate.xlsx', as_attachment=True))
+                response.headers['Content-Disposition'] = 'attachment; filename=duplicate issm.xlsx'
                 # logger.info(f"Process Completed")
                 logger.info(response)
                 return response, http.HTTPStatus.OK
                 # return "Success"
             elif status and text == "Success":
-                response = make_response({'message': text}, http.HTTPStatus.OK)
-                return response, http.HTTPStatus.OK
+                response = make_response({'message': text})
+                return response, http.HTTPStatus.CREATED
             elif status and text == "Failed":
                 response = make_response({'message': text}, http.HTTPStatus.BAD_REQUEST)
                 return response, http.HTTPStatus.BAD_REQUEST
