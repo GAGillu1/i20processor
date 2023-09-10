@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from issmfilelog import logger
 import time
-def vpn_function():
+def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file, instance):
     status = None
     message = ""
     try:
@@ -23,10 +23,10 @@ def vpn_function():
         browser.get(login_url)
         time.sleep(1)
         logger.info("before entering username")
-        browser.find_element(By.XPATH, '//*[@id="username"]').send_keys('schinnam')
+        browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(vpn_username)
         time.sleep(1)
         logger.info(f"before credentials")
-        browser.find_element(By.XPATH, '//*[@id="credential"]').send_keys('Jonathan44..')
+        browser.find_element(By.XPATH, '//*[@id="credential"]').send_keys(vpn_password)
         time.sleep(1)
         browser.find_element(By.ID, 'login_button').click()
         try:
@@ -44,9 +44,14 @@ def vpn_function():
                 ec.visibility_of_element_located((By.XPATH, '//*[@id="navbar-view-section"]/div/div/div[2]/div[2]/button[1]')))
             # Click the element
             element.click()
-
+            input_url = ""
             # time.sleep(2)
-            browser.find_element(By.XPATH, '//*[@id="url"]').send_keys('issm-test.newhaven.edu')
+            if instance == "Prod":
+                input_url = "issm-prod.newhaven.edu"
+            elif instance == "Test":
+                input_url = "issm-test.newhaven.edu"
+            logger.info(f"input url: {input_url}")
+            browser.find_element(By.XPATH, '//*[@id="url"]').send_keys(input_url)
             # time.sleep(2)
             browser.find_element(By.XPATH, '//*[@id="navbar-view-section"]/div/div/div[2]/form/div[2]/button[1]').click()
             logger.info("redirect success")
@@ -60,8 +65,8 @@ def vpn_function():
             new_tab_url = browser.current_url
             # logger.info("URL of the new tab:", new_tab_url)
             # time.sleep(2)
-            browser.find_element(By.XPATH, '//*[@id="username"]').send_keys('gasbodd13')
-            browser.find_element(By.XPATH, '//*[@id="password"]').send_keys('Boddupalli#13')
+            browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(issm_username)
+            browser.find_element(By.XPATH, '//*[@id="password"]').send_keys(issm_password)
             # log_message(f"Process started for student with ID {std.CampusID} and name {std.GivenName}.")
             browser.find_element(By.ID, 'login-button').click()
             # time.sleep(2)
@@ -76,7 +81,7 @@ def vpn_function():
                 logger.info(f"login success")
             # driver = webdriver.Chrome()  # You may need to specify the path to the chromedriver executable
             # driver.get(new_tab_url)
-                status, message = testing_main(new_tab_url, browser)
+                status, message = testing_main(new_tab_url, browser, excel_file)
         browser.quit()  # irrespective of success or failure we are quitting the driver
         logger.info("new tab successfully redirected")
     except Exception as e:
@@ -85,6 +90,3 @@ def vpn_function():
     # Close the WebDriver when done
     # browser.quit()
     return status, message
-
-if __name__ == "__main__":
-    vpn_function()  # calling the main function with the specified input files

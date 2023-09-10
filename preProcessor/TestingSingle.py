@@ -284,7 +284,7 @@ class Student:
         return '\n'.join(attributes)
 
 
-def testing_main(url, driver):
+def testing_main(url, driver, excel_file):
     # Load the Excel file into a DataFrame using pandas
     df = pd.read_excel("Duplicate.xlsx", engine='openpyxl')
     # Clear the DataFrame of any existing data (excluding the header)
@@ -300,9 +300,9 @@ def testing_main(url, driver):
         config = configparser.ConfigParser()
         config.read('config.ini')
         code_start_time = time.time()  # capturing the start time of the code execution
-
         # Load the Excel file
-        workbook = openpyxl.load_workbook('WandInput1.xlsx')
+        logger.info(f"printing excel file name: {excel_file}")
+        workbook = openpyxl.load_workbook(excel_file)
         # Select the specific sheet
         sheet = workbook['Export']  # Replace 'Sheet1' with the name of your sheet
 
