@@ -453,6 +453,7 @@ def testing_main(url, driver, excel_file):
             logger.info(f"mixed cases i.e. success and failure both.")
             message = "Failed"
             return True, message
+            #  need to handle this mixed cases response in main.py and front end to show either in logs or after run.
     except Exception as e:
         logger.error(f"An error occurred in testing single.py testing_main function: {e}")
         return False, "Failed"
