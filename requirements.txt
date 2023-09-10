@@ -13,6 +13,6 @@ pyodbc
 pdfminer
 pdfminer.six
 bcrypt
-jwt
+PyJWT
 requests
 flask_cors
