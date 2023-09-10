@@ -1,10 +1,10 @@
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
-from TestingSingle import testing_main
+from preProcessor.TestingSingle import testing_main
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from issmfilelog import logger
+from preProcessor.issmfilelog import logger
 import time
 def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file, instance):
     status = None
@@ -50,6 +50,8 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
                 input_url = "issm-prod.newhaven.edu"
             elif instance == "Test":
                 input_url = "issm-test.newhaven.edu"
+            else:
+                raise Exception
             logger.info(f"input url: {input_url}")
             browser.find_element(By.XPATH, '//*[@id="url"]').send_keys(input_url)
             # time.sleep(2)

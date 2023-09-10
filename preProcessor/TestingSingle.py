@@ -1,7 +1,7 @@
 import time
 import re
 import openpyxl
-from AddIndividual import AddIndividual
+from preProcessor.AddIndividual import AddIndividual
 import pandas as pd
 import configparser
 from selenium.webdriver.support.ui import *
