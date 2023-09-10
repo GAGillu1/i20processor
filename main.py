@@ -113,7 +113,7 @@ def process():
                 #     # Add the files to the zip archive
                 #     zipf.write('Duplicate.xlsx')
                 #     # zipf.write(file_name)
-                response = make_response(send_file('Duplicate.xlsx', as_attachment=True))
+                response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
                 response.headers['Content-Disposition'] = 'attachment; filename=duplicate issm.xlsx'
                 # logger.info(f"Process Completed")
                 logger.info(response)

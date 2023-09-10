@@ -35,7 +35,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             error_text = vpn_login_error.text
             logger.error(error_text)
             browser.quit()
-            return False, "VPN username or password error"
+            return False, "Invalid VPN username or password"
         except NoSuchElementException:
             logger.info("VPN login success")
             #  add quick connection button  --  added
@@ -53,6 +53,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             elif instance == "Test":
                 input_url = "issm-test.newhaven.edu"
             else:
+                message = "Wrong instance name entered"
                 raise Exception
             logger.info(f"input url: {input_url}")
             browser.find_element(By.XPATH, '//*[@id="url"]').send_keys(input_url)
@@ -80,7 +81,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
                 error_message = login_failed.text
                 logger.error(error_message)
                 browser.quit()
-                return False, "ISSM username or password error"
+                return False, "Invalid ISSM username or password"
                 # print(text_login)
             except NoSuchElementException:
                 logger.info(f"login success")
