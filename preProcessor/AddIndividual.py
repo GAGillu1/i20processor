@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 def AddIndividual(student, driver, check_val):
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    config.read('preProcessor/config.ini')
     try:
         # print("start of AddIndividual")
         wait = WebDriverWait(driver, 10)  # 10 seconds timeout

@@ -307,7 +307,7 @@ def testing_main(url, driver, excel_file):
     try:
         logger.info("Main program started.")
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config.read('preProcessor/config.ini')
         code_start_time = time.time()  # capturing the start time of the code execution
         # Load the Excel file
         logger.info(f"printing excel file name: {excel_file}")
