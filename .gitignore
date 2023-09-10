@@ -6,3 +6,4 @@ package.json
 .idea/
 .idea/misc.xml
 .gitignore
+.DS_Store
