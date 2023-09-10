@@ -250,6 +250,7 @@ def token_required(f):
 #In authorization header we will split and decode it with and check if it is same as what was sent from system
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split()[1]
+
 # if token is not in header then  return msg as token is missing
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
@@ -276,7 +277,6 @@ def change_password(username,password,current_password,institutionid):
         if (usernames == username.lower()).any():
             user_df=df.loc[df['userName']==username]
             salt=user_df['salt'].values[0]
-
             print("in salt")
             password_hash = bcrypt.hashpw(password.encode('utf-8'), salt.encode('utf-8'))
             stored_hash = user_df['hash'].values[0].encode('utf-8')

@@ -32,7 +32,7 @@ from fitzsplit import splitsignature, sign_details
 from login import checklogin, registeruser, forgotpassword1, users, userpopup, change_password, deleteuser, \
     token_required, userupdate,updateuserdata
 from name import names_list, signaturefile, signadd
-from postToSlate import post, updateinstance
+from postToSlate import post, updateinstance, instanceget
 import datetime
 import base64
 from datetime import timedelta
@@ -470,7 +470,8 @@ def login():
                     issm_log.logger.info(f"Login Successful for  {username}")
                     token_exp = datetime.datetime.utcnow() + timedelta(hours=1)  # Set token expiration time
                     token_payload = {'username': username, 'role': role, 'exp': token_exp}
-                    token = jwt.encode(token_payload, 'secret', algorithm='HS256')  # Encode token with secret key
+                    token = jwt.encode(token_payload, 'secret', algorithm='HS256')
+                 # Encode token with secret key
                  #   print("78",token)
                     response = make_response({'message': 'Login successful', 'data':{'role': role,'username':username,'fullname':fullname,'institutionname':institutionname}})
                     response.headers['Role']=role
@@ -716,7 +717,7 @@ def addsign(user):
             return response
 
 
-@app.route('/instance',methods=['POST','PUT'])
+@app.route('/instance',methods=['POST','PUT','GET'])
 def isntance():
     if request.method=='POST':
         url=request.form.get('jsonendpoint')
@@ -740,13 +741,19 @@ def isntance():
         institutionid = request.headers.get('institutionid')
         updateinstance(password,username,institutionid)
 
+    if request.method=='GET':
+        institutionid=request.headers.get('institutionid')
+        result = instanceget(institutionid)
+        result_dict = result.to_dict(orient='records')
+        return jsonify({'data': 'Fetched instances', 'result': result_dict})
+
 @app.route('/log',methods=['GET'])
 def processed():
     if request.method=='GET':
         result= issm_log.processedgetter()
         result_dict = result.to_dict(orient='records')
 
-        return jsonify({'data':'logged fetched','result':result_dict})
+        return jsonify({'message':'logged fetched','data':result_dict})
 
 
 
