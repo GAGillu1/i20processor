@@ -35,7 +35,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             error_text = vpn_login_error.text
             logger.error(error_text)
             browser.quit()
-            return False, error_text + " VPN username or password error"
+            return False, "VPN username or password error"
         except NoSuchElementException:
             logger.info("VPN login success")
             #  add quick connection button  --  added
@@ -80,7 +80,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
                 error_message = login_failed.text
                 logger.error(error_message)
                 browser.quit()
-                return False, error_message + " ISSM username or password error"
+                return False, "ISSM username or password error"
                 # print(text_login)
             except NoSuchElementException:
                 logger.info(f"login success")
