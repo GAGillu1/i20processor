@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import *
 from openpyxl import load_workbook
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from issmfilelog import logger
+from preProcessor.issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
 
 class ProgressBar:
