@@ -428,7 +428,7 @@ def testing_main(url, driver, excel_file):
             progress_bar.processed_count = index + 1
             progressBar_value = (progress_bar.processed_count/progress_bar.max_count)*100
             logger.info(f"percentage completed: {progressBar_value}")
-            socketio.emit('preprocessor', progressBar_value)
+            socketio.emit('preProcessor', progressBar_value)
             logger.info(progress_bar.__str__())
 
         code_end_time = time.time()  # capturing the end time of the code execution
