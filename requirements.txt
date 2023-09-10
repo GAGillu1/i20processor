@@ -8,3 +8,5 @@ cryptography
 numpy
 pip
 selenium
+flask_socketio
+pyodbc
