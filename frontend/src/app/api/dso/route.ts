@@ -2,7 +2,7 @@ import { getToken } from "@/components/utils/getTokens";
 import { NextRequest, NextResponse } from "next/server";
 
 const basePath = process.env.BASE_PATH;
-const dsoApi = process.env.CHANGE_PWD;
+const dsoApi = process.env.DSO;
 export async function POST(request: NextRequest) {
   if (basePath && dsoApi)
     try {

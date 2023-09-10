@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import { useContextDispatch, useMyContext } from "../myContext";
 
 export default function Socket() {
-  const socket = io("ws://127.0.0.1:8081/");
+  const socket = io("ws://127.0.0.1:8081/", { autoConnect: false });
   const [status, setStatus] = useState("");
   const data = useMyContext();
   const dispatch = useContextDispatch();

@@ -1,7 +1,6 @@
 "use client";
 
 import ChangePwd from "@/components/changePwd";
-import { useMyContext } from "@/components/myContext";
 import MyInfo from "@/components/myInfo";
 
 const Profile = ({ params }: { params: { username: string } }) => {
