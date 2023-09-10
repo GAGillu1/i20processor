@@ -5,3 +5,6 @@ pypdf2
 PyMuPDF
 datetime
 cryptography
+numpy
+pip
+selenium
