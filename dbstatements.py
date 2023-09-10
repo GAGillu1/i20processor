@@ -243,7 +243,16 @@ def updateinstancedb(password,username,institutionid):
     dba.execute_query(query,[password,username,institutionid])
 
 
-
+def getinstances(institutionid):
+    dba.connect()
+    query='select jsonendpoint,jsontype,username from instance where institutionID=?'
+    result = dba.execute_query(query,[institutionid])
+    if result is not None:
+        # Use the result DataFrame as needed.
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query.")
+    dba.close()
 
 # updateuser('test','abc','def','DDSO')
 #insertinstitutions('University of New Haven2',cursor,conn)
