@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  console.log(request.nextUrl);
   const token = request.cookies.get("authorization")?.value;
   const role = request.cookies.get("role")?.value;
 
@@ -34,6 +35,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/",
+    "/:username",
     "/notFound",
     "/i20",
     "/i20/pre-processor",

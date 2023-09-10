@@ -42,11 +42,10 @@ const Logs = () => {
   }, []);
   const getLogs = async () => {
     try {
-      const res = await fetch(
-        "https://63fbe49b1ff79e133295a2c7.mockapi.io/v1/logModel"
-      );
+      const res = await fetch("http://127.0.0.1:8081/log");
       if (!res.ok) throw res;
       const data = await res.json();
+      console.log("logData", data);
       setLogData(data);
     } catch (err: any) {
       const data = await err.json();

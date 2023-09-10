@@ -6,7 +6,7 @@ import { instanceModel } from "./utils/models";
 
 const InstanceList = ({ ...props }) => {
   const searchParams = useSearchParams();
-  const filteredList = props.userList.filter(
+  const filteredList = props.instanceList.filter(
     (item: instanceModel) =>
       item.type?.toLowerCase().includes(props.search.toLowerCase())
   );

@@ -13,7 +13,7 @@ const AddInstance = () => {
   const addInstance = async (values: instanceModel) => {
     try {
       setLoading(true);
-      const res = await fetch("/api/users", {
+      const res = await fetch("/api/instance", {
         method: "POST",
         body: getFormData(values),
       });
