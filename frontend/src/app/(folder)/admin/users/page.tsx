@@ -9,29 +9,38 @@ import AddUser from "@/components/addUser";
 import { sParams, userModel } from "@/components/utils/models";
 import { AddIcon, SearchIcon } from "@/assets/myIcons";
 import AddSign from "@/components/addSign";
+import { toast } from "react-hot-toast";
 
 const Users = ({ searchParams }: sParams) => {
   const [userList, setUserList] = useState<userModel[]>([]);
-  const showAddUser = searchParams?.addUser;
+  const [findUser, setFindUser] = useState("");
   const showModal = searchParams?.addSign;
   const showUser = searchParams?.user && !showModal;
+  const showAddUser = !(showModal || showUser);
 
   useEffect(() => {
     getUserList();
   }, []);
 
-  const getUserList = async () =>
-    await fetch("/api/users")
-      .then((res) => res.json())
-      .then((list) => setUserList(list.data));
+  const getUserList = async () => {
+    try {
+      const res = await fetch("/api/users");
+      if (!res.ok) throw res;
+      const data = await res.json();
+      setUserList(data.data);
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    }
+  };
 
   return (
     <main className="w-[95%] mx-auto">
       <h1 className=" p-4 font-bold text-slate-700 text-xl">User List</h1>
-      <section className="grid grid-cols-2 gap-2  min-h-[70vh]">
+      <section className="grid grid-cols-2 gap-2 h-[70vh]">
         <div className="bg-white rounded-lg p-4">
           <Link
-            href="/admin/users?addUser=true"
+            href="/admin/users"
             className="navLink bg-indigo-100 w-32 text-center text-indigo-900"
           >
             <AddIcon />
@@ -41,11 +50,17 @@ const Users = ({ searchParams }: sParams) => {
           <div className="group">
             <div className="searchBar">
               <SearchIcon />
-              <input type="text" placeholder="Search..." />
+              <input
+                type="text"
+                placeholder="Search User..."
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setFindUser(e.target.value)
+                }
+              />
             </div>
           </div>
-          <ul className="flex flex-col gap-2 mt-4">
-            <UserList userList={userList} />
+          <ul className="flex flex-col gap-2 mt-4 overflow-y-auto h-[55vh]">
+            <UserList userList={userList} search={findUser} />
           </ul>
         </div>
 

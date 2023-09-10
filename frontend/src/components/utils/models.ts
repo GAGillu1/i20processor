@@ -4,10 +4,11 @@ export interface userModel {
   email?: string;
   role?: string;
   signature?: any;
+  active?: boolean;
 }
 
 export interface dsoModel {
-  sig: string;
+  sign: string;
   dso: string;
   split: string;
   i20File: any;
@@ -54,9 +55,25 @@ export interface apiModel {
 }
 
 export interface instanceModel {
-  name: string;
+  type: string;
   username?: string;
   password?: string;
   endpoint?: string;
-  toSlate?: string;
+}
+
+export interface preProcessorModel {
+  vpnUsername: string;
+  vpnPassword: string;
+  issmUsername: string;
+  issmPassword: string;
+  excelFile: any;
+  instance: string;
+}
+
+export interface logModel {
+  date: string;
+  processedBy: string;
+  message: string;
+  result: string;
+  system: string;
 }

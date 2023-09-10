@@ -14,7 +14,7 @@ export const userInfoIV = {
 };
 
 export const dsoIV = {
-  sig: "",
+  sign: "",
   dso: "",
   split: "",
   i20File: "",
@@ -61,9 +61,17 @@ export const updateUserIV = {
 };
 
 export const instanceIV = {
-  name: "",
+  type: "",
   username: "",
   password: "",
   endpoint: "",
-  toSlate: "n",
+};
+
+export const preProcessorIV = {
+  vpnUsername: "",
+  vpnPassword: "",
+  issmUsername: "",
+  issmPassword: "",
+  excelFile: "",
+  instance: "",
 };

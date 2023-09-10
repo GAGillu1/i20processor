@@ -1,125 +1,184 @@
 import {
+  AddInstanceIcon,
+  AddUserIcon,
   AdminIcon,
   DsoIcon,
   I20Icon,
   InstanceIcon,
+  LogsIcon,
+  PostProcessingIcon,
+  PreProcessingIcon,
   UsersIcon,
 } from "@/assets/myIcons";
 import Link from "next/link";
-
-export const I20Card = () => {
+// -------------------------------
+// CARD
+export const Card = ({ ...props }) => {
   return (
-    <Link href={"/i20"}>
+    <Link href={props.href}>
       <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
         <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
-          <I20Icon className="w-16 h-16 text-indigo-900 mx-auto" />
+          {props.children}
         </div>
         <div className="flex items-center justify-center h-12">
-          <h3 className="font-semibold text-lg ">I20</h3>
+          <h3 className="font-semibold text-lg ">{props.title}</h3>
         </div>
       </div>
     </Link>
   );
 };
-
-export const AdminCard = () => {
+// -------------------------------
+// LARGE CARD
+export const CardLg = ({ ...props }) => {
   return (
-    <Link href={"/admin"}>
-      <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
-        <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
-          <AdminIcon className="w-16 h-16 text-indigo-900 mx-auto" />
-        </div>
-        <div className="flex items-center justify-center h-12">
-          <h3 className="font-semibold text-lg ">Admin</h3>
-        </div>
-      </div>
-    </Link>
-  );
-};
-
-export const DsoCard = () => {
-  return (
-    <Link href={"/dso"}>
-      <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
-        <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
-          <DsoIcon className="w-16 h-16 text-indigo-900 mx-auto" />
-        </div>
-        <div className="flex items-center justify-center h-12">
-          <h3 className="font-semibold text-lg ">DSO</h3>
-        </div>
-      </div>
-    </Link>
-  );
-};
-
-export const UsersCard = () => {
-  return (
-    <Link href={"/admin/users"}>
-      <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
-        <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
-          <UsersIcon className="w-16 h-16 text-indigo-900 mx-auto" />
-        </div>
-        <div className="flex items-center justify-center h-12">
-          <h3 className="font-semibold text-lg ">Users</h3>
-        </div>
-      </div>
-    </Link>
-  );
-};
-
-export const InstanceCard = () => {
-  return (
-    <Link href={"/admin/instance"}>
-      <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
-        <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
-          <InstanceIcon className="w-16 h-16 text-indigo-900 mx-auto" />
-        </div>
-        <div className="flex items-center justify-center h-12">
-          <h3 className="font-semibold text-lg ">Instances</h3>
-        </div>
-      </div>
-    </Link>
-  );
-};
-
-export const InstanceCardLg = () => {
-  return (
-    <Link href={"/admin/instance"}>
-      <section className="grid grid-cols-6 rounded-lg hover:scale-105 duration-300 group">
-        <div className="bg-indigo-50 rounded-l-lg flex items-center justify-center">
-          <InstanceIcon className="w-16 h-16 text-indigo-900 mx-auto" />
-        </div>
-        <div className="col-span-5 bg-white rounded-r-lg p-2">
-          <h3 className="text-indigo-900">Instance </h3>
-          <p className="pt-2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt,
-            natus asperiores nostrum perspiciatis voluptate nam similique
-            debitis ut vel, cupiditate eaque ex beatae et quia minima ipsam ea
-            sapiente sequi.
-          </p>
-        </div>
-      </section>
-    </Link>
-  );
-};
-
-export const UsersCardLg = () => {
-  return (
-    <Link href={"/admin/users"}>
+    <Link href={props.link}>
       <section className="grid grid-cols-6 rounded-lg hover:scale-105 duration-300">
         <div className="bg-indigo-50 rounded-l-lg flex items-center justify-center">
-          <UsersIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+          {props.children}
         </div>
         <div className="col-span-5 bg-white rounded-r-lg p-2">
-          <h3 className="text-indigo-900">Users </h3>
-          <p className="pt-2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt,
-            natus asperiores nostrum perspiciatis voluptate nam similique
-            debitis ut vel, cupiditate eaque ex beatae et quia minima ipsam ea
-            sapiente sequi.
-          </p>
+          <h3 className="text-indigo-900">{props.title} </h3>
+          <p className="pt-2">{props.description}</p>
         </div>
       </section>
     </Link>
+  );
+};
+// -------------------------------
+// ADD USER CARD
+export const AddUserCard = () => {
+  return (
+    <Card href="/admin/users" title="Add User">
+      <AddUserIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// I20 CARD
+export const I20Card = () => {
+  return (
+    <Card href="/i20" title="I20">
+      <I20Icon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// ADMIN CARD
+export const AdminCard = () => {
+  return (
+    <Card href="/admin" title="Admin">
+      <AdminIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// DSO CARD
+export const DsoCard = () => {
+  return (
+    <Card href="/dso" title="DSO">
+      <DsoIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// USERS CARD
+export const UsersCard = () => {
+  return (
+    <Card href="/admin/users" title="Users">
+      <UsersIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// INSTANCE CARD
+export const InstanceCard = () => {
+  return (
+    <Card href="/admin/instance" title="Instance">
+      <InstanceIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// ADD INSTANCE CARD
+export const AddInstanceCard = () => {
+  return (
+    <Card href="/admin/instance?addInstance=true" title="Add Instance">
+      <AddInstanceIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// PRE-PROCESSOR CARD
+export const PreProcessingCard = () => {
+  return (
+    <Card href="/i20/pre-processor" title="Pre-processor">
+      <PreProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// POST-PROCESSOR CARD
+export const PostProcessingCard = () => {
+  return (
+    <Card href="/i20/post-processor" title="Post-processor">
+      <PostProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// LOGS CARD
+export const LogsCard = () => {
+  return (
+    <Card href="/logs" title="Logs">
+      <LogsIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// LARGE CARDS
+// -------------------------------
+// USERS CARD
+export const UsersCardLg = () => {
+  return (
+    <CardLg link="/admin/users" title="Users" description={lorem}>
+      <UsersIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </CardLg>
+  );
+};
+
+// -------------------------------
+// INSTANCE CARD
+export const InstanceCardLg = () => {
+  return (
+    <CardLg link="/admin/instance" title="Instance" description={lorem}>
+      <InstanceIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </CardLg>
+  );
+};
+
+const lorem =
+  "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Soluta excepturi quidem quisquam fugiat! Animi praesentium ut neque expedita explicabo nobis hic quisquam velit. Cupiditate, quasi ullam minus numquam doloribus porro?";
+
+// -------------------------------
+// PRE-PROCESSOR CARD
+export const PreProcessorCardLg = () => {
+  return (
+    <CardLg link="/i20/pre-processor" title="Pre-processor" description={lorem}>
+      <PreProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </CardLg>
+  );
+};
+
+// -------------------------------
+// POST-PROCESSOR CARD
+export const PostProcessingCardLg = () => {
+  return (
+    <CardLg
+      link="/i20/post-processor"
+      title="Post-processor"
+      description={lorem}
+    >
+      <PostProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </CardLg>
   );
 };

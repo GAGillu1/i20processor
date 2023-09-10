@@ -11,8 +11,9 @@ button[type="submit"] {
 }
 
 input,
-select {
-  @apply rounded p-1 outline-none font-normal text-slate-600 bg-slate-200 outline outline-2 -outline-offset-1 hover:outline-indigo-400 active:outline-indigo-500 focus:outline-indigo-500 w-full disabled:hover:outline-none;
+select,
+textarea {
+  @apply rounded p-1 outline-none font-normal text-slate-600 bg-slate-200 outline outline-2 -outline-offset-1 hover:outline-indigo-400 active:outline-indigo-500 focus:outline-indigo-500 w-full disabled:hover:outline-none read-only:opacity-70 disabled:opacity-70;
 }
 
 input[type="file"] {
@@ -44,12 +45,13 @@ label {
   @apply bg-indigo-100 text-indigo-800;
 }
 
-.userItem {
+.userItem,
+.instanceItem {
   @apply rounded p-2 cursor-pointer hover:bg-indigo-200 focus:bg-indigo-300 active:bg-indigo-300;
 }
 
 .searchBar {
-  @apply flex gap-2 items-center border-2 border-slate-200 rounded-lg p-1 group-hover:border-slate-300 group-focus:border-slate-400 group-active:border-slate-400;
+  @apply flex gap-2 items-center border-2 border-slate-200 rounded-lg p-1 group-hover:border-slate-300 group-focus:border-slate-400 group-active:border-slate-400 w-full;
 }
 
 .searchBar > input {
@@ -82,4 +84,92 @@ h2 {
 
 h3 {
   @apply text-lg font-semibold text-slate-700;
+}
+
+/* PAGINATOR DIV - TO PLACE NUMBERS INLINE*/
+body
+  > div.grid.grid-cols-6
+  > section
+  > main
+  > section
+  > div
+  > div.p-paginator.p-component.p-paginator-bottom
+  > span {
+  @apply flex;
+}
+
+/* PAGINATOR DIV - TO PLACE NUMBERS IN CENTER*/
+body > div.grid.grid-cols-6 > section > main > section > div > div {
+  @apply flex justify-center;
+}
+
+/* PAGINATOR DIV - TO PLACE NUMBERS IN CENTER*/
+body
+  > div.grid.grid-cols-6
+  > section
+  > main
+  > section
+  > div
+  > div.p-datatable-wrapper
+  > table
+  > thead
+  > tr
+  > th.w-\[25\%\].px-2.p-sortable-column
+  > div {
+  @apply flex gap-3 items-center justify-center;
+}
+
+/* FOR HEADER AND FOOTER */
+body
+  > div.grid.grid-cols-6
+  > section
+  > main
+  > section
+  > div
+  > div.p-datatable-wrapper
+  > table
+  > thead,
+body
+  > div.grid.grid-cols-6
+  > section
+  > main
+  > section
+  > div
+  > div.p-paginator.p-component.p-paginator-bottom {
+  @apply bg-indigo-50 text-indigo-900 rounded-b-lg text-lg;
+}
+
+/* FOR FOOTER */
+body
+  > div.grid.grid-cols-6
+  > section
+  > main
+  > section
+  > div
+  > div.p-paginator.p-component.p-paginator-bottom {
+  @apply text-sm mt-1;
+}
+/* TO GIVE FULL SIZE FOR TABLE */
+body
+  > div.grid.grid-cols-6
+  > section
+  > main
+  > section
+  > div
+  > div.p-datatable-wrapper
+  > table {
+  @apply w-full;
+}
+
+body
+  > div.grid.grid-cols-6
+  > section
+  > main
+  > section
+  > div
+  > div.p-datatable-wrapper
+  > table
+  > tbody
+  > tr {
+  @apply border-b-2 border-indigo-50 my-1;
 }

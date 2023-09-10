@@ -1,50 +1,82 @@
 "use client";
-import ErrorMsg from "@/components/errorMsg";
-import { instanceIV } from "@/components/utils/initialValues";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Loading from "@/app/(folder)/admin/users/loading";
+import { Suspense } from "react";
+import { instanceModel, sParams } from "@/components/utils/models";
+import { AddIcon, SearchIcon } from "@/assets/myIcons";
+import AddInstance from "@/components/addInstance";
+import InstanceList from "@/components/instanceList";
+import InstanceInfo from "@/components/instanceInfo";
+import { toast } from "react-hot-toast";
 
-import { instanceModel } from "@/components/utils/models";
-import { MyInput } from "@/components/utils/myInputs";
-import { instanceSchema } from "@/components/utils/valSchemas";
-import { Field, Form, Formik } from "formik";
-const Instance = () => {
+const Users = ({ searchParams }: sParams) => {
+  const [findInstance, setFindInstance] = useState("");
+  const [instanceList, setInstanceList] = useState<instanceModel[]>([]);
+  const showAddInstance = searchParams?.addInstance;
+  const showInstance = searchParams?.instance;
+
+  useEffect(() => {
+    getInstanceList();
+  }, []);
+
+  const getInstanceList = async () => {
+    try {
+      const res = await fetch("/api/instance");
+      if (!res.ok) throw res;
+      const data = await res.json();
+      setInstanceList(data.data);
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    }
+  };
+
   return (
-    <main className="main">
-      <section className="section">
-        <Formik
-          initialValues={instanceIV}
-          validationSchema={instanceSchema}
-          onSubmit={(values: instanceModel) => console.log(values)}
-        >
-          <section className="w-[90%] mx-auto">
-            <h2 className="formHeader">Add New Instance</h2>
-            <Form className="grid grid-cols-3 gap-y-2 items-center">
-              <label htmlFor="name">Instance Name:</label>
-              <Field name="name" className="col-span-2" />
-              <ErrorMsg name="name" />
-              <label htmlFor="username">Username:</label>
-              <Field name="username" className="col-span-2" />
-              <ErrorMsg name="username" />
-              <label htmlFor="password">Password:</label>
-              <Field name="password" className="col-span-2" />
-              <ErrorMsg name="password" />
-              <label htmlFor="endpoint">JSON Endpoint:</label>
-              <Field name="endpoint" className="col-span-2" />
-              <ErrorMsg name="endpoint" />
-              <label htmlFor="toSlate"> Transfer File to Slate:</label>
-              <Field component={MyInput} name="toSlate" className="col-span-2">
-                <option value="n">No</option>
-                <option value="y">Yes</option>
-              </Field>
-              <ErrorMsg name="toSlate" />
-              <div className="mx-auto col-span-3 mt-8">
-                <button type="submit">Process</button>
-              </div>
-            </Form>
-          </section>
-        </Formik>
+    <main className="w-[95%] mx-auto">
+      <h1 className=" p-4 font-bold text-slate-700 text-xl">Instance List</h1>
+      <section className="grid grid-cols-2 gap-2  min-h-[70vh]">
+        <div className="bg-white rounded-lg p-4">
+          <Link
+            href="/admin/instance?addInstance=true"
+            className="navLink bg-indigo-100 w-44 text-center text-indigo-900"
+          >
+            <AddIcon />
+            Add Instance
+          </Link>
+          <div className="my-2 bg-slate-200 h-1 rounded-full" />
+          <div className="group">
+            <div className="searchBar">
+              <SearchIcon />
+              <input
+                type="text"
+                placeholder="Search Instance..."
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setFindInstance(e.target.value)
+                }
+              />
+            </div>
+          </div>
+          <ul className="flex flex-col gap-2 mt-4 overflow-y-auto h-[55vh]">
+            <InstanceList instanceList={instanceList} search={findInstance} />
+          </ul>
+        </div>
+
+        <div className="bg-white rounded-lg p-4 ">
+          {showInstance && (
+            <Suspense fallback={<Loading />}>
+              <InstanceInfo />
+            </Suspense>
+          )}
+          {showAddInstance && (
+            <Suspense fallback={<Loading />}>
+              <AddInstance />
+            </Suspense>
+          )}
+        </div>
       </section>
     </main>
   );
 };
 
-export default Instance;
+export default Users;

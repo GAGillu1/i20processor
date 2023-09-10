@@ -8,17 +8,22 @@ export async function PUT(
   { params }: { params: { username: string } }
 ) {
   try {
-    const usr = params.username;
-    const body = await request.formData();
-    body.delete("cNPwd");
-    const res = await fetch("http://127.0.0.1:8081/changePwd/" + usr, {
-      method: "PUT",
-      body: body,
-      headers: getToken(request),
-    });
-    const data = await res.json();
-    console.log("changePwd", data);
-    return NextResponse.json(data, { status: res.status });
+    const basePath = process.env.BASE_PATH;
+    const changePwdApi = process.env.CHANGE_PWD;
+    if (basePath && changePwdApi) {
+      const usr = params.username;
+      const body = await request.formData();
+      body.delete("cNPwd");
+      console.log("body", body);
+      const res = await fetch(basePath + changePwdApi + usr, {
+        method: "PUT",
+        body: body,
+        headers: getToken(request),
+      });
+      const data = await res.json();
+      console.log("changePwd", data);
+      return NextResponse.json(data, { status: res.status });
+    }
   } catch (err: any) {
     return NextResponse.json(
       { message: "Something went wrong!" },

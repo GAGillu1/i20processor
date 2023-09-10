@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "../../../components/utils/getTokens";
-import { revalidateTag } from "next/cache";
 // -----------------------
-// GET - ALL USERS
+// GET - ALL INSTANCES
 export async function GET(request: NextRequest) {
-  const res = await fetch("http://127.0.0.1:8081/users", {
+  const res = await fetch("http://127.0.0.1:8081/instance", {
     headers: getToken(request),
-    next: { tags: ["userList"] },
   });
 
   const data = await res.json();
-  console.log("users", data);
+  console.log("instance", data);
   switch (res.status) {
     case 200: {
       return NextResponse.json(data);
@@ -24,18 +22,17 @@ export async function GET(request: NextRequest) {
   }
 }
 // -----------------------
-// POST - ADD NEW USER
+// POST - ADD NEW INSTANCE
 export async function POST(request: NextRequest) {
   try {
     const body = await request.formData();
-    const res = await fetch("http://127.0.0.1:8081/users", {
+    const res = await fetch("http://127.0.0.1:8081/instance", {
       method: "POST",
       body: body,
       headers: getToken(request),
     });
 
     if (!res.ok) throw res;
-    revalidateTag("userList");
     return NextResponse.json({
       message: "User added successfully",
       data: res,

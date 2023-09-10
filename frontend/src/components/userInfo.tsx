@@ -7,7 +7,7 @@ import * as React from "react";
 import { userSchema } from "./utils/valSchemas";
 import { userModel } from "./utils/models";
 import { userInfoIV } from "./utils/initialValues";
-import { Toggle } from "./utils/myInputs";
+import { MySubmit, Toggle } from "./utils/myInputs";
 import { EditIcon, SaveIcon } from "@/assets/myIcons";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
@@ -16,16 +16,20 @@ import getFormData from "./utils/getFormData";
 const UserInfo = () => {
   const [userInfo, setUserInfo] = useState<userModel>(userInfoIV);
   const username = useSearchParams().get("user");
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [editable, setEditable] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
+    setDataLoading(true);
     getUserInfo(username);
+    setEditable(true);
   }, [username]);
 
   const updateUser = async (values: userModel) => {
     try {
+      setLoading(true);
+      console.log("userInfo", values);
       const res = await fetch("/api/users/" + username, {
         method: "PUT",
         body: getFormData(values),
@@ -37,6 +41,8 @@ const UserInfo = () => {
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,8 +51,7 @@ const UserInfo = () => {
       .then((res) => res.json())
       .then((usrInfo) => setUserInfo(usrInfo.data))
       .then(() => {
-        console.log("userInfo", userInfo);
-        setLoading(false);
+        setDataLoading(false);
       });
   };
 
@@ -55,28 +60,30 @@ const UserInfo = () => {
       <h1 className="text-center font-bold text-xl text-slate-700 py-2">
         User Info
       </h1>
-      {!loading && (
+      {!dataLoading && (
         <Formik
           initialValues={userInfo}
           validationSchema={userSchema}
           onSubmit={(values) => updateUser(values)}
         >
           <section>
-            <Toggle />
+            <Field
+              component={Toggle}
+              name="active"
+              active={userInfo.active}
+              disabled={editable}
+            />
+            {/* <Toggle /> */}
             <Form>
               <label htmlFor="username">Username</label>
-              <Field name="username" className="" readOnly={editable} />
+              <Field name="username" readOnly={editable} />
               <ErrorMsg name="username" />
-              <label htmlFor="fullname" className="">
-                Full name
-              </label>
-              <Field name="fullname" className="" readOnly={editable} />
+              <label htmlFor="fullname">Full name</label>
+              <Field name="fullname" readOnly={editable} />
               <ErrorMsg name="fullname" />
-              <label htmlFor="email" className="">
-                Email
-              </label>
+              <label htmlFor="email">Email</label>
               <br />
-              <Field name="email" className="" readOnly={editable} />
+              <Field name="email" readOnly={editable} />
               <ErrorMsg name="email" />
               <label htmlFor="role" className="">
                 Role
@@ -106,17 +113,19 @@ const UserInfo = () => {
                   className={`bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide ${
                     editable ? "" : " hidden"
                   }`}
-                  onClick={() =>
-                    editable ? setEditable(false) : setEditable(true)
-                  }
+                  onClick={() => setEditable(!editable)}
                 >
                   <EditIcon />
                   Edit
                 </button>
-                <button type="submit" hidden={editable}>
+                <MySubmit
+                  hidden={editable}
+                  loading={loading}
+                  loadingMsg={"Saving"}
+                  action="Save"
+                >
                   <SaveIcon />
-                  Save
-                </button>
+                </MySubmit>
               </div>
             </Form>
           </section>
