@@ -745,7 +745,7 @@ def isntance():
         institutionid=request.headers.get('institutionid')
         result = instanceget(institutionid)
         result_dict = result.to_dict(orient='records')
-        return jsonify({'data': 'Fetched instances', 'result': result_dict})
+        return jsonify({'message': 'Fetched instances', 'data': result_dict})
 
 @app.route('/log',methods=['GET'])
 def processed():
