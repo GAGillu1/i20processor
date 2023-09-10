@@ -10,6 +10,14 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from preProcessor.issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
+from flask_socketio import SocketIO
+from flask import Flask
+from flask_cors import CORS
+import secrets
+app = Flask(__name__,template_folder='../../',static_folder='../../static')
+CORS(app)
+app.secret_key = secrets.token_bytes(32)
+socketio = SocketIO(app,cors_allowed_origins="*")
 
 class ProgressBar:
     def __init__(self, max_count):
@@ -419,6 +427,7 @@ def testing_main(url, driver, excel_file):
             progress_bar.processed_count = index + 1
             progressBar_value = (progress_bar.processed_count/progress_bar.max_count)*100
             logger.info(f"percentage completed: {progressBar_value}")
+            socketio.emit('preprocessor', progressBar_value)
             logger.info(progress_bar.__str__())
 
         code_end_time = time.time()  # capturing the end time of the code execution
