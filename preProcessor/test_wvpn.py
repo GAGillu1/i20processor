@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from preProcessor.issmfilelog import logger
 import time
-def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file, instance):
+def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file, instance, socketio):
     status = None
     message = ""
     try:
@@ -87,7 +87,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
                 logger.info(f"login success")
             # driver = webdriver.Chrome()  # You may need to specify the path to the chromedriver executable
             # driver.get(new_tab_url)
-                status, message = testing_main(new_tab_url, browser, excel_file)
+                status, message = testing_main(new_tab_url, browser, excel_file, socketio)
         browser.quit()  # irrespective of success or failure we are quitting the driver
         logger.info("new tab successfully redirected")
     except Exception as e:

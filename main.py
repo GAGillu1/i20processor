@@ -107,7 +107,7 @@ def process():
             set_new_log_file()
             logger.info(f"started process function in app.py")
             socketio.emit('preProcessor', 1.0)
-            status, text = vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file_name, instance)
+            status, text = vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file_name, instance, socketio)
             print(f"status: {status}, text: {text}")
             if status and text == "Partial success":
                 # with ZipFile(zip_filename, 'w') as zipf:
