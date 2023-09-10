@@ -1,53 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "../../../components/utils/getTokens";
-import { revalidateTag } from "next/cache";
 // -----------------------
 // GET - ALL USERS
+const basePath = process.env.BASE_PATH;
+const usersApi = process.env.USERS;
 export async function GET(request: NextRequest) {
-  const res = await fetch("http://127.0.0.1:8081/users", {
-    headers: getToken(request),
-    next: { tags: ["userList"] },
-  });
-
-  const data = await res.json();
-  console.log("users", data);
-  switch (res.status) {
-    case 200: {
-      return NextResponse.json(data);
-    }
-    default: {
+  if (basePath && usersApi)
+    try {
+      const res = await fetch(basePath + usersApi, {
+        headers: getToken(request),
+      });
+      const data = await res.json();
+      return NextResponse.json(data, { status: res.status });
+    } catch (err: any) {
       return NextResponse.json(
-        { message: data.message },
-        { status: res.status }
+        { message: "Something went wrong!" },
+        { status: 500 }
       );
     }
-  }
 }
 // -----------------------
 // POST - ADD NEW USER
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.formData();
-    const res = await fetch("http://127.0.0.1:8081/users", {
-      method: "POST",
-      body: body,
-      headers: getToken(request),
-    });
-
-    if (!res.ok) throw res;
-    revalidateTag("userList");
-    return NextResponse.json({
-      message: "User added successfully",
-      data: res,
-    });
-  } catch (err: any) {
-    console.log("route handler", err);
-    return NextResponse.json(
-      {
-        message: "Something went wrong!",
-        data: err,
-      },
-      { status: err.status }
-    );
-  }
+  if (basePath && usersApi)
+    try {
+      const body = await request.formData();
+      const res = await fetch(basePath + usersApi, {
+        method: "POST",
+        body: body,
+        headers: getToken(request),
+      });
+      const data = await res.json();
+      return NextResponse.json(data, { status: res.status });
+    } catch (err: any) {
+      return NextResponse.json(
+        { message: "Something went wrong!" },
+        { status: err.status }
+      );
+    }
 }

@@ -14,14 +14,12 @@ export async function PUT(
       const usr = params.username;
       const body = await request.formData();
       body.delete("cNPwd");
-      console.log("body", body);
       const res = await fetch(basePath + changePwdApi + usr, {
         method: "PUT",
         body: body,
         headers: getToken(request),
       });
       const data = await res.json();
-      console.log("changePwd", data);
       return NextResponse.json(data, { status: res.status });
     }
   } catch (err: any) {

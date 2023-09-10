@@ -42,11 +42,11 @@ const Logs = () => {
   }, []);
   const getLogs = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8081/log");
+      const res = await fetch("api/logs");
       if (!res.ok) throw res;
       const data = await res.json();
       console.log("logData", data);
-      setLogData(data);
+      setLogData(data.data);
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);

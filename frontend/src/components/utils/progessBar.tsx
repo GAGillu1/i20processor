@@ -1,6 +1,9 @@
 // Upload > Split > Sign > Zip > Post to slate > Download
 
-const progress = ["1", "1/6", "2/6", "4/6", "5/6", "full"];
+import React from "react";
+import { useMyContext } from "../myContext";
+
+const progress = ["1", "w-1/6", "w-2/6", "w-3/6", "w-4/6", "w-5/6"];
 const bannerArr = [
   "Add Sign:",
   "Split Failure:",
@@ -15,6 +18,17 @@ const bannerArr = [
   "Split Message",
   "Zip Message:",
 ];
+
+const Results = () => {
+  return bannerArr.map((item, i) => {
+    return (
+      <div className="col-span-3" key={i}>
+        <p className="font-semibold">{item}</p>
+        <p className="col-span-2">All Good</p>
+      </div>
+    );
+  });
+};
 
 const stepArr = ["Uploading", "Splitting", "Signing", "Zipping", "Posting"];
 const Steps = () => {
@@ -49,14 +63,18 @@ export const ProgressBar = () => {
 };
 
 export const ProgressBar1 = () => {
+  const data = useMyContext();
   return (
     <section className="section">
       <div className="w-[90%] mx-auto">
-        <h3 className="animate-pulse text-center">{`${stepArr[1]}`}</h3>
+        <h3 className="animate-pulse text-center">{`${
+          stepArr[data.responseData]
+        }`}</h3>
         <div className="mt-4 h-2 w-full rounded-full bg-slate-200">
           <div
             className={
-              "h-2 animate-pulse bg-indigo-400 rounded-full " + `w-1/2`
+              `h-2 animate-pulse bg-indigo-400 rounded-full ` +
+              `${progress[data.responseData]}`
             }
           />
         </div>
@@ -65,4 +83,13 @@ export const ProgressBar1 = () => {
   );
 };
 
-const Response = () => {};
+export const Response = () => {
+  return (
+    <section className="w-[90%] mx-auto">
+      <h2 className="formHeader">Results</h2>
+      <div className="grid grid-cols-3 gap-y-2 items-center">
+        <Results />
+      </div>
+    </section>
+  );
+};

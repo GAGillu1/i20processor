@@ -12,7 +12,7 @@ export function MyContextProvider({ children }: { children: React.ReactNode }) {
   const getLocalData = async () => {
     const ifData = localStorage.getItem("data");
     if (ifData) {
-      console.log("GET", JSON.parse(ifData));
+      // console.log("GET", JSON.parse(ifData));
       const data = JSON.parse(ifData);
       if (now.getTime() > data.expiry) {
         localStorage.clear();
@@ -100,7 +100,8 @@ function MyReducer(data: data, action: any) {
         username: action.action.username,
       };
     }
-    case "responseUpdate": {
+    case "statusUpdate": {
+      console.log("action", action);
       return {
         ...data,
         responseData: action.action,

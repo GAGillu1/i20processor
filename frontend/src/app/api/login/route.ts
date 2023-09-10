@@ -14,26 +14,18 @@ export async function POST(request: NextRequest) {
         method: "POST",
         headers: headers,
       });
-
       const data = await res.json();
-      console.log("login data", data);
-
-      switch (res.status) {
-        case 200: {
-          res.headers.forEach((e, k) => {
-            console.log("headers", k, e);
-            cookieStore.set(k, e, {
-              secure: true,
-              httpOnly: true,
-              expires: Date.now() + 60 * 60 * 1000,
-            });
+      if (res.ok) {
+        res.headers.forEach((e, k) => {
+          console.log("headers", k, e);
+          cookieStore.set(k, e, {
+            secure: true,
+            httpOnly: true,
+            expires: Date.now() + 60 * 60 * 1000,
           });
-
-          return NextResponse.json(data);
-        }
-        default:
-          return NextResponse.json(data, { status: res.status });
+        });
       }
+      return NextResponse.json(data, { status: res.status });
     } catch (err: any) {
       return NextResponse.json(
         { message: "Something went wrong!" },

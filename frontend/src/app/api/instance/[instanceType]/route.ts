@@ -11,7 +11,7 @@ export async function GET(
 ) {
   if (basePath && instaceApi)
     try {
-      const type = params.instanceType;
+      const type = "/" + params.instanceType;
       const res = await fetch(basePath + instaceApi + type, {
         headers: getToken(request),
       });
@@ -31,20 +31,21 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { instanceType: string } }
 ) {
-  try {
-    const type = params.instanceType;
-    const body = await request.formData();
-    const res = await fetch("http://127.0.0.1:8081/instance/" + type, {
-      method: "PUT",
-      body: body,
-      headers: getToken(request),
-    });
-    const data = await res.json();
-    return NextResponse.json(data, { status: res.status });
-  } catch (err: any) {
-    return NextResponse.json(
-      { message: "Something went wrong!" },
-      { status: 500 }
-    );
-  }
+  if (basePath && instaceApi)
+    try {
+      const type = "/" + params.instanceType;
+      const body = await request.formData();
+      const res = await fetch(basePath + instaceApi + type, {
+        method: "PUT",
+        body: body,
+        headers: getToken(request),
+      });
+      const data = await res.json();
+      return NextResponse.json(data, { status: res.status });
+    } catch (err: any) {
+      return NextResponse.json(
+        { message: "Something went wrong!" },
+        { status: 500 }
+      );
+    }
 }
