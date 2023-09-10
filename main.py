@@ -46,7 +46,6 @@ import os
 from flask_cors import CORS
 import shutil
 from preProcessor.issmfilelog import set_new_log_file, logger
-import zipfile
 from preProcessor.test_wvpn import vpn_function
 import http
 import os
@@ -110,7 +109,7 @@ def process():
             status, text = vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file_name, instance)
             print(f"status: {status}, text: {text}")
             if status and text == "Partial success":
-                with zipfile.ZipFile(zip_filename, 'w') as zipf:
+                with ZipFile(zip_filename, 'w') as zipf:
                     # Add the files to the zip archive
                     zipf.write('Duplicate.xlsx')
                     # zipf.write(file_name)
