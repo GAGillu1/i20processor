@@ -281,8 +281,7 @@ def change_password(username,password,current_password,institutionid):
             password_hash = bcrypt.hashpw(password.encode('utf-8'), salt.encode('utf-8'))
             stored_hash = user_df['hash'].values[0].encode('utf-8')
 
-
-            if password_hash ==stored_hash:
+            if password_hash !=stored_hash:
                 print(password_hash==stored_hash)
                 print("in password hash")
                 #pwd=f"{username}{random_number1}{random_number2}{special_char}"
