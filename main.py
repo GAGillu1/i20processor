@@ -346,6 +346,7 @@ def upload():
                 session['sevis_id']=f"{sevid}"
                 issm_log.logger.info(f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
             except Exception as e:
+                socketio.emit('rom',-2)
                 session['Split_Failure']=f"Splitting of file is failed {e}"
                 issm_log.logger.error(f"Splitting of file is failed {e}")
             try:
@@ -378,6 +379,7 @@ def upload():
                 else:
                    # print("Result",result)
                     msg=result
+                    socketio.emit('rom',-3)
                     session["index_error"] = f"Index file creation failed {msg}"
                     issm_log.logger.error(f"Index file creation failed {msg}")
                 #sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
@@ -413,6 +415,7 @@ def upload():
                         socketio.emit('rom', 5)
                        # print(output)
             except Exception as e:
+                socketio.emit('rom',-4)
                 session['zipmsg']=f"Files Zipping failed {e}"
                 issm_log.logger.error(f"Files Zipping failed {e}")
             remove_files()
@@ -676,10 +679,10 @@ def userpop(user):
                 fullname,email,role,upstatus=updateuserdata(user)
                 if status!=upstatus:
                     issm_log.logger.info(result)
-                    return jsonify({'message': 'User Reactivated !!!', 'data': {'fullname':fullname,'email':email,'role':role,'status':bool(upstatus)}})
+                    return jsonify({'message': 'User Reactivated !!!', 'data': {'username':user,'fullname':fullname,'email':email,'role':role,'status':bool(upstatus)}})
                 else:
                     issm_log.logger.info(result)
-                    return jsonify({'message': 'User updated','data': {'fullname': fullname, 'email': email, 'role': role,'status':bool(status)}})
+                    return jsonify({'message': 'User updated','data': {'username':user,'fullname': fullname, 'email': email, 'role': role,'status':bool(status)}})
             else:
                 return jsonify(({'message':'user couldnt be updated'}))
 
