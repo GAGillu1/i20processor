@@ -23,6 +23,8 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         browser.get(login_url)
         time.sleep(1)
         logger.info("before entering username")
+        # Validating VPN credentials
+        socketio.emit('preProcessor', 2)
         browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(vpn_username)
         time.sleep(1)
         logger.info(f"before credentials")
@@ -38,6 +40,8 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             return False, "Invalid VPN username or password"
         except NoSuchElementException:
             logger.info("VPN login success")
+            #  VPN login success
+            socketio.emit('preProcessor', 3)
             #  add quick connection button  --  added
             # time.sleep(15)
             wait = WebDriverWait(browser, 10)  # 10 seconds timeout
@@ -45,11 +49,11 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
                 ec.visibility_of_element_located((By.XPATH, '//*[@id="navbar-view-section"]/div/div/div[2]/div[2]/button[1]')))
             # Click the element
             element.click()
-            input_url = ""
             # time.sleep(2)
+
             if instance == "Prod":
                 # input_url = "issm-prod.newhaven.edu"
-                input_url = "issm-prod"
+                input_url = "www.google.com"
             elif instance == "Test":
                 input_url = "issm-test.newhaven.edu"
             else:
@@ -62,6 +66,8 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             logger.info("redirect success")
             # time.sleep(2)
             # add executed wait here
+            #  ISSM login validation
+            socketio.emit('preProcessor', 4)
             new_tab_handle = browser.window_handles[-1]  # Get the handle of the new tab
             browser.switch_to.window(new_tab_handle)
             # time.sleep(1)
@@ -85,6 +91,8 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
                 # print(text_login)
             except NoSuchElementException:
                 logger.info(f"login success")
+                #  ISSM login success
+                socketio.emit('preProcessor', 5)
             # driver = webdriver.Chrome()  # You may need to specify the path to the chromedriver executable
             # driver.get(new_tab_url)
                 status, message = testing_main(new_tab_url, browser, excel_file, socketio)

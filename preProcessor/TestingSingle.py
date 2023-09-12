@@ -326,6 +326,7 @@ def testing_main(url, driver, excel_file, socketio):
         header_row = sheet[1]
         header_values = [cell.value for cell in header_row]
         num_rows_excluding_header = sheet.max_row - 1
+        socketio.emit('preProcessorMaxCount', num_rows_excluding_header)
         progress_bar = ProgressBar(num_rows_excluding_header)
 
         # Find the column indices for relevant fields
@@ -433,8 +434,8 @@ def testing_main(url, driver, excel_file, socketio):
             logger.info(f"Index No : {index}, student ID : {student.CampusID}")
             process_student(student, url, config, driver, progress_bar)
             progress_bar.processed_count = index + 1
-            progressBar_value = math.floor((progress_bar.processed_count/progress_bar.max_count)*6)
-            logger.info(f"percentage completed: {progressBar_value}")
+            progressBar_value = index + 6
+            logger.info(f"Progress bar value: {progressBar_value}")
             socketio.emit('preProcessor', progressBar_value)
             logger.info(progress_bar.__str__())
 
