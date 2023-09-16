@@ -3,7 +3,6 @@ import { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  console.log(request.nextUrl);
   const token = request.cookies.get("authorization")?.value;
   const role = request.cookies.get("role")?.value;
 
@@ -16,9 +15,6 @@ export function middleware(request: NextRequest) {
   const isAtHome = path === "/";
 
   if (token) {
-    if (isUser && isAtHome) {
-      return NextResponse.redirect(new URL("/i20/post-processor", request.url));
-    }
     if (isPublicPath) {
       return NextResponse.redirect(new URL("/", request.url));
     }
@@ -35,12 +31,11 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/",
-    "/:username",
     "/notFound",
+    "/not-authorized",
     "/i20",
     "/i20/pre-processor",
     "/i20/post-processor",
-    "/i20/logs",
     "/admin",
     "/admin/users",
     "/admin/instance",

@@ -4,42 +4,48 @@ import { Field, Form, Formik } from "formik";
 import { useState, useEffect } from "react";
 import { useMyContext } from "@/components/myContext";
 import { i20Schema } from "@/components/utils/valSchemas";
-import { i20Model } from "@/components/utils/models";
+import { i20Model, sParams } from "@/components/utils/models";
 import { i20IV } from "@/components/utils/initialValues";
 import { FileInput, MyInput } from "@/components/utils/myInputs";
 import DsoList from "@/components/dsoList";
 import ErrorMsg from "@/components/errorMsg";
 import { toast } from "react-hot-toast";
 import getFormData from "@/components/utils/getFormData";
-import {
-  ProgressBar,
-  ProgressBar1,
-  Response,
-} from "@/components/utils/progessBar";
+import { ProgressBar, Response } from "@/components/utils/progessBar";
+import { useRouter } from "next/navigation";
 
-async function postI20(values: i20Model) {
-  try {
-    const res = await fetch("/api/i20/post-processor", {
-      method: "POST",
-      body: getFormData(values),
-    });
-
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const downloadLink = document.createElement("a");
-    downloadLink.href = url;
-    downloadLink.setAttribute("download", "i20.zip");
-    downloadLink.click();
-    window.URL.revokeObjectURL(url);
-  } catch {
-    toast.error("Something went wrong");
-  }
-}
-
-const Page = () => {
+const Page = ({ searchParams }: sParams) => {
+  const router = useRouter();
   const [toslate, setToslate] = useState(false);
-  const [showResults, setShowResults] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const showResults = searchParams?.result;
   const data = useMyContext();
+
+  async function postI20(values: i20Model) {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/i20/post-processor", {
+        method: "POST",
+        body: getFormData(values),
+      });
+      if (!res.ok) throw res;
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.setAttribute("download", "i20.zip");
+      downloadLink.click();
+      window.URL.revokeObjectURL(url);
+      toast.success("Download Successful!");
+      router.push("/i20/post-processor?result=true");
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     setToslate(data.toSlate === "y");
   }, [data.toSlate, data]);
@@ -111,7 +117,6 @@ const Page = () => {
                       name="prog"
                       className="col-span-2"
                     >
-                      {/* <option value="">Select Program</option> */}
                       <option value="ug">Under Graduate</option>
                       <option value="g">Graduate</option>
                     </Field>
@@ -126,8 +131,7 @@ const Page = () => {
           </Formik>
         )}
       </section>
-      {/* <ProgressBar /> */}
-      <ProgressBar1 />
+      {loading && <ProgressBar />}
     </main>
   );
 };

@@ -100,11 +100,25 @@ function MyReducer(data: data, action: any) {
         username: action.action.username,
       };
     }
-    case "statusUpdate": {
-      console.log("action", action);
+    case "preProcessUpdate": {
+      console.log("Pre-process Context", action.action);
       return {
         ...data,
-        responseData: action.action,
+        preProcessStatus: action.action,
+      };
+    }
+    case "preProcessMaxCount": {
+      console.log("Pre-processMaxCount Context", action.action);
+      return {
+        ...data,
+        preProcessMaxCount: action.action,
+      };
+    }
+    case "postProcessUpdate": {
+      console.log("Post-process Context", action.action);
+      return {
+        ...data,
+        postProcessStatus: action.action,
       };
     }
     default: {
@@ -120,7 +134,9 @@ const initialData = {
   loggedIn: false,
   toSlate: "n",
   dsoSign: false,
-  responseData: "",
+  preProcessStatus: 0,
+  postProcessStatus: 0,
+  preProcessMaxCount: 0,
 };
 
 interface data {
@@ -130,5 +146,7 @@ interface data {
   loggedIn: boolean;
   toSlate: string;
   dsoSign: boolean;
-  responseData: any;
+  preProcessStatus: number;
+  postProcessStatus: number;
+  preProcessMaxCount: number;
 }

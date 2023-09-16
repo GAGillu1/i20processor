@@ -38,6 +38,7 @@ const UserInfo = () => {
       const data = await res.json();
       console.log(data);
       toast.success(data.message);
+      getUserInfo(username);
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);

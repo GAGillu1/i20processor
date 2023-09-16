@@ -1,5 +1,5 @@
 "use client";
-import { AdminIcon, DsoIcon } from "@/assets/myIcons";
+import { AdminIcon, DsoIcon, LogsIcon } from "@/assets/myIcons";
 import { HomeIcon } from "@/assets/myIcons";
 import { I20Icon } from "@/assets/myIcons";
 import { LogoutIcon } from "@/assets/myIcons";
@@ -24,7 +24,7 @@ const NavBar = () => {
 
   return (
     <nav className="p-12 flex flex-col h-screen items-center font-semibold text-gray-600 justify-between tracking-wider top-0">
-      <div className=" py-10">
+      <div className="pt-3">
         <Link href={"/"} className="font-extrabold text-3xl text-indigo-700 ">
           I20 Processor
         </Link>
@@ -63,6 +63,13 @@ const NavBar = () => {
             <DsoIcon /> DSO
           </Link>
         )}
+        <Link
+          href={"/logs"}
+          className={`navLink ${path === "/logs" ? "activeNavLink" : ""}`}
+        >
+          <LogsIcon />
+          Logs
+        </Link>
       </div>
       <div>
         <Link href={"/support"} className="navLink">

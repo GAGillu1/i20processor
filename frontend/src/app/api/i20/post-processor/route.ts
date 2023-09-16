@@ -21,3 +21,22 @@ export async function POST(request: NextRequest) {
       );
     }
 }
+// ----------------------------
+// GET - RESULTS
+export async function GET(request: NextRequest) {
+  const tempApi = "/getResponse";
+  if (basePath && i20Api)
+    try {
+      const res = await fetch(basePath + tempApi, {
+        headers: getToken(request),
+      });
+
+      const data = await res.json();
+      return NextResponse.json(data, { status: res.status });
+    } catch (err: any) {
+      return NextResponse.json(
+        { message: "Something went wrong!" },
+        { status: 500 }
+      );
+    }
+}

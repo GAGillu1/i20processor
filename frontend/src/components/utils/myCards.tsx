@@ -2,6 +2,7 @@ import {
   AddInstanceIcon,
   AddUserIcon,
   AdminIcon,
+  ChangePwdIcon,
   DsoIcon,
   I20Icon,
   InstanceIcon,
@@ -131,6 +132,15 @@ export const LogsCard = () => {
   return (
     <Card href="/logs" title="Logs">
       <LogsIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
+// CHANGE PASSWORD CARD
+export const ChangePasswordCard = () => {
+  return (
+    <Card href="/profile" title="Change Password">
+      <ChangePwdIcon className="w-16 h-16 text-indigo-900 mx-auto" />
     </Card>
   );
 };

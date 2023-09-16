@@ -18,7 +18,7 @@ const Header = () => {
       </div>
       <Link
         className="bg-white rounded-lg tracking-wider py-2 px-4 font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition duration-150 flex items-center gap-2"
-        href={"/" + userData.username}
+        href={"/profile"}
       >
         <ProfileIcon />
         Profile

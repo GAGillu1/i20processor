@@ -100,6 +100,6 @@ export const preProcessorSchema = Yup.object({
   issmPassword: Yup.string()
     .max(50, "You may only enter upto 50 characters")
     .required("Please enter ISSM Password"),
-  excelFile: Yup.object().required("Please attach the Excel file"),
+  excelFile: Yup.mixed().required("Please attach the Excel file"),
   instance: Yup.string().required("Please select an Instance"),
 });
