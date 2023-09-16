@@ -60,6 +60,7 @@ def updateinstance(password,username,institutionid):
 def instanceget(institutionid):
     try:
         result=getinstances(institutionid)
+        result.rename(columns={'jsonendpoint':'endpoint','jsontype':'type'},inplace=True)
         return result
     except Exception as e:
         return "error ininstance get ",e
