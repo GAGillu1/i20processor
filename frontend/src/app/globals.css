@@ -13,7 +13,7 @@ button[type="submit"] {
 input,
 select,
 textarea {
-  @apply rounded p-1 outline-none font-normal text-slate-600 bg-slate-200 outline outline-2 -outline-offset-1 hover:outline-indigo-400 active:outline-indigo-500 focus:outline-indigo-500 w-full disabled:hover:outline-none read-only:opacity-70 disabled:opacity-70;
+  @apply rounded p-1 outline-none font-normal text-slate-600 bg-slate-200 outline outline-2 -outline-offset-1 hover:outline-indigo-400 active:outline-indigo-500 focus:outline-indigo-500 w-full disabled:hover:outline-none read-only:opacity-70 disabled:opacity-70 read-only:hover:outline-none read-only:focus:outline-none;
 }
 
 input[type="file"] {

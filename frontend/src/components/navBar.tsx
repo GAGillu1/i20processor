@@ -23,10 +23,10 @@ const NavBar = () => {
   }
 
   return (
-    <nav className="p-12 flex flex-col h-screen items-center font-semibold text-gray-600 justify-between tracking-wider top-0">
+    <nav className="py-12 px-10 flex flex-col h-screen items-center font-semibold text-gray-600 justify-between tracking-wider top-0">
       <div className="pt-3">
         <Link href={"/"} className="font-extrabold text-3xl text-indigo-700 ">
-          I20 Processor
+          I-20 Processor
         </Link>
       </div>
       <div className="flex gap-4 justify-between flex-col">
@@ -72,7 +72,7 @@ const NavBar = () => {
         </Link>
       </div>
       <div>
-        <Link href={"/support"} className="navLink">
+        <Link href={"/support"} className="navLink text-slate-500 font-normal">
           <SupportIcon /> Support
         </Link>
         <button

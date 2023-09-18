@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
-import { useMyContext } from "@/components/myContext";
+import { useContextDispatch, useMyContext } from "@/components/myContext";
 import { preProcessorSchema } from "@/components/utils/valSchemas";
 import { preProcessorModel, sParams } from "@/components/utils/models";
 import { preProcessorIV } from "@/components/utils/initialValues";
@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 
 const Page = ({ searchParams }: sParams) => {
   const router = useRouter();
+  const dispatch = useContextDispatch();
   async function postI20(values: preProcessorModel) {
     try {
       setLoading(true);
@@ -43,6 +44,7 @@ const Page = ({ searchParams }: sParams) => {
       toast.error(data.message);
     } finally {
       setLoading(false);
+      dispatch({ type: "preProcessUpdate", action: 0 });
     }
   }
   const [loading, setLoading] = useState(false);

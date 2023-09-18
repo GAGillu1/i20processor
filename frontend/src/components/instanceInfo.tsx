@@ -64,7 +64,7 @@ const InstanceInfo = () => {
         >
           <section>
             <Form>
-              <label htmlFor="type">Type</label>
+              <label htmlFor="type">Instance Type</label>
               <Field name="type" readOnly />
               <ErrorMsg name="type" />
               <label htmlFor="username">Username</label>
@@ -77,12 +77,6 @@ const InstanceInfo = () => {
               <Field name="endpoint" component={MyTextArea} readOnly />
               <ErrorMsg name="endpoint" />
               <div className="flex gap-2 items-center justify-end pt-4">
-                <Link
-                  href={`/admin/instance/?instance=${instanceType}&addInstance=true`}
-                  className="bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide"
-                >
-                  + Add Instance
-                </Link>
                 <button
                   type="button"
                   className={`bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide ${

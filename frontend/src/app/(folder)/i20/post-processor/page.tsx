@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Field, Form, Formik } from "formik";
 import { useState, useEffect } from "react";
-import { useMyContext } from "@/components/myContext";
+import { useContextDispatch, useMyContext } from "@/components/myContext";
 import { i20Schema } from "@/components/utils/valSchemas";
 import { i20Model, sParams } from "@/components/utils/models";
 import { i20IV } from "@/components/utils/initialValues";
@@ -20,6 +20,7 @@ const Page = ({ searchParams }: sParams) => {
   const [loading, setLoading] = useState(false);
   const showResults = searchParams?.result;
   const data = useMyContext();
+  const dispatch = useContextDispatch();
 
   async function postI20(values: i20Model) {
     try {
@@ -43,6 +44,7 @@ const Page = ({ searchParams }: sParams) => {
       toast.error(data.message);
     } finally {
       setLoading(false);
+      dispatch({ type: "postProcessUpdate", action: 0 });
     }
   }
 
