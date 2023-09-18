@@ -186,6 +186,17 @@ def userdata(username):
         print("No data returned from the query.")
     dba.close()
 
+def getinstaceinfo(type,institutionid):
+    dba.connect()
+    query="select jsonendpoint,username,instancePassword,jsontype from instance where jsontype=? and institutionID=? "
+    result=dba.execute_query(query,[type,institutionid])
+    if result is not None:
+        # Use the result DataFrame as needed.
+
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query.")
+    dba.close()
 # def updateactive(user,activeid):
 #     dba.connect()
 #     query="select active from users where username=?"

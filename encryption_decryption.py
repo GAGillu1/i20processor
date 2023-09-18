@@ -59,10 +59,10 @@ def decryptsalt(enctext):
             label=None
         )
     )
-    print("Encrypted message is ",enctext)
-
-    print("Decrypted Message:", plaintext.decode('utf-8'))
-
+    # print("Encrypted message is ",enctext)
+    #
+    # print("Decrypted Message:", plaintext.decode('utf-8'))
+    return plaintext.decode('utf-8')
 # message='$2b$12$oMKP9mEMle1soKX4OlGC/O'
 # message=message.encode('utf-8')
 # print(type(message))
