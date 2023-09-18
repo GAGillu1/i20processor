@@ -796,6 +796,15 @@ def isntance():
         result_dict = result.to_dict(orient='records')
         return jsonify({'message': 'Fetched instances', 'data': result_dict})
 
+@app.route('/instance/<string:type>',methods=['GET'])
+def instancetype(type):
+    if request.method == 'GET':
+        institutionid=request.headers.get('institutionid')
+        result=instancetypeget(institutionid,type)
+        print("result is ",result)
+        #result_dict = result.to_dict(orient='records')
+        return jsonify({'message': 'Fetched instance info ', 'data': result})
+    
 @app.route('/log',methods=['GET'])
 def processed():
     if request.method=='GET':

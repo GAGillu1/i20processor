@@ -1,7 +1,7 @@
 import requests
 from cryptography.fernet import Fernet
-from dbstatements import selectinstance, insertinstance, updateinstancedb, getinstances
-from encryption_decryption import encryptsalt
+from dbstatements import selectinstance, insertinstance, updateinstancedb, getinstances, getinstaceinfo
+from encryption_decryption import encryptsalt, decryptsalt
 
 """Decrypting the password with the key """
 def decrypt(instancetype,universityname):
@@ -38,7 +38,7 @@ def post(file, instance):
 def instanceinsert(url,type,username,password,universityid):
     try:
         print("inin i")
-        password=password.encode('utf-8')
+      #  password=password.encode('utf-8')
         encrypetedpwd=encryptsalt(password)
         print(encrypetedpwd)
         k=insertinstance(url,type,username,encrypetedpwd,universityid)
@@ -64,3 +64,24 @@ def instanceget(institutionid):
         return result
     except Exception as e:
         return "error ininstance get ",e
+
+def instancetypeget(institutionid,type):
+
+        result=getinstaceinfo(type,institutionid)
+        print('result is ',result)
+        endpoint=result['jsonendpoint'][0]
+        print('endpoint is ',endpoint)
+        username=result['username'][0]
+        type=result['jsontype'][0]
+        encpassword=result['instancePassword'][0]
+        print('encpassword is ',encpassword)
+        password=decryptsalt(encpassword)
+        print("passwors is ",password)
+        # result.rename(columns={'jsonendpoint': 'endpoint', 'jsontype': 'type'}, inplace=True)
+        finalresult={'endpoint':endpoint,'username':username,'type':type,'password':password}
+       # print(finalresult)
+        return finalresult
+
+
+# k=instancetypeget('A0494CF8-A800-47B7-93DB-0974B04A4568','issm')
+# print(k)
