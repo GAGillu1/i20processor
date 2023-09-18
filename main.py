@@ -32,7 +32,7 @@ from fitzsplit import splitsignature, sign_details
 from login import checklogin, registeruser, forgotpassword1, users, userpopup, change_password, deleteuser, \
     token_required, userupdate,updateuserdata
 from name import names_list, signaturefile, signadd
-from postToSlate import post, updateinstance, instanceget
+from postToSlate import post, updateinstance, instanceget, instancetypeget
 import datetime
 import base64
 from datetime import timedelta
@@ -804,7 +804,7 @@ def instancetype(type):
         print("result is ",result)
         #result_dict = result.to_dict(orient='records')
         return jsonify({'message': 'Fetched instance info ', 'data': result})
-    
+
 @app.route('/log',methods=['GET'])
 def processed():
     if request.method=='GET':
