@@ -38,9 +38,10 @@ def post(file, instance):
 def instanceinsert(url,type,username,password,universityid):
     try:
         print("inin i")
-      #  password=password.encode('utf-8')
+        password=password.encode('utf-8')
         encrypetedpwd=encryptsalt(password)
         print(encrypetedpwd)
+        print(url,type,username,universityid)
         k=insertinstance(url,type,username,encrypetedpwd,universityid)
         print(k)
         return 'Instance inserted successfully'
@@ -48,11 +49,11 @@ def instanceinsert(url,type,username,password,universityid):
         return f"Error in inserting instance {e}"
 
 
-def updateinstance(password,username,institutionid):
+def updateinstance(password,username,institutionid,type):
     try:
         password=password.encode('utf-8')
         encrypetedpwd = encryptsalt(password)
-        k=updateinstancedb(encrypetedpwd,username,institutionid)
+        k=updateinstancedb(encrypetedpwd,username,institutionid,type)
         return "Updated successfully"
     except Exception as e:
         return f"Error in updating instance {e}"

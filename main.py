@@ -783,20 +783,13 @@ def isntance():
             return jsonify({'message':'Instance insertion failed'})
 
 
-    if request.method=='PUT':
-        type=request.form.get('jsontype')
-        username = request.form.get('username')
-        password = request.form.get('password')
-        institutionid = request.headers.get('institutionid')
-        updateinstance(password,username,institutionid)
-
     if request.method=='GET':
         institutionid=request.headers.get('institutionid')
         result = instanceget(institutionid)
         result_dict = result.to_dict(orient='records')
         return jsonify({'message': 'Fetched instances', 'data': result_dict})
 
-@app.route('/instance/<string:type>',methods=['GET'])
+@app.route('/instance/<string:type>',methods=['GET','PUT'])
 def instancetype(type):
     if request.method == 'GET':
         institutionid=request.headers.get('institutionid')
@@ -804,7 +797,12 @@ def instancetype(type):
         print("result is ",result)
         #result_dict = result.to_dict(orient='records')
         return jsonify({'message': 'Fetched instance info ', 'data': result})
-
+    if request.method == 'PUT':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        institutionid = request.headers.get('institutionid')
+        result = updateinstance(password, username, institutionid,type)
+        return {'message': result}
 @app.route('/log',methods=['GET'])
 def processed():
     if request.method=='GET':

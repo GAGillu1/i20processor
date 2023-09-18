@@ -248,10 +248,11 @@ def getprocessed():
     dba.close()
 
 
-def updateinstancedb(password,username,institutionid):
+def updateinstancedb(password,username,institutionid,type):
     dba.connect()
-    query="update instance set instancepassword =? ,username=? where institutionID=?"
-    dba.execute_query(query,[password,username,institutionid])
+    query="update instance set instancePassword =? ,username=? where institutionID=? and jsontype=?"
+    dba.execute_query(query,[password,username,institutionid,type])
+    dba.close()
 
 
 def getinstances(institutionid):
