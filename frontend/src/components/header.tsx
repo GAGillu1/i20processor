@@ -13,7 +13,7 @@ const Header = () => {
           {greeting}, {userData.fullname}
         </h1>
         <p className="font-semibold text-lg text-slate-600">
-          Welcome to {userData.institutionname} I20 Processor..
+          Welcome to {userData.institutionname} I-20 Processor..
         </p>
       </div>
       <Link
