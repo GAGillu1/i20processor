@@ -746,7 +746,7 @@ def addsign(user):
         output_file='i20.pdf'
         institutionid=request.headers.get('institutionid')
         # sample i20 which is saved
-        pdf_filename=cwd+r'\Test_sign\i20.pdf'
+        pdf_filename=cwd+r'/Test_sign/i20.pdf'
         # if sign type is test  then we just send the pdf file file with the signature and not put those details in DB
         if sign=='test':
             """Test signature but dont add"""
