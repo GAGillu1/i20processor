@@ -18,18 +18,6 @@ export const MyInput = ({ ...props }) => {
   );
 };
 // -----------------------
-// TextArea FOR FORMIK
-export const MyTextArea = ({ ...props }) => {
-  return (
-    <textarea
-      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        props.form.setFieldValue(props.field.name, e.target.value);
-      }}
-      {...props}
-    />
-  );
-};
-// -----------------------
 // CHECKBOX FOR FORMIK
 export const MyCheckBox = ({ ...props }) => {
   return (
