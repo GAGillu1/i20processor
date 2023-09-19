@@ -456,10 +456,10 @@ def upload():
             if result is not None:
                 insertprocessed(user, sevisids, institution, str(result),processor='ISSM to Slate')
             else:
-                result = 0
+                result = "Some error"
                 # print("sevis is ",sevisids)
                 # print("institution is ",institution)
-                insertprocessed(user, sevisids, institution, str(result))
+                insertprocessed(user, sevisids, institution, str(result),processor='ISSM to Slate')
             response_msg = {
                 'Total_Pages': TotalPages,
                 'Total_Files': TotalFiles,
