@@ -3,7 +3,7 @@ from datetime import datetime
 from readdata import namesread, logusers
 from readdata import statusread
 from readdata import logsread
-from excmacro import excelmacro
+
 from flask import Flask, render_template, request, send_file, make_response, jsonify, Response, session
 
 
