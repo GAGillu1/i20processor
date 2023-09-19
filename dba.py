@@ -5,7 +5,7 @@ conn = None
 def connect():
     global conn
     conn = pyodbc.connect(
-        'Driver={SQL Server};'
+        'Driver={ODBC Driver 17 for SQL Server};'
         #'Server=localhost\SQLEXPRESS;'
         #'Server=GOVARDHAN;'
         'server=database-1.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
