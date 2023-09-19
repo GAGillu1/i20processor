@@ -25,7 +25,6 @@ export default function RootLayout({
     <MyContextProvider>
       <html lang="en">
         <body className={font.className}>
-          {/* <body> */}
           {children}
           <Footer />
           <Toaster />
