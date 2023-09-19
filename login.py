@@ -47,6 +47,7 @@ def registeruser(username,email,role,fullname,institutionid):
     emails = (df['email'].str.lower().values)
     username = username.lower()
     email = email.lower()
+
     # if username and email is already in database
     if ((usernames == username) & (emails == email)).any():
         print("Username and email combination already registered.")
