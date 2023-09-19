@@ -4,7 +4,7 @@ import { instanceIV } from "@/components/utils/initialValues";
 import { instanceModel } from "@/components/utils/models";
 import { instanceSchema } from "@/components/utils/valSchemas";
 import { Field, Form, Formik } from "formik";
-import { MySubmit, MyTextArea } from "./utils/myInputs";
+import { MySubmit } from "./utils/myInputs";
 import { useState } from "react";
 import getFormData from "./utils/getFormData";
 import { toast } from "react-hot-toast";
@@ -12,6 +12,7 @@ const AddInstance = () => {
   const [loading, setLoading] = useState(false);
   const addInstance = async (values: instanceModel) => {
     try {
+      console.log(values);
       setLoading(true);
       const res = await fetch("/api/instance", {
         method: "POST",
@@ -48,7 +49,7 @@ const AddInstance = () => {
             <Field name="password" />
             <ErrorMsg name="password" />
             <label htmlFor="endpoint">JSON Endpoint:</label>
-            <Field name="endpoint" component={MyTextArea} />
+            <Field name="endpoint" as="textarea" />
             <ErrorMsg name="endpoint" className="col-start-2 col-span-2" />
             <div className="flex items-center justify-end  pt-2">
               <MySubmit

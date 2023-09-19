@@ -1,4 +1,3 @@
-"use client";
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import type { Metadata } from "next";
@@ -26,7 +25,6 @@ export default function RootLayout({
     <MyContextProvider>
       <html lang="en">
         <body className={font.className}>
-          {/* <body> */}
           {children}
           <Footer />
           <Toaster />

@@ -4,12 +4,10 @@ import { useState, useEffect } from "react";
 import { Field, Form, Formik } from "formik";
 import ErrorMsg from "@/components/errorMsg";
 import * as React from "react";
-import { instanceSchema, userSchema } from "./utils/valSchemas";
-import { instanceModel, userModel } from "./utils/models";
-import { instanceIV, userInfoIV } from "./utils/initialValues";
-import { MyTextArea, Toggle } from "./utils/myInputs";
+import { instanceSchema } from "./utils/valSchemas";
+import { instanceModel } from "./utils/models";
+import { instanceIV } from "./utils/initialValues";
 import { EditIcon, SaveIcon } from "@/assets/myIcons";
-import Link from "next/link";
 import { toast } from "react-hot-toast";
 import getFormData from "./utils/getFormData";
 
@@ -45,7 +43,9 @@ const InstanceInfo = () => {
   const getInstanceInfo = async (instanceType: string | null) => {
     await fetch("/api/instance/" + instanceType)
       .then((res) => res.json())
-      .then((instanceInfo) => setInstanceInfo(instanceInfo.data))
+      .then((instanceInfo) => {
+        setInstanceInfo(instanceInfo.data);
+      })
       .then(() => {
         setLoading(false);
       });
@@ -74,7 +74,7 @@ const InstanceInfo = () => {
               <Field name="password" type="password" readOnly={editable} />
               <ErrorMsg name="password" />
               <label htmlFor="endpoint">Endpoint</label>
-              <Field name="endpoint" component={MyTextArea} readOnly />
+              <Field name="endpoint" as="textarea" readOnly />
               <ErrorMsg name="endpoint" />
               <div className="flex gap-2 items-center justify-end pt-4">
                 <button
