@@ -3,28 +3,27 @@ import { getToken } from "@/components/utils/getTokens";
 
 // -----------------------
 // GET - USER INFO
-const basePath = process.env.BASE_PATH;
-const usersApi = process.env.USERS;
-const addSignApi = process.env.ADD_SIGN;
+const basePath = process.env.BASE_PATH as string;
+const usersApi = process.env.USERS as string;
+const addSignApi = process.env.ADD_SIGN as string;
 export async function GET(
   request: NextRequest,
   { params }: { params: { username: string } }
 ) {
-  if (basePath && usersApi)
-    try {
-      const usr = "/" + params.username;
-      const res = await fetch(basePath + usersApi + usr, {
-        headers: getToken(request),
-      });
-      const data = await res.json();
-      console.log("user details", data);
-      return NextResponse.json(data, { status: res.status });
-    } catch (err: any) {
-      return NextResponse.json(
-        { message: "Something went wrong!" },
-        { status: 500 }
-      );
-    }
+  try {
+    const usr = "/" + params.username;
+    const res = await fetch(basePath + usersApi + usr, {
+      headers: getToken(request),
+    });
+    const data = await res.json();
+    console.log("user details", data);
+    return NextResponse.json(data, { status: res.status });
+  } catch (err: any) {
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
+  }
 }
 // -----------------------
 // PUT - UPDATE USER
@@ -32,23 +31,22 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { username: string } }
 ) {
-  if (basePath && usersApi)
-    try {
-      const usr = "/" + params.username;
-      const body = await request.formData();
-      const res = await fetch(basePath + usersApi + usr, {
-        method: "PUT",
-        body: body,
-        headers: getToken(request),
-      });
-      const data = await res.json();
-      return NextResponse.json(data, { status: res.status });
-    } catch (err: any) {
-      return NextResponse.json(
-        { message: "Something went wrong!" },
-        { status: 500 }
-      );
-    }
+  try {
+    const usr = "/" + params.username;
+    const body = await request.formData();
+    const res = await fetch(basePath + usersApi + usr, {
+      method: "PUT",
+      body: body,
+      headers: getToken(request),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (err: any) {
+    return NextResponse.json(
+      { message: "Something went wrong!" },
+      { status: 500 }
+    );
+  }
 }
 // -----------------------
 // POST - ADD SIGN

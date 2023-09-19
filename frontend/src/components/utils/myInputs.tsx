@@ -2,7 +2,6 @@
 import { useContextDispatch } from "../myContext";
 import { useState } from "react";
 import { Switch } from "@headlessui/react";
-import { useSearchParams } from "next/navigation";
 // -----------------------
 // CUSTOM INPUT
 export const MyInput = ({ ...props }) => {
@@ -63,24 +62,7 @@ export const FileInput = ({ ...props }) => {
 // -----------------------
 // TOGGLE - HEADLESS UI
 export const Toggle = ({ ...props }) => {
-  console.log("props", props);
   const [enabled, setEnabled] = useState(props.active);
-  const searchParams = useSearchParams();
-  const usr = searchParams.get("user");
-  // const toggleUser = async () => {
-  //   try {
-  //     const res = await fetch("/api/users/" + usr, {
-  //       method: "DELETE",
-  //     });
-  //     if (!res.ok) throw res;
-  //     const data = await res.json();
-  //     setEnabled(!enabled);
-  //     toast.success(data.message);
-  //   } catch (err: any) {
-  //     const data = await err.json();
-  //     toast.error(data.message);
-  //   }
-  // };
 
   const toggleUser = () => {
     setEnabled(!enabled);
@@ -118,20 +100,20 @@ export const Toggle = ({ ...props }) => {
 // -----------------------
 // SUBMIT BUTTON
 export const MySubmit = ({ ...props }) => {
-  return props.hidden ? (
-    ""
-  ) : (
-    <button type="submit" disabled={props.loading}>
-      <span
-        className="animate-ping w-2 h-2 bg-indigo-700 rounded-full absolute"
-        hidden={!props.loading}
-      />
-      <span
-        className="w-2 h-2 bg-indigo-900 rounded-full"
-        hidden={!props.loading}
-      />
-      {!props.loading && props.children}
-      {props.loading ? `${props.loadingMsg}` : `${props.action}`}
-    </button>
+  return (
+    !props.hidden && (
+      <button type="submit" disabled={props.loading}>
+        <span
+          className="animate-ping w-2 h-2 bg-indigo-700 rounded-full absolute"
+          hidden={!props.loading}
+        />
+        <span
+          className="w-2 h-2 bg-indigo-900 rounded-full"
+          hidden={!props.loading}
+        />
+        {!props.loading && props.children}
+        {props.loading ? `${props.loadingMsg}` : `${props.action}`}
+      </button>
+    )
   );
 };

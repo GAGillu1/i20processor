@@ -62,7 +62,6 @@ function MyReducer(data: data, action: any) {
     }
 
     case "login": {
-      console.log("action", action);
       return {
         ...data,
         loggedIn: true,
@@ -85,7 +84,6 @@ function MyReducer(data: data, action: any) {
       };
     }
     case "dsoSign": {
-      // console.log(action.data);
       return {
         ...data,
         dsoSign: action.data,

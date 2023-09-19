@@ -14,6 +14,7 @@ const nextConfig = {
     ADD_SIGN: "/addSign",
     LOGS: "/log",
   },
+
 };
 
 module.exports = nextConfig
