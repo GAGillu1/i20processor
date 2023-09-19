@@ -7,9 +7,13 @@ def connect():
     conn = pyodbc.connect(
         'Driver={SQL Server};'
         #'Server=localhost\SQLEXPRESS;'
-        'Server=GOVARDHAN;'
-        'Database=master;'
-        'Trusted_Connection=yes;'
+        #'Server=GOVARDHAN;'
+        'server=database-1.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
+        'Database=issm_test;'
+        'UID=admin;'
+        'PWD=password123;'
+        #'Trusted_Connection=yes;'
+
     )
 
 def close():
