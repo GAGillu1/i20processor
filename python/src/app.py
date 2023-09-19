@@ -446,14 +446,15 @@ def upload():
             addSign = session.get('addSign')
             sevisids = session.get('sevis_id')
             # print("Sevisids in response/*/*/*",sevisids)
-            user = session.get('name')
-            # print("user in response",user)
+            user = session.get('name1')
+            print("user in response",user)
+            user="abctest"
             institution = session.get('institute')
 
             result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
             # print("result is ",result)
             if result is not None:
-                insertprocessed(user, sevisids, institution, str(result),processor='ISSM toSlate')
+                insertprocessed(user, sevisids, institution, str(result),processor='ISSM to Slate')
             else:
                 result = 0
                 # print("sevis is ",sevisids)
@@ -506,8 +507,9 @@ def login():
             username = decoded_credentials[0]
             password = decoded_credentials[1]
            # print(username)
-            session['name']=decoded_credentials[0]
+            session['name1']=decoded_credentials[0]
             result=checklogin(username,password)
+
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
             if isinstance(result, tuple):
