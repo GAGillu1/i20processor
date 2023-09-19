@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
       res.headers.forEach((e, k) => {
         console.log("headers", k, e);
         cookieStore.set(k, e, {
-          secure: true,
           httpOnly: true,
           expires: Date.now() + 60 * 60 * 1000,
         });
