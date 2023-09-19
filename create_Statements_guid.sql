@@ -60,13 +60,12 @@ create Table processed(
 
 create table  instance(
 	instanceID uniqueidentifier DEFAULT NEWID(),
-	instanceUrl varchar(255) not null ,
-	instanceMsg varchar(10) not null,
+	jsonendpoint text not null ,
+	jsontype varchar(10) not null,
 	username varchar(255) not null ,
-	instancePassword varchar(255) not null ,
-	instancekey varchar(255) not null,
+	instancePassword  VARBINARY(MAX)  not null ,
 	institutionID uniqueidentifier not null, 
-	primary key (instanceId,instanceUrl),
+	primary key (instanceId),
 	foreign key (institutionId) references Institutions(institutionId))
 
 select * from Institutions
@@ -74,3 +73,11 @@ insert into institutions(institutionName,systemType) values('University of New H
 select * from InsitutionAdministrators;
 insert into InsitutionAdministrators (fullname,email,userRole,institutionId) values('MainAdmin','MainAdmin@email.com','ADMIN',(select institutionId from Institutions where institutionName='University of New Haven'))
 select * from users
+insert through code confignewuser
+select * from signatures
+insert through code addsignature1
+select * from processed
+select * from instance
+
+select * from users
+select * from signatures
