@@ -6,7 +6,7 @@ import { MyContextProvider } from "@/components/myContext";
 import { Toaster } from "react-hot-toast";
 import Socket from "@/components/utils/websockets";
 export const metadata: Metadata = {
-  title: "I20-Processor",
+  title: "I-20 Processor",
   description: "One stop shop for all I-20 needs",
 };
 

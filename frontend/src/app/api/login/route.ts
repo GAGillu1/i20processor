@@ -17,10 +17,11 @@ export async function POST(request: NextRequest) {
     if (res.ok) {
       res.headers.forEach((e, k) => {
         console.log("headers", k, e);
-        cookieStore.set(k, e, {
-          httpOnly: true,
-          expires: Date.now() + 60 * 60 * 1000,
-        });
+        if (k === "username" || k === "authorization" || k === "institutionid")
+          cookieStore.set(k, e, {
+            httpOnly: true,
+            expires: Date.now() + 60 * 60 * 1000,
+          });
       });
     }
     return NextResponse.json(data, { status: res.status });
