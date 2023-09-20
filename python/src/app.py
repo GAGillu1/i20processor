@@ -295,22 +295,22 @@ def upload():
             issm_log.logger.log_filename=f'response_{timestamp}.log'
             issm_log.set_new_log_file()
             #gettting the files from request, getting name and saving the file with that name
-            # pdf_file = request.files['i20File']
-            # issm_file = request.files['issmFile']
-            # slate_file = request.files['slateFile']
-            pdf_file=cwd+'Reprint STEM Requested Sample.pdf'
-            issm_file='issmExcel (1).xlsx'
-            slate_file='Initial I20 Batch Indexing 20230629-092740.xlsx'
-            print("files okay")
-            pdf_filename='Reprint STEM Requested Sample.pdf'
-            issm='issmExcel (1).xlsx'
-            slate='Initial I20 Batch Indexing 20230629-092740.xlsx'
-            # pdf_filename = pdf_file.filename
-            # issm = issm_file.filename
-            # slate = slate_file.filename
-            # issm_file.save(issm)
-            # slate_file.save(slate)
-            # pdf_file.save(pdf_filename)
+            pdf_file = request.files['i20File']
+            issm_file = request.files['issmFile']
+            slate_file = request.files['slateFile']
+            # pdf_file=cwd+'Reprint STEM Requested Sample.pdf'
+            # issm_file='issmExcel (1).xlsx'
+            # slate_file='Initial I20 Batch Indexing 20230629-092740.xlsx'
+            # print("files okay")
+            # pdf_filename='Reprint STEM Requested Sample.pdf'
+            # issm='issmExcel (1).xlsx'
+            # slate='Initial I20 Batch Indexing 20230629-092740.xlsx'
+            pdf_filename = pdf_file.filename
+            issm = issm_file.filename
+            slate = slate_file.filename
+            issm_file.save(issm)
+            slate_file.save(slate)
+            pdf_file.save(pdf_filename)
             name = request.form['dsoName']
             print("dsoname okay ")
             slaterequest=request.form['toSlate']
@@ -446,19 +446,20 @@ def upload():
             addSign = session.get('addSign')
             sevisids = session.get('sevis_id')
             # print("Sevisids in response/*/*/*",sevisids)
-            user = session.get('name')
-            # print("user in response",user)
+            user = session.get('name1')
+            print("user in response",user)
+            user="abctest"
             institution = session.get('institute')
 
             result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
             # print("result is ",result)
             if result is not None:
-                insertprocessed(user, sevisids, institution, str(result),processor='ISSM toSlate')
+                insertprocessed(user, sevisids, institution, str(result),processor='ISSM to Slate')
             else:
-                result = 0
+                result = "Some error"
                 # print("sevis is ",sevisids)
                 # print("institution is ",institution)
-                insertprocessed(user, sevisids, institution, str(result))
+                insertprocessed(user, sevisids, institution, str(result),processor='ISSM to Slate')
             response_msg = {
                 'Total_Pages': TotalPages,
                 'Total_Files': TotalFiles,
@@ -506,8 +507,9 @@ def login():
             username = decoded_credentials[0]
             password = decoded_credentials[1]
            # print(username)
-            session['name']=decoded_credentials[0]
+            session['name1']=decoded_credentials[0]
             result=checklogin(username,password)
+
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
             if isinstance(result, tuple):
@@ -746,7 +748,7 @@ def addsign(user):
         output_file='i20.pdf'
         institutionid=request.headers.get('institutionid')
         # sample i20 which is saved
-        pdf_filename=cwd+r'\Test_sign\i20.pdf'
+        pdf_filename=cwd+r'/Test_sign/i20.pdf'
         # if sign type is test  then we just send the pdf file file with the signature and not put those details in DB
         if sign=='test':
             """Test signature but dont add"""

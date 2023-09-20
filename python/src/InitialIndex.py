@@ -37,13 +37,13 @@ def indexFile1(sevid, issm):
         for i in range(len(merged_df)):
             sevisid = merged_df.iloc[i]['SEVIS ID']
             #print(sevisid)
-            i20formtype = i20type(cwd+'\\'+sevisid + '.pdf')
+            i20formtype = i20type(cwd+'//'+sevisid + '.pdf')
             print('i20formtype',i20formtype)
             if 'CONTINUED ATTENDANCE' in i20formtype:
-                print("continued path",cwd + '\\' + sevisid + '.pdf')
-                g = i20type1(cwd+'\\'+sevisid + '.pdf')
+                print("continued path",cwd + '//' + sevisid + '.pdf')
+                g = i20type1(cwd+'//'+sevisid + '.pdf')
                 print("passed in g")
-                typeofemployment = i20memoemp(g,cwd+'\\'+sevisid+'.pdf')
+                typeofemployment = i20memoemp(g,cwd+'//'+sevisid+'.pdf')
                 print(type(typeofemployment))
                 print("TYPE OF EMP IS ",typeofemployment)
 
@@ -127,12 +127,12 @@ def indexFile(sevid, issm):
         for i in range(len(merged_df)):
             sevisid = merged_df.iloc[i]['SEVIS ID']
             #print(sevisid)
-            i20formtype = i20type(cwd+'\\'+sevisid + '.pdf')
+            i20formtype = i20type(cwd+'//'+sevisid + '.pdf')
             print(i20formtype)
             if 'CONTINUED ATTENDANCE' in i20formtype:
-                g = i20type1(cwd+'\\'+sevisid + '.pdf')
+                g = i20type1(cwd+'//'+sevisid + '.pdf')
                 # print(g)
-                typeofemployment = i20memo(g,cwd+'\\'+sevisid+'.pdf')
+                typeofemployment = i20memo(g,cwd+'//'+sevisid+'.pdf')
                 #print(f)
                 #print(aa)
                 merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = typeofemployment
