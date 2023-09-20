@@ -115,6 +115,7 @@ def indexFile(sevid, issm):
     try:
         # columns sevis id and admissions id are made as columns so we can read only those from the excel issm
         sevis_ids = sevid
+        print('sevis_ids are ',sevis_ids)
         df=pd.read_excel(issm,usecols=['SEVIS ID','Admissions Id'])
         merged_df = df[df["SEVIS ID"].isin(sevis_ids)]
         merged_df["Admissions Id"] = merged_df["Admissions Id"].astype(str).str.zfill(9)
@@ -127,12 +128,12 @@ def indexFile(sevid, issm):
         for i in range(len(merged_df)):
             sevisid = merged_df.iloc[i]['SEVIS ID']
             #print(sevisid)
-            i20formtype = i20type(cwd+'//'+sevisid + '.pdf')
+            i20formtype = i20type(cwd+'\\'+sevisid + '.pdf')
             print(i20formtype)
             if 'CONTINUED ATTENDANCE' in i20formtype:
-                g = i20type1(cwd+'//'+sevisid + '.pdf')
+                g = i20type1(cwd+'\\'+sevisid + '.pdf')
                 # print(g)
-                typeofemployment = i20memo(g,cwd+'//'+sevisid+'.pdf')
+                typeofemployment = i20memo(g,cwd+'\\'+sevisid+'.pdf')
                 #print(f)
                 #print(aa)
                 merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = typeofemployment
@@ -174,6 +175,6 @@ def indexFile(sevid, issm):
             message="Please upload correct ISSM and Excel files . Index file size is 0"
             return message
     except Exception as e:
-        print('error ')
+        print('error in index file  ',e)
         issm_log.logger.error(f"Index file creation failed in initialindex.py {e}")
 

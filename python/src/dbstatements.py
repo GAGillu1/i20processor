@@ -147,6 +147,7 @@ def insertprocessed(user,msg,institutionid,result,processor):
     dba.connect()
     print(msg)
     query="insert into processed(processedDate,processedBy,processedMsg,institutionId,result,processor) values(?,?,?,?,?,?)"
+
     dba.execute_query(query,[today,user,msg,institutionid,result,processor])
     dba.close()
 
@@ -238,7 +239,7 @@ def updateactive(user, activeid):
 
 def getprocessed():
     dba.connect()
-    query='select processedDate, processedBy, processedMsg,result,processer from processed'
+    query='select processedDate, processedBy, processedMsg,result,processor from processed'
     result=dba.execute_query(query)
     if result is not None:
         # Use the result DataFrame as needed.

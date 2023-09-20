@@ -19,6 +19,7 @@ import secrets
 from zipfile import ZipFile
 from flask import Flask, render_template, request, send_file, make_response, jsonify, Response, session
 from flask_socketio import SocketIO
+from redis import Redis
 
 import issm_log
 from InitialIndex import indexFile, indexFile1
@@ -60,12 +61,12 @@ log_folder = os.path.join(os.getcwd(),'log')
 cwd = os.getcwd()
 app = Flask(__name__,template_folder='../../',static_folder='../../static')
 CORS(app)
-app.secret_key = secrets.token_bytes(32)
+app.secret_key = 'secret'
 #socketio = SocketIO(app)
 socketio = SocketIO(app,cors_allowed_origins="*")
+redis_client = Redis(host='localhost', port=6379, db=0)
 
-
-#sio=socketio.Client()
+#sio=socketio.Client(# )
 
 @socketio.on('connect')
 def handle_connect():
@@ -298,11 +299,11 @@ def upload():
             pdf_file = request.files['i20File']
             issm_file = request.files['issmFile']
             slate_file = request.files['slateFile']
-            # pdf_file=cwd+'Reprint STEM Requested Sample.pdf'
+            # pdf_file=cwd+'Jun2923Signed.pdf'
             # issm_file='issmExcel (1).xlsx'
             # slate_file='Initial I20 Batch Indexing 20230629-092740.xlsx'
             # print("files okay")
-            # pdf_filename='Reprint STEM Requested Sample.pdf'
+            # pdf_filename='Jun2923Signed.pdf'
             # issm='issmExcel (1).xlsx'
             # slate='Initial I20 Batch Indexing 20230629-092740.xlsx'
             pdf_filename = pdf_file.filename
@@ -336,23 +337,34 @@ def upload():
                 # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
                 sevid,totalpages,totalsigns=splitsignature(pdf_filename, signature_file, length, width, xcoordinate, ycoordinate)
                 socketio.emit('rom',2)
+                sev=sevid
+                key="sevis"
+                redis_client.rpush(key,*sev)
+                print("sevis id after splitting ",sev)
                 #sevid, totalpagessplit = splitting(pdf_filename)
                 totalpagessplit = totalpages / 3
                 numberoffiles = totalpagessplit
                 # Storing total pages, total files afte splitting , total signatures added to session
                 session['Total_Pages']=f"{num_pages}"
+                redis_client.set('Total_Pages',f"{num_pages}")
                 session['Total_Files']=f"{int(numberoffiles)}"
+                redis_client.set('Total_Files',f"{numberoffiles}")
                 session['Total_Signatures']=f"{totalsigns}"
-                session['sevis_id']=f"{sevid}"
+                redis_client.set('Total_Signatures',f"{totalsigns}")
+
                 issm_log.logger.info(f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
             except Exception as e:
                 socketio.emit('rom',-2)
                 session['Split_Failure']=f"Splitting of file is failed {e}"
+                redis_client.set('Split_Failure',f"Splitting of file is failed {e}")
                 issm_log.logger.error(f"Splitting of file is failed {e}")
             try:
                 # If i20 type is initial i20 then indexFile is called for creating a index file
                # print(sevid,issm,slate)
                 if i20type=='initI20':
+                    # redis_client.set("sevis_id", sev)
+                    # print("sevis id in i20process post ", redis_client.get("sevis_id"))
+                    print("above index file")
                     result=indexFile(sevid, issm)
 
                 #if i20type is continued i20 then index file1 is called for creating index file
@@ -365,8 +377,10 @@ def upload():
                     sizeOfIndexfile, missing,tablehtml=result
                     issm_log.logger.info(f"Index file created successfully and size is {sizeOfIndexfile}.Record not included in Index but is in ISSM/Slate {missing}")
                     session["index_size"] = f"{sizeOfIndexfile}"
+                    redis_client.set('index_size',f'{sizeOfIndexfile}')
                     socketio.emit('rom', 3)
                     session["missing_records"] = f"{missing}"
+                    redis_client.set('missing_records',f'{missing}')
                     #print("Size of index file is ",sizeOfIndexfile)
                     if missing :
                         sender, password = get_credentials('email')
@@ -380,11 +394,13 @@ def upload():
                    # print("Result",result)
                     msg=result
                     socketio.emit('rom',-3)
-                    session["index_error"] = f"Index file creation failed {msg}"
+                    session["index_error"] = f"Index file creation failed in index file {msg}"
+                    redis_client.set('index_error',f'')
                     issm_log.logger.error(f"Index file creation failed {msg}")
                 #sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
             except Exception as e:
                 session["index_error"]=f"Index file creation failed {e}"
+                redis_client.set('index_error',f"Index file creation failed {e}")
                 issm_log.logger.error(f"Index file creation failed {e}")
 
             try:
@@ -400,6 +416,7 @@ def upload():
                 issm_log.logger.info("Files Zipped")
                 socketio.emit('rom', 4)
                 session['zipmsg'] = "Success"
+                redis_client.set('zipmsg','Success')
                 #if slate request is yes then depending on program the post function is called
                 if slaterequest=='y':
                     stream=request.form['program']
@@ -417,6 +434,7 @@ def upload():
             except Exception as e:
                 socketio.emit('rom',-4)
                 session['zipmsg']=f"Files Zipping failed {e}"
+                redis_client.set('zipmsg',f"Files Zipping failed {e}")
                 issm_log.logger.error(f"Files Zipping failed {e}")
             remove_files()
             time.sleep(60)
@@ -432,62 +450,88 @@ def upload():
 
     if request.method == 'GET':
             # from the session all the session messages are taken and returned as json
-            TotalPages = session.get('Total_Pages')
-            TotalFiles = session.get('Total_Files')
-            TotalSignatures = session.get('Total_Signatures')
-            zipMessage = session.get('zipmsg')
-            splitFailure = session.get('Split_Failure')
-            indexMessage = session.get('indexmsg')
-            indexSize = session.get('index_size')
-            missingRecords = session.get('missing_records')
-            indexError = session.get('index_error')
-            signMessage = session.get('signmsg')
-            splitMessage = session.get('splitmsg')
-            addSign = session.get('addSign')
-            sevisids = session.get('sevis_id')
-            # print("Sevisids in response/*/*/*",sevisids)
-            user = session.get('name1')
+            TotalPages = redis_client.get('Total_Pages')
+            TotalPages=TotalPages.decode('utf-8') if TotalPages is not None else None
+
+            TotalFiles = redis_client.get('Total_Files')
+            TotalFiles=TotalFiles.decode('utf-8') if TotalFiles is not None else None
+
+            TotalSignatures = redis_client.get('Total_Signatures')
+            TotalSignatures=TotalSignatures.decode('utf-8') if TotalSignatures is not None  else None
+
+            zipMessage = redis_client.get('zipmsg')
+            zipMessage=zipMessage.decode('utf-8') if zipMessage is not None else None
+
+            splitFailure = redis_client.get('Split_Failure')
+            splitFailure=splitFailure.decode('utf-8') if splitFailure is not None else None
+
+            indexMessage = redis_client.get('indexmsg')
+            indexMessage=indexMessage.decode('utf-8') if indexMessage is not None else None
+
+            indexSize = redis_client.get('index_size')
+            indexSize=indexSize.decode('utf-8') if indexSize is not None else None
+
+            missingRecords = redis_client.get('missing_records')
+            missingRecords=missingRecords.decode('utf-8') if missingRecords is not None else None
+
+            indexError = redis_client.get('index_error')
+            indexError=indexError.decode('utf-8') if indexError is not None else None
+
+            signMessage = redis_client.get('signmsg')
+            signMessage=signMessage.decode('utf-8') if signMessage is not None else None
+
+            splitMessage = redis_client.get('splitmsg')
+            splitMessage=splitMessage.decode('utf-8') if splitMessage is not None else None
+
+            addSign = redis_client.get('addSign')
+            addSign=addSign.decode('utf-8') if addSign is not None else None
+
+            sevisids1 = redis_client.lrange("sevis",0,-1)
+            sevisids1=[x.decode("utf-8") for x in sevisids1]
+
+            print(type(sevisids1))
+            print("Sevisids1",sevisids1)
+
+            print("Sevisids in response/*/*/*",sevisids1)
+            user=request.headers.get('username')
+
             print("user in response",user)
-            user="abctest"
-            institution = session.get('institute')
+            institution = request.headers.get('institutionid')
 
             result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
             # print("result is ",result)
             if result is not None:
-                insertprocessed(user, sevisids, institution, str(result),processor='ISSM to Slate')
+                insertprocessed(user, str(sevisids1), institution, str(result),processor='ISSM to Slate')
             else:
                 result = "Some error"
                 # print("sevis is ",sevisids)
                 # print("institution is ",institution)
                 insertprocessed(user, sevisids, institution, str(result),processor='ISSM to Slate')
             response_msg = {
-                'Total_Pages': TotalPages,
-                'Total_Files': TotalFiles,
-                'Total_Signatures': TotalSignatures,
-                'zipmsg': zipMessage,
-                'Split_Failure': splitFailure,
-                'indexmsg': indexMessage,
-                'index_size': indexSize,
-                'missing_records': missingRecords,
-                'index_error': indexError,
-                'signmsg': signMessage,
-                'splitmsg': splitMessage,
-                'Add_sign': addSign
+                'TotalPages': TotalPages,
+                'TotalFiles': TotalFiles,
+                'TotalSignatures': TotalSignatures,
+                'zipMessage': zipMessage,
+                'splitFailure': splitFailure,
+                'indexMessage': indexMessage,
+                'indexSize': indexSize,
+                'missingRecords': missingRecords,
+                'indexError': indexError,
+                'signMessage': signMessage,
+                'splitMessage': splitMessage,
+                'addSign': addSign
             }
+            print("response msgg is ",response_msg)
             issm_log.logger.info(f"Response message at end is {response_msg}")
             # print(response_msg)
-            session.pop('Total_Pages', None)
-            session.pop('Total_Files', None)
-            session.pop('Total_Signatures', None)
-            session.pop('zipmsg', None)
-            session.pop('Split_Failure', None)
-            session.pop('indexmsg', None)
-            session.pop('index_size', None)
-            session.pop('missing_records', None)
-            session.pop('index_error', None)
-            session.pop('signmsg', None)
-            session.pop('splitmsg', None)
-            session.pop('addSign', None)
+            keys_to_delete = [
+                'Total_Pages', 'Total_Files', 'Total_Signatures',
+                'zipmsg', 'Split_Failure', 'indexmsg', 'index_size',
+                'missing_records', 'index_error', 'signmsg', 'splitmsg',
+                'addSign', 'sevis'
+            ]
+            for key in keys_to_delete:
+                redis_client.delete(key)
             return jsonify(response_msg)
 """This returns a message to front end after the /i20process route 
 After each step in i2oprocess messages are added to session and those are retrived here and returned"""
@@ -507,7 +551,8 @@ def login():
             username = decoded_credentials[0]
             password = decoded_credentials[1]
            # print(username)
-            session['name1']=decoded_credentials[0]
+            session['name']=decoded_credentials[0]
+            print("name in session is ",session.get('name'))
             result=checklogin(username,password)
 
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
@@ -529,7 +574,8 @@ def login():
                     response.headers['fullname'] = fullname
                     response.headers['username'] = username
                     response.headers['institutionid']=institution_id
-                    response.headers['Authorization'] = f"Bearer {token}"  # Set JWT token in Authorization header
+                    response.headers['Authorization'] = f"Bearer {token}"
+                    # Set JWT token in Authorization header
                    # print("4124145",response)
                     session['institute']=(institution_id)
                     return response, http.HTTPStatus.OK
