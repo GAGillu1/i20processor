@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Footer from "@/components/footer";
 import { MyContextProvider } from "@/components/myContext";
 import { Toaster } from "react-hot-toast";
-import Socket from "@/components/utils/websockets";
+import Socket from "../components/utils/websockets";
 export const metadata: Metadata = {
   title: "I-20 Processor",
   description: "One stop shop for all I-20 needs",
