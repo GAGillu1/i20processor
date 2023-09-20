@@ -5,7 +5,7 @@ import { useContextDispatch } from "../myContext";
 
 const ws = process.env.WS_PATH as string;
 export default function Socket() {
-  const socket = io(ws, { autoConnect: false });
+  const socket = io(ws);
   const dispatch = useContextDispatch();
   useEffect(() => {
     function onConnect() {
