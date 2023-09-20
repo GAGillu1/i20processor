@@ -47,7 +47,8 @@ const Results = () => {
   };
   useEffect(() => {
     getResults();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return results
     ? bannerArr.map((item, i) => {
         return results[i] ? (

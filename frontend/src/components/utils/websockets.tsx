@@ -2,9 +2,14 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { useContextDispatch } from "../myContext";
+import { usePathname } from "next/navigation";
 
 export default function Socket() {
-  const socket = io("ws://127.0.0.1:8081");
+  // const path = window.location.hostname;
+  const path = "54.80.2.26";
+  const ws = "ws://" + path + ":8081/";
+  console.log(ws);
+  const socket = io(ws);
   const dispatch = useContextDispatch();
   useEffect(() => {
     function onConnect() {

@@ -67,7 +67,8 @@ const Results = ()=>{
     };
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
         getResults();
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return results ? bannerArr.map((item, i)=>{
         return results[i] ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((react__WEBPACK_IMPORTED_MODULE_1___default().Fragment), {
             children: [
