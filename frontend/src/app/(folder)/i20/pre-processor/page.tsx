@@ -13,15 +13,15 @@ import getFormData from "@/components/utils/getFormData";
 import { ProgressBar, Response } from "@/components/utils/progessBar";
 import { useRouter } from "next/navigation";
 
-const FormStatus = () => {
-  const dispatch = useContextDispatch();
-  const { values } = useFormikContext();
-  React.useEffect(() => {
-    if (values !== preProcessorIV)
-      dispatch({ type: "preProcessorState", action: values });
-  }, [values, dispatch]);
-  return null;
-};
+// const FormStatus = () => {
+//   const dispatch = useContextDispatch();
+//   const { values } = useFormikContext();
+//   React.useEffect(() => {
+//     if (values !== preProcessorIV)
+//       dispatch({ type: "preProcessorState", action: values });
+//   }, [values, dispatch]);
+//   return null;
+// };
 
 const Page = ({ searchParams }: sParams) => {
   const router = useRouter();
@@ -32,9 +32,9 @@ const Page = ({ searchParams }: sParams) => {
   const [mounted, setMounted] = useState(false);
   const [intialValues, setInitialValues] = useState(preProcessorIV);
   React.useEffect(() => {
-    setInitialValues(data.preProcessorState);
+    // setInitialValues(data.preProcessorState);
     setLoading(data.preProcessStatus !== 0);
-    setMounted(true);
+    // setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   async function postI20(values: preProcessorModel) {
@@ -148,7 +148,7 @@ const Page = ({ searchParams }: sParams) => {
                     action={"Process"}
                   />
                 </div>
-                <FormStatus />
+                {/* <FormStatus /> */}
               </Form>
             </section>
           </Formik>

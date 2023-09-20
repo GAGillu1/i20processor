@@ -2,7 +2,7 @@ import { getToken } from "@/components/utils/getTokens";
 import { NextRequest, NextResponse } from "next/server";
 
 const basePath = process.env.BASE_PATH as string;
-const changePwdApi = process.env.CHANGE_PWD as string;
+const changePwdApi = (process.env.CHANGE_PWD as string) + "/";
 // -----------------------
 // PUT - CHANGE PASSWORD
 export async function PUT(

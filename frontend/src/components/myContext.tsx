@@ -120,14 +120,14 @@ function MyReducer(data: data, action: any) {
       };
     }
     case "preProcessorState": {
-      console.log("Pre-process Context", action.action);
+      // console.log("Pre-process Context", action.action);
       return {
         ...data,
         preProcessorState: action.action,
       };
     }
     case "postProcessorState": {
-      console.log("Post-process Context", action.action);
+      // console.log("Post-process Context", action.action);
       return {
         ...data,
         postProcessorState: action.action,

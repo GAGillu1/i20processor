@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useContextDispatch } from "../myContext";
 
+const ws = process.env.WS_PATH as string;
 export default function Socket() {
-  const socket = io("ws://127.0.0.1:8081/");
+  const socket = io(ws, { autoConnect: false });
   const dispatch = useContextDispatch();
   useEffect(() => {
     function onConnect() {
