@@ -28,6 +28,7 @@ export function MyContextProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     getLocalData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export function MyContextProvider({ children }: { children: React.ReactNode }) {
       const item = { value: data, expiry: now.getTime() + ttl };
       localStorage.setItem("data", JSON.stringify(item));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return (
