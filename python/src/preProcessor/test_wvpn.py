@@ -14,6 +14,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
     message = ""
     try:
         logger.info(f"starting vpn_function in test_wvpn file")
+        print(f"starting vpn_function in test_wvpn file")
         login_url = "https://sslvpn.newhaven.edu/remote/login?&lang=en"
         chrome_options = webdriver.ChromeOptions()
         # chrome_options.add_argument("--no-sandbox")
@@ -26,6 +27,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         # Create a Service instance with the specified path
         service = Service(chromedriver_path)
         # Use the Service when creating the Chrome browser instance
+        print("before start of webdriver")
         browser = webdriver.Chrome(service=service, options=chrome_options)
         # commented the below line for amazon instance.
         # browser = webdriver.Chrome(options=chrome_options)
@@ -34,9 +36,11 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         browser.get(login_url)
         time.sleep(1)
         logger.info("before entering username")
+        print("before entering username")
         browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(vpn_username)
         time.sleep(1)
         logger.info(f"before credentials")
+        print("before credentials")
         browser.find_element(By.XPATH, '//*[@id="credential"]').send_keys(vpn_password)
         time.sleep(1)
         browser.find_element(By.ID, 'login_button').click()
