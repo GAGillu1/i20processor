@@ -49,7 +49,7 @@ var next_response = __webpack_require__(89335);
 // GET - GET WEBSOCKETS URL
 async function GET(request) {
     try {
-        const hostname = request.nextUrl.hostname === "localhost" ? "127.0.0.1" : request.nextUrl.hostname;
+        const hostname = process.env.WS_HOSTNAME;
         const host = "ws://" + hostname + ":" + process.env.WS_PORT;
         console.log("WShost", host);
         const res = {
