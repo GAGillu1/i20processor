@@ -5,7 +5,10 @@ from preProcessor.TestingSingle import testing_main
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from preProcessor.issmfilelog import logger
+from selenium.webdriver.chrome.service import Service
+
 import time
+
 def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file, instance, socketio):
     status = None
     message = ""
@@ -17,7 +20,15 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         chrome_options.add_argument("--headless")
         # chrome_options.add_argument("--disable-gpu")
         chrome_options.page_load_strategy = 'normal'
-        browser = webdriver.Chrome(options=chrome_options)
+
+        # added below code for amazon linux instance
+        chromedriver_path = '/usr/bin/chromedriver'
+        # Create a Service instance with the specified path
+        service = Service(chromedriver_path)
+        # Use the Service when creating the Chrome browser instance
+        browser = webdriver.Chrome(service=service, options=chrome_options)
+        # commented the below line for amazon instance.
+        # browser = webdriver.Chrome(options=chrome_options)
         # browser = webdriver.Chrome()
         # driver = webdriver.Chrome()  # You may need to specify the path to the chromedriver executable
         browser.get(login_url)
