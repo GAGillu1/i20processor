@@ -299,13 +299,6 @@ def upload():
             pdf_file = request.files['i20File']
             issm_file = request.files['issmFile']
             slate_file = request.files['slateFile']
-            # pdf_file=cwd+'Jun2923Signed.pdf'
-            # issm_file='issmExcel (1).xlsx'
-            # slate_file='Initial I20 Batch Indexing 20230629-092740.xlsx'
-            # print("files okay")
-            # pdf_filename='Jun2923Signed.pdf'
-            # issm='issmExcel (1).xlsx'
-            # slate='Initial I20 Batch Indexing 20230629-092740.xlsx'
             pdf_filename = pdf_file.filename
             issm = issm_file.filename
             slate = slate_file.filename
@@ -521,6 +514,7 @@ def upload():
                 'splitMessage': splitMessage,
                 'addSign': addSign
             }
+
             print("response msgg is ",response_msg)
             issm_log.logger.info(f"Response message at end is {response_msg}")
             # print(response_msg)
@@ -532,7 +526,9 @@ def upload():
             ]
             for key in keys_to_delete:
                 redis_client.delete(key)
-            return jsonify(response_msg)
+            # return jsonify(response_msg)
+            response = make_response({'message': 'Message response Success','data':response_msg}, http.HTTPStatus.UNAUTHORIZED)
+            return response
 """This returns a message to front end after the /i20process route 
 After each step in i2oprocess messages are added to session and those are retrived here and returned"""
 
