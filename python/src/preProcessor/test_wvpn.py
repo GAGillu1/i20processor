@@ -20,18 +20,18 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.binary_location = '/usr/bin/google-chrome'
+        # chrome_options.binary_location = '/usr/bin/google-chrome'
         chrome_options.page_load_strategy = 'normal'
 
         # added below code for amazon linux instance
-        chromedriver_path = '/usr/bin/chromedriver'
+        # chromedriver_path = '/usr/bin/chromedriver'
         # Create a Service instance with the specified path
-        service = Service(chromedriver_path)
+        # service = Service(chromedriver_path)
         # Use the Service when creating the Chrome browser instance
         print("before start of webdriver")
-        browser = webdriver.Chrome(service=service, options=chrome_options)
+        # browser = webdriver.Chrome(service=service, options=chrome_options)
         # commented the below line for amazon instance.
-        # browser = webdriver.Chrome(options=chrome_options)
+        browser = webdriver.Chrome(options=chrome_options)
         # browser = webdriver.Chrome()
         # driver = webdriver.Chrome()  # You may need to specify the path to the chromedriver executable
         print("before url")
