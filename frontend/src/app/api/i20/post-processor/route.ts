@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const basePath = process.env.BASE_PATH as string;
 const i20Api = process.env.I20_POST_PROCESSOR as string;
+// ----------------------------
+// POST - POST-PROCESSOR
 export async function POST(request: NextRequest) {
   try {
     const body = await request.formData();
@@ -29,6 +31,7 @@ export async function GET(request: NextRequest) {
     });
 
     const data = await res.json();
+    console.log("get response", data, res.status);
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     return NextResponse.json(

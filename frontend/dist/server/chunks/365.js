@@ -28,12 +28,11 @@ exports.modules = {
 
 
 const progress = [
-    "w-[5%]",
     "w-1/6",
     "w-2/6",
     "w-3/6",
     "w-4/6",
-    "w-5/6",
+    "w-full",
     "w-full"
 ];
 const bannerArr = [
@@ -50,16 +49,34 @@ const bannerArr = [
     "Split Message",
     "Zip Message:"
 ];
+const keys = (/* unused pure expression or super */ null && ([
+    "TotalFiles",
+    "TotalPages",
+    "TotalSignatures",
+    "addSign",
+    "indexError",
+    "indexMessage",
+    "indexSize",
+    "missingRecords",
+    "signMessage",
+    "splitFailure",
+    "splitMessage",
+    "zipMessage"
+]));
 const Results = ()=>{
     const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+    // const [resultKeys, setResultKeys] = useState([]);
     const path = (0,next_navigation__WEBPACK_IMPORTED_MODULE_4__.usePathname)();
     const api = "/api" + path;
     const getResults = async ()=>{
         try {
             const res = await fetch(api);
+            console.log("res status", res.status);
             if (!res.ok) throw res;
             const data = await res.json();
-            setResults(data.data);
+            console.log(data);
+            console.log(Object.values(data.data));
+            setResults(Object.values(data.data));
         } catch (err) {
             const data = await err.json();
             react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error(data.message);
@@ -69,7 +86,22 @@ const Results = ()=>{
         getResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    return results ? bannerArr.map((item, i)=>{
+    // return (
+    //   results.length > 0?
+    //   bannerArr.map((item, i) => {
+    //     console.log("results", results);
+    //     // console.log("result Keys", resultKeys);
+    //     return (
+    //       results[i] && (
+    //         <React.Fragment key={i}>
+    //           <p className="font-semibold">{item}</p>
+    //           <p className="col-span-2">{results[i]}</p>
+    //         </React.Fragment>
+    //       )
+    //     );
+    //   })
+    // ):"";
+    return results.length > 0 ? bannerArr.map((item, i)=>{
         return results[i] ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((react__WEBPACK_IMPORTED_MODULE_1___default().Fragment), {
             children: [
                 /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("p", {
@@ -86,10 +118,11 @@ const Results = ()=>{
 };
 const postArr = [
     "Uploading",
-    "Splitting",
-    "Signing",
+    "Splitting & Signing",
+    "Creating Index File",
     "Zipping",
-    "Posting"
+    "Downloading",
+    "Downloading & Posting"
 ];
 const preArr = [
     "Loading",

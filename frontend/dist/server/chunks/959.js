@@ -235,6 +235,7 @@ function Socket() {
         getHostname();
     }, []);
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(()=>{
+        console.log("WShost", host);
         function onConnect() {
             socket.connect();
         }

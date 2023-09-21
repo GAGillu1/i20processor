@@ -51,6 +51,8 @@ var next_response = __webpack_require__(89335);
 
 const basePath = process.env.BASE_PATH;
 const i20Api = process.env.I20_POST_PROCESSOR;
+// ----------------------------
+// POST - POST-PROCESSOR
 async function POST(request) {
     try {
         const body = await request.formData();
@@ -77,6 +79,7 @@ async function GET(request) {
             headers: (0,getTokens/* getToken */.L)(request)
         });
         const data = await res.json();
+        console.log("get response", data, res.status);
         return next_response/* default */.Z.json(data, {
             status: res.status
         });

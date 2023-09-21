@@ -6,15 +6,7 @@ import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-const progress = [
-  "w-[5%]",
-  "w-1/6",
-  "w-2/6",
-  "w-3/6",
-  "w-4/6",
-  "w-5/6",
-  "w-full",
-];
+const progress = ["w-1/6", "w-2/6", "w-3/6", "w-4/6", "w-full", "w-full"];
 const bannerArr = [
   "Add Sign:",
   "Split Failure:",
@@ -30,16 +22,34 @@ const bannerArr = [
   "Zip Message:",
 ];
 
+const keys = [
+  "TotalFiles",
+  "TotalPages",
+  "TotalSignatures",
+  "addSign",
+  "indexError",
+  "indexMessage",
+  "indexSize",
+  "missingRecords",
+  "signMessage",
+  "splitFailure",
+  "splitMessage",
+  "zipMessage",
+];
 const Results = () => {
   const [results, setResults] = useState([]);
+  // const [resultKeys, setResultKeys] = useState([]);
   const path = usePathname();
   const api = "/api" + path;
   const getResults = async () => {
     try {
       const res = await fetch(api);
+      console.log("res status", res.status);
       if (!res.ok) throw res;
       const data = await res.json();
-      setResults(data.data);
+      console.log(data);
+      console.log(Object.values(data.data));
+      setResults(Object.values(data.data));
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);
@@ -47,9 +57,26 @@ const Results = () => {
   };
   useEffect(() => {
     getResults();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return results
+  // return (
+  //   results.length > 0?
+  //   bannerArr.map((item, i) => {
+  //     console.log("results", results);
+  //     // console.log("result Keys", resultKeys);
+  //     return (
+  //       results[i] && (
+  //         <React.Fragment key={i}>
+  //           <p className="font-semibold">{item}</p>
+  //           <p className="col-span-2">{results[i]}</p>
+  //         </React.Fragment>
+  //       )
+  //     );
+  //   })
+  // ):"";
+
+  return results.length > 0
     ? bannerArr.map((item, i) => {
         return results[i] ? (
           <React.Fragment key={i}>
@@ -63,7 +90,14 @@ const Results = () => {
     : "";
 };
 
-const postArr = ["Uploading", "Splitting", "Signing", "Zipping", "Posting"];
+const postArr = [
+  "Uploading",
+  "Splitting & Signing",
+  "Creating Index File",
+  "Zipping",
+  "Downloading",
+  "Downloading & Posting",
+];
 const preArr = [
   "Loading",
   "Uploading",

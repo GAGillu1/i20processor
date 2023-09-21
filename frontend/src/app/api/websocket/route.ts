@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
         ? "127.0.0.1"
         : request.nextUrl.hostname;
     const host = ("ws://" + hostname + ":" + process.env.WS_PORT) as string;
+    console.log("WShost", host);
     const res = {
       data: host,
       message: "Port fetch successful",

@@ -19,6 +19,7 @@ export default function Socket() {
   }, []);
 
   useEffect(() => {
+    console.log("WShost", host);
     function onConnect() {
       socket.connect();
     }

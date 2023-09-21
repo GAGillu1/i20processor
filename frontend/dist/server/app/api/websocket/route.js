@@ -51,6 +51,7 @@ async function GET(request) {
     try {
         const hostname = request.nextUrl.hostname === "localhost" ? "127.0.0.1" : request.nextUrl.hostname;
         const host = "ws://" + hostname + ":" + process.env.WS_PORT;
+        console.log("WShost", host);
         const res = {
             data: host,
             message: "Port fetch successful"
