@@ -3,10 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 // GET - GET WEBSOCKETS URL
 export async function GET(request: NextRequest) {
   try {
-    const hostname =
-      request.nextUrl.hostname === "localhost"
-        ? "127.0.0.1"
-        : request.nextUrl.hostname;
+    const hostname = process.env.WS_HOSTNAME;
     const host = ("ws://" + hostname + ":" + process.env.WS_PORT) as string;
     console.log("WShost", host);
     const res = {
