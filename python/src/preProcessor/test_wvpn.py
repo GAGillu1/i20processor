@@ -17,9 +17,9 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         print(f"starting vpn_function in test_wvpn file")
         login_url = "https://sslvpn.newhaven.edu/remote/login?&lang=en"
         chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--headless")
-        # chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-gpu")
         chrome_options.page_load_strategy = 'normal'
 
         # added below code for amazon linux instance
@@ -33,6 +33,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         # browser = webdriver.Chrome(options=chrome_options)
         # browser = webdriver.Chrome()
         # driver = webdriver.Chrome()  # You may need to specify the path to the chromedriver executable
+        print("before url")
         browser.get(login_url)
         time.sleep(1)
         logger.info("before entering username")
