@@ -146,7 +146,7 @@ const PreProcessorProgressBar = ()=>{
 };
 const PostProcessorProgressBar = ()=>{
     const data = (0,_myContext__WEBPACK_IMPORTED_MODULE_2__.useMyContext)();
-    const status = data.postProcessStatus;
+    const status = Math.abs(data.postProcessStatus);
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("section", {
         className: "section",
         children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {

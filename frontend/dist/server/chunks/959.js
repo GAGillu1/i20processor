@@ -223,12 +223,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Socket() {
-    // const path = window.location.hostname;
-    const path = "54.80.2.26";
-    const ws = "ws://" + path + ":8081/";
-    console.log(ws);
-    const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.io)(ws);
+    const [host, setHost] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+    const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.io)(host);
     const dispatch = (0,_myContext__WEBPACK_IMPORTED_MODULE_2__.useContextDispatch)();
+    const getHostname = async ()=>{
+        const res = await fetch("/api/websocket");
+        const data = await res.json();
+        setHost(data.data);
+    };
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(()=>{
+        getHostname();
+    }, []);
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(()=>{
         function onConnect() {
             socket.connect();

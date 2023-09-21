@@ -120,7 +120,7 @@ const PreProcessorProgressBar = () => {
 };
 const PostProcessorProgressBar = () => {
   const data = useMyContext();
-  const status = data.postProcessStatus;
+  const status = Math.abs(data.postProcessStatus);
 
   return (
     <section className="section">
