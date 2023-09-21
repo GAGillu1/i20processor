@@ -16,3 +16,4 @@ bcrypt
 PyJWT
 requests
 flask_cors
+redis
