@@ -326,6 +326,7 @@ def testing_main(url, driver, excel_file, socketio):
         header_row = sheet[1]
         header_values = [cell.value for cell in header_row]
         num_rows_excluding_header = sheet.max_row - 1
+        socketio.emit('preProcessorMaxCount', num_rows_excluding_header)
         progress_bar = ProgressBar(num_rows_excluding_header)
 
         # Find the column indices for relevant fields
