@@ -37,7 +37,10 @@ def AddIndividual(student, driver, check_val):
 
         try:
             time.sleep(2)
-            driver.find_element(By.ID, config['ID_XPATH']['ignore_and_add']).click()
+            ignore_and_add_element = wait.until(
+                ec.element_to_be_clickable((By.ID, config['ID_XPATH']['ignore_and_add'])))
+            ignore_and_add_element.click()
+            # driver.find_element(By.ID, config['ID_XPATH']['ignore_and_add']).click()
             # check_val = True
             # print(f"duplicate caught duplicate_check function for {student.CampusID}")
             # raise Exception
@@ -50,13 +53,23 @@ def AddIndividual(student, driver, check_val):
         #  ----------------Choose Template ---------------------------#
         #  need to modify the below code according to config.ini parameters
         time.sleep(2)
-        Select(driver.find_element(By.ID, config['ID_XPATH']['select_template'])).select_by_visible_text(student.Template)
+        # Use the WebDriverWait to wait for the element to be visible and enabled
+        element = wait.until(ec.element_to_be_clickable((By.ID, config['ID_XPATH']['select_template'])))
+
+        # Once the element is visible and enabled, select the option by visible text
+        Select(element).select_by_visible_text(student.Template)
+        # Select(driver.find_element(By.ID, config['ID_XPATH']['select_template'])).select_by_visible_text(student.Template)
         # print("template filled")
         driver.find_element(By.ID, config['ID_XPATH']['continue_btn']).click()
         # ----------------Fill F/M Information---------------------------#
         #  https://issm-test.newhaven.edu/WizardPickTemplate.aspx?SysId=13019&Mode=F
         time.sleep(2)
-        Select(driver.find_element(By.ID, config['ID_XPATH']['country_of_birth'])).select_by_visible_text(student.BirthCountry)
+        # Wait for and select an option in 'country_of_birth' element
+        country_of_birth_element = wait.until(
+            ec.presence_of_element_located((By.ID, config['ID_XPATH']['country_of_birth'])))
+        Select(country_of_birth_element).select_by_visible_text(student.BirthCountry)
+
+        # Select(driver.find_element(By.ID, config['ID_XPATH']['country_of_birth'])).select_by_visible_text(student.BirthCountry)
         # print("birth country filled")
         Select(driver.find_element(By.ID, config['ID_XPATH']['country_of_citizenship'])).select_by_visible_text(student.Citizenship)
         # print("citizenship filled")
@@ -108,7 +121,10 @@ def AddIndividual(student, driver, check_val):
         # ----------------Fill Additional Information---------------------------#
         #  gender
         time.sleep(2)
-        Select(driver.find_element(By.ID, config['ID_XPATH']['gender'])).select_by_visible_text(student.Gender)
+        # Wait for and select an option in 'gender' element
+        gender_element = wait.until(ec.presence_of_element_located((By.ID, config['ID_XPATH']['gender'])))
+        Select(gender_element).select_by_visible_text(student.Gender)
+        # Select(driver.find_element(By.ID, config['ID_XPATH']['gender'])).select_by_visible_text(student.Gender)
         #  Click Add Permanent Address
         # print("gender filled")
         driver.find_element(By.ID, config['ID_XPATH']['add_permanent_addr']).click()
