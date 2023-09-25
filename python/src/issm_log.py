@@ -1,7 +1,7 @@
 import logging
 import datetime
 import os
-
+import pandas as pd
 from dbstatements import getprocessed
 
 cwd=os.getcwd()
@@ -25,5 +25,7 @@ logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 def processedgetter():
-    result=getprocessed()
-    return result
+    df=getprocessed()
+    df['processedDate']=pd.to_datetime(df['processedDate'])
+    df['processedDate'] = df['processedDate'].dt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+    return df

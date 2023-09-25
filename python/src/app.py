@@ -321,110 +321,118 @@ def upload():
             print("in")
             sevid=""
             socketio.emit('rom', 1)
+            successful = True
 
             try:
-                #calling sign_details() function and taking all the coordinates
-                length, width, xcoordinate, ycoordinate = sign_details(name)
-                #Getting signature file name
-                signature_file = signaturefile(name)
-                # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
-                sevid,totalpages,totalsigns=splitsignature(pdf_filename, signature_file, length, width, xcoordinate, ycoordinate)
-                socketio.emit('rom',2)
-                sev=sevid
-                key="sevis"
-                redis_client.rpush(key,*sev)
-                print("sevis id after splitting ",sev)
-                #sevid, totalpagessplit = splitting(pdf_filename)
-                totalpagessplit = totalpages / 3
-                numberoffiles = totalpagessplit
-                # Storing total pages, total files afte splitting , total signatures added to session
-                session['Total_Pages']=f"{num_pages}"
-                redis_client.set('Total_Pages',f"{num_pages}")
-                session['Total_Files']=f"{int(numberoffiles)}"
-                redis_client.set('Total_Files',f"{numberoffiles}")
-                session['Total_Signatures']=f"{totalsigns}"
-                redis_client.set('Total_Signatures',f"{totalsigns}")
+                if successful:
 
-                issm_log.logger.info(f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
+                    #calling sign_details() function and taking all the coordinates
+                    length, width, xcoordinate, ycoordinate = sign_details(name)
+                    #Getting signature file name
+                    signature_file = signaturefile(name)
+                    # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
+                    sevid,totalpages,totalsigns=splitsignature(pdf_filename, signature_file, length, width, xcoordinate, ycoordinate)
+                    socketio.emit('rom',2)
+                    sev=sevid
+                    key="sevis"
+                    redis_client.rpush(key,*sev)
+                    print("sevis id after splitting ",sev)
+                    #sevid, totalpagessplit = splitting(pdf_filename)
+                    totalpagessplit = totalpages / 3
+                    numberoffiles = totalpagessplit
+                    # Storing total pages, total files afte splitting , total signatures added to session
+                    session['Total_Pages']=f"{num_pages}"
+                    redis_client.set('Total_Pages',f"{num_pages}")
+                    session['Total_Files']=f"{int(numberoffiles)}"
+                    redis_client.set('Total_Files',f"{numberoffiles}")
+                    session['Total_Signatures']=f"{totalsigns}"
+                    redis_client.set('Total_Signatures',f"{totalsigns}")
+
+                    issm_log.logger.info(f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
             except Exception as e:
+                successful=False
                 socketio.emit('rom',-2)
                 session['Split_Failure']=f"Splitting of file is failed {e}"
                 redis_client.set('Split_Failure',f"Splitting of file is failed {e}")
                 issm_log.logger.error(f"Splitting of file is failed {e}")
             try:
-                # If i20 type is initial i20 then indexFile is called for creating a index file
-               # print(sevid,issm,slate)
-                if i20type=='initI20':
-                    # redis_client.set("sevis_id", sev)
-                    # print("sevis id in i20process post ", redis_client.get("sevis_id"))
-                    print("above index file")
-                    result=indexFile(sevid, issm)
+                if successful:
+                    # If i20 type is initial i20 then indexFile is called for creating a index file
+                    # print(sevid,issm,slate)
+                    if i20type=='initI20':
+                        # redis_client.set("sevis_id", sev)
+                        # print("sevis id in i20process post ", redis_client.get("sevis_id"))
+                        print("above index file")
+                        result=indexFile(sevid, issm)
 
-                #if i20type is continued i20 then index file1 is called for creating index file
-                elif(i20type=='contdI20'):
-                    result=indexFile1(sevid, issm)
-                    #print("Tyoe is result is ",type(result))
-                # if index file returns a tuple then the values in tuple are assigned as size of indexfile , missing records
-                if isinstance(result,tuple):
+                    #if i20type is continued i20 then index file1 is called for creating index file
+                    elif(i20type=='contdI20'):
+                        result=indexFile1(sevid, issm)
+                        #print("Tyoe is result is ",type(result))
+                    # if index file returns a tuple then the values in tuple are assigned as size of indexfile , missing records
+                    if isinstance(result,tuple):
 
-                    sizeOfIndexfile, missing,tablehtml=result
-                    issm_log.logger.info(f"Index file created successfully and size is {sizeOfIndexfile}.Record not included in Index but is in ISSM/Slate {missing}")
-                    session["index_size"] = f"{sizeOfIndexfile}"
-                    redis_client.set('index_size',f'{sizeOfIndexfile}')
-                    socketio.emit('rom', 3)
-                    session["missing_records"] = f"{missing}"
-                    redis_client.set('missing_records',f'{missing}')
-                    #print("Size of index file is ",sizeOfIndexfile)
-                    if missing :
-                        sender, password = get_credentials('email')
-                        email,cc=get_emails('emails')
-                       # print(email)
-                       # print(cc)
-                        email, cc = get_emails('emails')
-                        #send_email1(sender, password, email, missing,pdf_filename,tablehtml,cc)
-                # if index file doesnot return a tuple then it contains a message string which is assigned to msg
-                else:
-                   # print("Result",result)
-                    msg=result
-                    socketio.emit('rom',-3)
-                    session["index_error"] = f"Index file creation failed in index file {msg}"
-                    redis_client.set('index_error',f'')
-                    issm_log.logger.error(f"Index file creation failed {msg}")
-                #sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
+                        sizeOfIndexfile, missing,tablehtml=result
+                        issm_log.logger.info(f"Index file created successfully and size is {sizeOfIndexfile}.Record not included in Index but is in ISSM/Slate {missing}")
+                        session["index_size"] = f"{sizeOfIndexfile}"
+                        redis_client.set('index_size',f'{sizeOfIndexfile}')
+                        socketio.emit('rom', 3)
+                        session["missing_records"] = f"{missing}"
+                        redis_client.set('missing_records',f'{missing}')
+                        #print("Size of index file is ",sizeOfIndexfile)
+                        if missing :
+                            sender, password = get_credentials('email')
+                            email,cc=get_emails('emails')
+                           # print(email)
+                           # print(cc)
+                            email, cc = get_emails('emails')
+                            #send_email1(sender, password, email, missing,pdf_filename,tablehtml,cc)
+                    # if index file doesnot return a tuple then it contains a message string which is assigned to msg
+                    else:
+                       # print("Result",result)
+                        msg=result
+                        socketio.emit('rom',-3)
+                        session["index_error"] = f"Index file creation failed in index file {msg}"
+                        redis_client.set('index_error',f'')
+                        issm_log.logger.error(f"Index file creation failed {msg}")
+                    #sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
             except Exception as e:
+                successful=False
                 session["index_error"]=f"Index file creation failed {e}"
                 redis_client.set('index_error',f"Index file creation failed {e}")
                 issm_log.logger.error(f"Index file creation failed {e}")
 
             try:
                 # writing to zip file . From the directory we are taking all the files that start with N and pdf files and adding to zip
-                zip_filename = 'signed_files.zip'
-                with ZipFile(zip_filename, 'w') as zip_file:
-                    for filename in os.listdir('.'):
-                        if filename.endswith('.pdf') and filename.startswith("N") and filename != pdf_filename and not filename.endswith("_unsigned.pdf") or filename == "index_" + date + ".xlsx" or filename == "index_" + date + ".txt":
-                            zip_file.write(filename)
-                response = make_response(send_file(zip_filename, as_attachment=True))
-                response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
-                response.headers['Content-Type'] = 'application/zip'
-                issm_log.logger.info("Files Zipped")
-                socketio.emit('rom', 4)
-                session['zipmsg'] = "Success"
-                redis_client.set('zipmsg','Success')
-                #if slate request is yes then depending on program the post function is called
-                if slaterequest=='y':
-                    stream=request.form['program']
-                    if stream=='g':
-                        output=post(zip_filename, 'GR')
-                        issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
-                        socketio.emit('rom', 5)
-                        #print(output)
-                    else:
-                       # print("goign to UG")
-                        output=post(zip_filename, 'UG')
-                        issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
-                        socketio.emit('rom', 5)
-                       # print(output)
+                if successful:
+                    zip_filename = 'signed_files.zip'
+                    with ZipFile(zip_filename, 'w') as zip_file:
+                        for filename in os.listdir('.'):
+                            if filename.endswith('.pdf') and filename.startswith("N") and filename != pdf_filename and not filename.endswith("_unsigned.pdf") or filename == "index_" + date + ".xlsx" or filename == "index_" + date + ".txt":
+                                zip_file.write(filename)
+                    response = make_response(send_file(zip_filename, as_attachment=True))
+                    response.headers['Content-Disposition'] = 'attachment; filename=signed_files.zip'
+                    response.headers['Content-Type'] = 'application/zip'
+                    issm_log.logger.info("Files Zipped")
+                    socketio.emit('rom', 4)
+                    session['zipmsg'] = "Success"
+                    redis_client.set('zipmsg','Success')
+                    #if slate request is yes then depending on program the post function is called
+                    if slaterequest=='y':
+                        stream=request.form['program']
+                        if stream=='g':
+                            output=post(zip_filename, 'GR')
+                            issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
+                            socketio.emit('rom', 5)
+                            #print(output)
+                        else:
+                           # print("goign to UG")
+                            output=post(zip_filename, 'UG')
+                            issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
+                            socketio.emit('rom', 5)
+                           # print(output)
             except Exception as e:
+                successful=False
                 socketio.emit('rom',-4)
                 session['zipmsg']=f"Files Zipping failed {e}"
                 redis_client.set('zipmsg',f"Files Zipping failed {e}")
@@ -432,25 +440,34 @@ def upload():
             remove_files()
             time.sleep(60)
             try:
-                return response
+                if successful:
+                    return response
             except Exception as e:
+                successful=False
                 issm_log.logger.error(f"i20 response failed {e}")
 
             # print(e)
         except Exception as e:
+            successful=False
             issm_log.logger.error(f"Process failed {e}")
 
 
     if request.method == 'GET':
+
+
             # from the session all the session messages are taken and returned as json
             TotalPages = redis_client.get('Total_Pages')
             TotalPages=TotalPages.decode('utf-8') if TotalPages is not None else None
+            TotalPages=int(TotalPages)
 
             TotalFiles = redis_client.get('Total_Files')
             TotalFiles=TotalFiles.decode('utf-8') if TotalFiles is not None else None
+            TotalFiles=int(float(TotalFiles)) if TotalFiles is not None else None
 
             TotalSignatures = redis_client.get('Total_Signatures')
             TotalSignatures=TotalSignatures.decode('utf-8') if TotalSignatures is not None  else None
+            TotalSignatures=int(TotalSignatures) if TotalSignatures is not None else None
+
 
             zipMessage = redis_client.get('zipmsg')
             zipMessage=zipMessage.decode('utf-8') if zipMessage is not None else None
@@ -458,11 +475,10 @@ def upload():
             splitFailure = redis_client.get('Split_Failure')
             splitFailure=splitFailure.decode('utf-8') if splitFailure is not None else None
 
-            indexMessage = redis_client.get('indexmsg')
-            indexMessage=indexMessage.decode('utf-8') if indexMessage is not None else None
 
             indexSize = redis_client.get('index_size')
             indexSize=indexSize.decode('utf-8') if indexSize is not None else None
+            indexSize=int(indexSize) if indexSize is not None else None
 
             missingRecords = redis_client.get('missing_records')
             missingRecords=missingRecords.decode('utf-8') if missingRecords is not None else None
@@ -478,6 +494,9 @@ def upload():
 
             addSign = redis_client.get('addSign')
             addSign=addSign.decode('utf-8') if addSign is not None else None
+            print('addSign is ///',addSign)
+            print(type(addSign))
+            #addSign=int(addSign)
 
             sevisids1 = redis_client.lrange("sevis",0,-1)
             sevisids1=[x.decode("utf-8") for x in sevisids1]
@@ -506,7 +525,6 @@ def upload():
                 'TotalSignatures': TotalSignatures,
                 'zipMessage': zipMessage,
                 'splitFailure': splitFailure,
-                'indexMessage': indexMessage,
                 'indexSize': indexSize,
                 'missingRecords': missingRecords,
                 'indexError': indexError,
@@ -527,7 +545,7 @@ def upload():
             for key in keys_to_delete:
                 redis_client.delete(key)
             # return jsonify(response_msg)
-            response = make_response({'message': 'Message response Success','data':response_msg}, http.HTTPStatus.UNAUTHORIZED)
+            response = make_response({'message': 'Message response Success','data':response_msg})
             return response
 """This returns a message to front end after the /i20process route 
 After each step in i2oprocess messages are added to session and those are retrived here and returned"""
@@ -852,6 +870,7 @@ def processed():
     if request.method=='GET':
         result= issm_log.processedgetter()
         result_dict = result.to_dict(orient='records')
+        print("log suceesd")
 
         return jsonify({'message':'logged fetched','data':result_dict})
 
