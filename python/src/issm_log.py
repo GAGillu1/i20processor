@@ -26,6 +26,8 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 def processedgetter():
     df=getprocessed()
-    df['processedDate']=pd.to_datetime(df['processedDate'])
-    df['processedDate'] = df['processedDate'].dt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+    df['processedDate'] = pd.to_datetime(df['processedDate'], format='%Y:%m:%d %H:%M:%S.%f')
+    df['processedDate'] = df['processedDate'].apply(lambda x: x.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')
+
+#    print(df)
     return df
