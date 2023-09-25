@@ -47,7 +47,7 @@ var next_response = __webpack_require__(89335);
 
 // ----------------------------
 // GET - GET WEBSOCKETS URL
-async function GET(request) {
+async function GET() {
     try {
         const hostname = process.env.WS_HOSTNAME;
         const host = "ws://" + hostname + ":" + process.env.WS_PORT;

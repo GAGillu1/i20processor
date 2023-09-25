@@ -54,8 +54,8 @@ export default function Socket() {
       socket.off("disconnect", onDisconnect);
       socket.off("rom", onPostProcessUpdate);
       socket.off("preProcessor", onPreProcessUpdate);
-      socket.off("preProcessor", onPreProcessMaxCount);
+      socket.off("preProcessorMaxCount", onPreProcessMaxCount);
     };
-  }, [socket, dispatch]);
+  }, [socket, dispatch, host]);
   return null;
 }

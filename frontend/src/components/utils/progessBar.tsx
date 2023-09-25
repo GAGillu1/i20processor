@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const progress = ["w-1/6", "w-2/6", "w-3/6", "w-4/6", "w-full", "w-full"];
+
 const bannerArr = [
   "Add Sign:",
   "Split Failure:",
@@ -22,23 +23,25 @@ const bannerArr = [
   "Zip Message:",
 ];
 
-const keys = [
-  "TotalFiles",
-  "TotalPages",
-  "TotalSignatures",
-  "addSign",
-  "indexError",
-  "indexMessage",
-  "indexSize",
-  "missingRecords",
-  "signMessage",
-  "splitFailure",
-  "splitMessage",
-  "zipMessage",
+const postArr = [
+  "Uploading",
+  "Splitting & Signing",
+  "Creating Index File",
+  "Zipping",
+  "Downloading",
+  "Downloading & Posting",
 ];
+const preArr = [
+  "Loading",
+  "Uploading",
+  "Validating VPN Credentials",
+  "VPN login Success",
+  "ISSM login Validation",
+  "ISSM Login Success",
+];
+
 const Results = () => {
   const [results, setResults] = useState([]);
-  // const [resultKeys, setResultKeys] = useState([]);
   const path = usePathname();
   const api = "/api" + path;
   const getResults = async () => {
@@ -60,21 +63,6 @@ const Results = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // return (
-  //   results.length > 0?
-  //   bannerArr.map((item, i) => {
-  //     console.log("results", results);
-  //     // console.log("result Keys", resultKeys);
-  //     return (
-  //       results[i] && (
-  //         <React.Fragment key={i}>
-  //           <p className="font-semibold">{item}</p>
-  //           <p className="col-span-2">{results[i]}</p>
-  //         </React.Fragment>
-  //       )
-  //     );
-  //   })
-  // ):"";
 
   return results.length > 0
     ? bannerArr.map((item, i) => {
@@ -89,36 +77,6 @@ const Results = () => {
       })
     : "";
 };
-
-const postArr = [
-  "Uploading",
-  "Splitting & Signing",
-  "Creating Index File",
-  "Zipping",
-  "Downloading",
-  "Downloading & Posting",
-];
-const preArr = [
-  "Loading",
-  "Uploading",
-  "Validating VPN Credentials",
-  "VPN login Success",
-  "ISSM login Validation",
-  "ISSM Login Success",
-];
-// const Steps = () => {
-//   return stepArr.map((step, i) => {
-//     return (
-//       <div
-//         className=" text-center flex flex-col items-center justify-center text-indigo-900 font-semibold gap-2"
-//         key={i}
-//       >
-//         <div className="w-10 h-10 rounded-full bg-indigo-300 p-2">{i + 1}</div>
-//         <p>{step}</p>
-//       </div>
-//     );
-//   });
-// };
 
 export const ProgressBar = () => {
   const path = usePathname();

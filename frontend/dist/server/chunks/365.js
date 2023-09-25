@@ -49,23 +49,24 @@ const bannerArr = [
     "Split Message",
     "Zip Message:"
 ];
-const keys = (/* unused pure expression or super */ null && ([
-    "TotalFiles",
-    "TotalPages",
-    "TotalSignatures",
-    "addSign",
-    "indexError",
-    "indexMessage",
-    "indexSize",
-    "missingRecords",
-    "signMessage",
-    "splitFailure",
-    "splitMessage",
-    "zipMessage"
-]));
+const postArr = [
+    "Uploading",
+    "Splitting & Signing",
+    "Creating Index File",
+    "Zipping",
+    "Downloading",
+    "Downloading & Posting"
+];
+const preArr = [
+    "Loading",
+    "Uploading",
+    "Validating VPN Credentials",
+    "VPN login Success",
+    "ISSM login Validation",
+    "ISSM Login Success"
+];
 const Results = ()=>{
     const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
-    // const [resultKeys, setResultKeys] = useState([]);
     const path = (0,next_navigation__WEBPACK_IMPORTED_MODULE_4__.usePathname)();
     const api = "/api" + path;
     const getResults = async ()=>{
@@ -86,21 +87,6 @@ const Results = ()=>{
         getResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    // return (
-    //   results.length > 0?
-    //   bannerArr.map((item, i) => {
-    //     console.log("results", results);
-    //     // console.log("result Keys", resultKeys);
-    //     return (
-    //       results[i] && (
-    //         <React.Fragment key={i}>
-    //           <p className="font-semibold">{item}</p>
-    //           <p className="col-span-2">{results[i]}</p>
-    //         </React.Fragment>
-    //       )
-    //     );
-    //   })
-    // ):"";
     return results.length > 0 ? bannerArr.map((item, i)=>{
         return results[i] ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((react__WEBPACK_IMPORTED_MODULE_1___default().Fragment), {
             children: [
@@ -116,35 +102,6 @@ const Results = ()=>{
         }, i) : "";
     }) : "";
 };
-const postArr = [
-    "Uploading",
-    "Splitting & Signing",
-    "Creating Index File",
-    "Zipping",
-    "Downloading",
-    "Downloading & Posting"
-];
-const preArr = [
-    "Loading",
-    "Uploading",
-    "Validating VPN Credentials",
-    "VPN login Success",
-    "ISSM login Validation",
-    "ISSM Login Success"
-];
-// const Steps = () => {
-//   return stepArr.map((step, i) => {
-//     return (
-//       <div
-//         className=" text-center flex flex-col items-center justify-center text-indigo-900 font-semibold gap-2"
-//         key={i}
-//       >
-//         <div className="w-10 h-10 rounded-full bg-indigo-300 p-2">{i + 1}</div>
-//         <p>{step}</p>
-//       </div>
-//     );
-//   });
-// };
 const ProgressBar = ()=>{
     const path = (0,next_navigation__WEBPACK_IMPORTED_MODULE_4__.usePathname)();
     return path === "/i20/pre-processor" ? /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(PreProcessorProgressBar, {}) : /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(PostProcessorProgressBar, {});

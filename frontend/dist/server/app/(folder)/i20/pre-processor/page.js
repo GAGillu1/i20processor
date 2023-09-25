@@ -600,6 +600,22 @@ const Page = ({ searchParams })=>{
                                         className: "col-span-2 col-start-2"
                                     }),
                                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("label", {
+                                        htmlFor: "deferral",
+                                        children: "Deferral:"
+                                    }),
+                                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                        className: "col-span-2 flex gap-2",
+                                        children: [
+                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(formik__WEBPACK_IMPORTED_MODULE_2__.Field, {
+                                                component: _components_utils_myInputs__WEBPACK_IMPORTED_MODULE_6__/* .MyCheckBox */ .IA,
+                                                name: "deferral"
+                                            }),
+                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("p", {
+                                                children: "Create New I-20"
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("label", {
                                         htmlFor: "excelFile",
                                         children: "Excel File:"
                                     }),
@@ -669,7 +685,7 @@ const __default__ = proxy.default;
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [697,732,99,608,751,469,271,771,365], () => (__webpack_exec__(74761)));
+var __webpack_exports__ = __webpack_require__.X(0, [697,732,99,959,751,469,271,771,365], () => (__webpack_exec__(74761)));
 module.exports = __webpack_exports__;
 
 })();

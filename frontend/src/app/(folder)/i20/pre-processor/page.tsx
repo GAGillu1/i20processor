@@ -6,7 +6,7 @@ import { useContextDispatch, useMyContext } from "@/components/myContext";
 import { preProcessorSchema } from "@/components/utils/valSchemas";
 import { preProcessorModel, sParams } from "@/components/utils/models";
 import { preProcessorIV } from "@/components/utils/initialValues";
-import { FileInput, MySubmit } from "@/components/utils/myInputs";
+import { FileInput, MyCheckBox, MySubmit } from "@/components/utils/myInputs";
 import ErrorMsg from "@/components/errorMsg";
 import { toast } from "react-hot-toast";
 import getFormData from "@/components/utils/getFormData";
@@ -132,7 +132,11 @@ const Page = ({ searchParams }: sParams) => {
                   name="issmPassword"
                   className="col-span-2 col-start-2"
                 />
-
+                <label htmlFor="deferral">Deferral:</label>
+                <div className="col-span-2 flex gap-2">
+                  <Field component={MyCheckBox} name="deferral" />
+                  <p>Create New I-20</p>
+                </div>
                 <label htmlFor="excelFile">Excel File:</label>
                 <Field
                   component={FileInput}

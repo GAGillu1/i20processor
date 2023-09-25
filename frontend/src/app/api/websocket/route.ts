@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 // ----------------------------
 // GET - GET WEBSOCKETS URL
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const hostname = process.env.WS_HOSTNAME;
     const host = ("ws://" + hostname + ":" + process.env.WS_PORT) as string;
