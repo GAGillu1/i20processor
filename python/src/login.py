@@ -72,7 +72,7 @@ def registeruser(username,email,role,fullname,institutionid):
         # with pd.ExcelWriter('user.xlsx', mode='a', engine='openpyxl', if_sheet_exists='overlay') as writer:
         #     data.to_excel(writer, sheet_name="Sheet1",header=None, startrow=writer.sheets["Sheet1"].max_row,index=False)
         #     return http.HTTPStatus.OK
-        data=insertusers(fullname,username,email,role,'University of New Haven',salt,pwd)
+        data=insertusers(fullname,username,email,role,institutionid,salt,pwd)
         sender, emailpassword = get_credentials('email')
         # send email to as password is changed
         send_email2(sender, emailpassword, email,fullname, username, password)
@@ -90,7 +90,8 @@ def registeruser(username,email,role,fullname,institutionid):
     #
     # else:
     #     return http.HTTPStatus.UNAUTHORIZED
-#registeruser("Gov","Qwerty","gillu1@unh.newhaven.edu","ADMIN",'Govardhan')
+# k=registeruser("Gov","Qwerty","gillu1@unh.newhaven.edu","ADMIN",'D4BEFFDF-882F-4D26-B2A1-2A8F9ED85EB4')
+# print(k)
 #registeruser('tester','abcde','abcde@email.com','ADMIN','I am tester')
 def confignewuser(username,password,email,role,fullname,university):
     salt = bcrypt.gensalt()
@@ -99,17 +100,16 @@ def confignewuser(username,password,email,role,fullname,university):
     pwd = password_hash.decode('utf-8')
     data = insertusers(fullname, username, email, role, university, salt, pwd)
     return http.HTTPStatus.OK
-#confignewuser('Gov','Qwerty','gillu1@unh.newhaven.edu','ADMIN','Govardhan','University of New Haven')
+#confignewuser('Gov','Qwerty','illurugovardhanreddy@gmail.com','ADMIN','Govardhan','D4BEFFDF-882F-4D26-B2A1-2A8F9ED85EB4')
 
 """This is for login verification we hash the entered password and check if hashed password in DB is equal to this hashed password"""
-def checklogin(username, password):
+def checklogin(email, password):
     try:
         #reading excel file
         #df = pd.read_excel('user.xlsx')
         df=loginusers()
-        print(username)
         # filtering the dataframe with the username so we get filtered dataframe
-        user_df = df.loc[df['userName'] == username]
+        user_df = df.loc[df['email'] == email]
         print(user_df)
         #if the dataframe is not empty means we have userdata in dataframe which is below condition
         if not user_df.empty:
@@ -126,7 +126,7 @@ def checklogin(username, password):
                     institutionId=user_df['institutionid'].values[0]
                     fullname=user_df['fullname'].values[0]
                     institutionname=user_df['institutionName'].values[0]
-                    updatelogin(username)
+                    updatelogin(email)
                     print(institutionId)
                     print(roles)
 
@@ -140,18 +140,23 @@ def checklogin(username, password):
     except Exception as e:
         print(e)
         return http.HTTPStatus.INTERNAL_SERVER_ERROR  # return 500 for all other errors
-
+# k=checklogin('illurugovardhanreddy@gmail.com','Gov6635')
+# print('output form k is ',k)
+#checklogin('illurugovardhanreddy@gmail.com','Qwerty')
 """Definition for forgotpassword . Where We are sending the password in email """
-def forgotpassword1(username,):
+def forgotpassword1(email):
     #df = pd.read_excel('user.xlsx')
     df=activeusers()
     #lowercase_usernames = df['username'].astype(str).lower()
 
     #print(type(lowercase_usernames))
     #if username entered is in DB
-    email=""
-    if username in df['userName'].astype(str).values:
+    # email=""
+    if email in df['email'].astype(str).values:
         #a random password with username and two random numbers and a specialcharacter
+        matched_row = df.loc[df['email'] == email]
+        print(matched_row)
+        username = matched_row['userName'].iloc[0]
         pwd=f"{username}{random_number1}{random_number2}"
         #pwd="Qwerty"
         print(pwd)
@@ -159,14 +164,13 @@ def forgotpassword1(username,):
         stringsalt = salt.decode('utf-8')
         password_hash = bcrypt.hashpw(pwd.encode('utf-8'), salt)
         password = password_hash.decode('utf-8')
-        df.loc[df['userName'] == username, 'hash'] = password
-        df.loc[df['userName'] == username, 'salt'] = stringsalt
+        df.loc[df['email'] == email, 'hash'] = password
+        df.loc[df['email'] == email, 'salt'] = stringsalt
 
-        email = df.loc[df['userName'] == username,'email'].iloc[0]
-        fullname=df.loc[df['userName'] == username,'fullname'].iloc[0]
+        fullname=df.loc[df['email'] == email,'fullname'].iloc[0]
         #updating the password and writing to excel
         print(email,fullname,pwd)
-        updatepass(username,stringsalt,password_hash)
+        updatepass(email,stringsalt,password_hash)
         #df.to_excel('user.xlsx', index=False)
 
         return [email],pwd,fullname
@@ -174,7 +178,7 @@ def forgotpassword1(username,):
         print("Not in excel ")
 
         return "Username not registered"
-
+#forgotpassword1('illurugovardhanreddy@gmail.com')
 #g=forgotpassword1('Gov')
 
 """Definition is to retrive all users form DB which is excel here """
@@ -227,22 +231,23 @@ def deleteuser(user):
 #deleteuser('Ga')
 #deleteuser('abc')
 """Below definition is to get details of the user and return them """
-def userpopup(user,institutionid):
+def userpopup(email,institutionid):
     df=selectusers(institutionid)
-    usernames = (df['userName'].str.lower().values)
+    emails = (df['email'].str.lower().values)
     # getting dataframe where the username is matches with the one in excel
-    userdf=df[usernames==user.lower()]
+    userdf=df[emails==email.lower()]
     print(userdf)
     #print(userdf)
     #print(userdf.iloc[0]['Email'])
     # getting email,role, name and fullname from excel
-    email=userdf.iloc[0]['email']
+    #email=userdf.iloc[0]['email']
     role=userdf.iloc[0]['userRole']
     name=userdf.iloc[0]['userName']
     fullname=userdf.iloc[0]['fullname']
     active=userdf.iloc[0]['active']
 
     return name,email,role,fullname,active
+
 """Below is a wrap function  to check if user has token in the request or not """
 def token_required(f):
     @wraps(f)
@@ -266,25 +271,23 @@ def token_required(f):
     return decorated
 
 """Definition is to change password for user input paramanetrs are username and new password """
-def change_password(username,password,current_password,institutionid):
+def change_password(email,password,current_password,institutionid):
     #df=pd.read_excel('user.xlsx')
     df=selectusers(institutionid)
     try:
         print("in")
-        usernames = (df['userName'].str.lower().values)
-        print(usernames)
-        print(type(usernames))
+        emails = (df['email'].str.lower().values)
+        print(emails)
+        print(type(emails))
         #if username is equal to then we are changing the value of hash and salt in excel .
-        if (usernames == username.lower()).any():
-            user_df=df.loc[df['userName']==username]
+        if (emails == email.lower()).any():
+            user_df=df.loc[df['email']==email]
             salt=user_df['salt'].values[0]
             print("in salt")
             password_hash = bcrypt.hashpw(password.encode('utf-8'), salt.encode('utf-8'))
             stored_hash = user_df['hash'].values[0].encode('utf-8')
 
             if password_hash !=stored_hash:
-                print(password_hash==stored_hash)
-                print("in password hash")
                 #pwd=f"{username}{random_number1}{random_number2}{special_char}"
                 pwd=password
                 salt = bcrypt.gensalt()
@@ -293,12 +296,10 @@ def change_password(username,password,current_password,institutionid):
                 password = password_hash.decode('utf-8')
                 # df.loc[df['username'] == username, 'hash'] = password
                 # df.loc[df['username'] == username, 'salt'] = stringsalt
-                #
-                email = df.loc[df['userName'] == username,'email'].iloc[0]
-                fullname=df.loc[df['userName'] == username,'fullname'].iloc[0]
+                fullname=df.loc[df['email'] == email,'fullname'].iloc[0]
 
                 #df.to_excel('user.xlsx', index=False)
-                updatepass(username,stringsalt,password_hash)
+                updatepass(email,stringsalt,password_hash)
 
                 return [email],pwd,fullname
 

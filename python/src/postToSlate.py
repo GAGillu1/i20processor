@@ -6,13 +6,16 @@ from encryption_decryption import encryptsalt, decryptsalt
 """Decrypting the password with the key """
 def decrypt(instancetype,universityname):
     result=selectinstance(instancetype, universityname)
-    instanceUrl=result['instanceUrl'][0]
+    print("result is ",result)
+    instanceUrl=result['jsonendpoint'][0]
     username=result['username'][0]
     password=result['instancePassword'][0]
-    key=result['instanceKey'][0]
-    fernet=Fernet(key)
-    decrypted_password = fernet.decrypt(password)
-    return instanceUrl,username,decrypted_password.decode()
+    encpwd=result['instancePassword'][0]
+    # key=result['instanceKey'][0]
+    # fernet=Fernet(key)
+    password=decryptsalt(encpwd)
+    print(instanceUrl,username, password)
+    return instanceUrl,username,password
 
 """Posting the files to slate"""
 def post(file, instance):
@@ -21,7 +24,7 @@ def post(file, instance):
     print(client_url,username,pw)
     password = pw
     # Define the file to upload
-    file_path  = file
+    file_path = file
     session = requests.Session()
     # Open the file and read its contents as bytes
     with open(file_path, "rb") as file:
@@ -33,7 +36,23 @@ def post(file, instance):
     response = session.post(client_url, data=file_contents)
     # Print the response from the client
     return (response.text)
+def connectiontest(instance,institutionid):
+    client_url, username, pw = decrypt(instance, institutionid)
 
+    session = requests.Session()
+    session.auth = (username, pw)
+
+    # Make a GET request to test the connection
+    response = session.get(client_url)
+
+    # If the response status code is 200, the connection is successful.
+    if response.status_code == 200:
+        return True, "Connection Successful"
+    else:
+        return False, f"Connection Failed with status code {response.status_code}"
+
+# p=connectiontest('GR','386FDB0A-EAD4-4916-829E-3196F4AC30F5')
+# print(p)
 #insertinstance('tesu', 'grad', 'tester', 'testerpwd' ,'A0494CF8-A800-47B7-93DB-0974B04A4568')
 def instanceinsert(url,type,username,password,universityid):
     try:

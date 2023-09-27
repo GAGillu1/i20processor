@@ -37,6 +37,8 @@ from postToSlate import post, updateinstance, instanceget, instancetypeget
 import datetime
 import base64
 from datetime import timedelta
+
+from adminpage import allprocessed, allinstitutions, adminusers
 from sendemail import get_credentials, get_emails, send_email
 from postToSlate import instanceinsert
 from totalpages import pages
@@ -518,7 +520,7 @@ def upload():
                 result = "Some error"
                 # print("sevis is ",sevisids)
                 # print("institution is ",institution)
-                insertprocessed(user, sevisids, institution, str(result),processor='ISSM to Slate')
+                insertprocessed(user, sevisids1, institution, str(result),processor='ISSM to Slate')
             response_msg = {
                 'TotalPages': TotalPages,
                 'TotalFiles': TotalFiles,
@@ -868,12 +870,28 @@ def instancetype(type):
 @app.route('/log',methods=['GET'])
 def processed():
     if request.method=='GET':
-        result= issm_log.processedgetter()
+        institutionid=request.headers.get('institutionid')
+        result= issm_log.processedgetter(institutionid)
         result_dict = result.to_dict(orient='records')
         print("log suceesd")
 
         return jsonify({'message':'logged fetched','data':result_dict})
 
+@app.route('/admin/<string:action>',methods=['GET'])
+def adminusersall(action):
+    if request.method=='GET':
+        if action=='users':
+            result=adminusers()
+            result_dict = result.to_dict(orient='records')
+            return jsonify({'message': 'All users fetched', 'data': result_dict})
+        elif action=='log':
+            result=allprocessed()
+            result_dict = result.to_dict(orient='records')
+            return jsonify({'message': 'Logs Fetched', 'data': result_dict})
+        elif action=='institutions':
+            result=allinstitutions()
+            result_dict = result.to_dict(orient='records')
+            return jsonify({'message': 'All institution names fetched', 'data': result_dict})
 
 
 

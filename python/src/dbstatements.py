@@ -47,11 +47,11 @@ def loginusers():
     query="SELECT u.userId,u.fullname, u.userName,  u.email,  u.salt, u.hash, u.active, u.userRole, u.institutionid,  i.institutionName  from  users u JOIN   institutions i ON u.institutionid = i.institutionid WHERE   u.active = 1"
     result=dba.execute_query(query)
     if result is not None:
-        print(result)
         return result.reset_index(drop=True)
     else:
         print("No data returned from the query.")
     dba.close()
+
 
 def selectusers(institutionid):
     dba.connect()
@@ -88,10 +88,10 @@ def insertadmin(fullname,email,institutionname):
     dba.execute_query(query, [fullname,email,institutionname])
 
     dba.close()
-def insertusers(fullname,username,email,userrole,institutionname,salt,hash):
+def insertusers(fullname,username,email,userrole,institutionid,salt,hash):
     dba.connect()
-    query="insert into users(fullname,userName,email,userRole,institutionId,salt,hash,active) values(?,?,?,?,(select institutionId from Institutions where institutionName=?),?,?,1)"
-    dba.execute_query(query, [fullname,username,email, userrole, institutionname,salt,hash])
+    query="insert into users(fullname,userName,email,userRole,institutionId,salt,hash,active) values(?,?,?,?,?,?,?,1)"
+    dba.execute_query(query, [fullname,username,email, userrole, institutionid,salt,hash])
     dba.close()
 
 
@@ -124,17 +124,17 @@ def insertsignatures(fullName,userName,email,signatureLength,signatureWidth,sign
     query="insert into signatures(fullName,userName,email,signatureLength,signatureWidth,signatureXCordinate,signatureYCordinate,institutionId)  values(?,?,?,?,?,?,?,?)"
     dba.execute_query(query,[fullName,userName,email,signatureLength,signatureWidth,signatureXCordinate,signatureYCordinate,universityname])
     dba.close()
-def updatepass(username,salt,hash):
+def updatepass(email,salt,hash):
     dba.connect()
-    query=" update  users set salt=?,hash=? where userName=?"
-    dba.execute_query(query,[salt,hash,username])
+    query=" update  users set salt=?,hash=? where email=?"
+    dba.execute_query(query,[salt,hash,email])
     dba.close()
 
 
 def updateuser(username,fullname,email,role,active):
     dba.connect()
-    query="update users set fullname=?,email=?,userRole=?,active=? where userName=?"
-    dba.execute_query(query,[fullname,email,role,active,username])
+    query="update users set fullname=?,userRole=?,active=? where email=?"
+    dba.execute_query(query,[fullname,role,active,email])
     dba.close()
 
 def updatesignature(username,fullname,email,signaturelength,signaturewidth,signaturexcordinate,signatureycordinate):
@@ -157,12 +157,11 @@ def insertinstance(url,msg,username,password,universityid):
     dba.execute_query(query,[url,msg,username,password,universityid])
     dba.close()
 
-def selectinstance(instancetype,universityname):
+def selectinstance(instancetype,institutionid):
     dba.connect()
-    query="select instanceUrl,username,instancePassword,instanceKey from instance where instanceMsg=? and institutionID=(select institutionId from Institutions where institutionName=?)"
-    result=dba.execute_query(query,[instancetype,universityname])
+    query="select jsonendpoint,username,instancePassword from instance where jsontype=? and institutionID=?"
+    result=dba.execute_query(query,[instancetype,institutionid])
     if result is not None:
-        # Use the result DataFrame as needed.
         return result.reset_index(drop=True)
     else:
         print("No data returned from the query.")
@@ -170,18 +169,16 @@ def selectinstance(instancetype,universityname):
 
 def updatelogin(user):
     dba.connect()
-    query="update users set last_login= ? where username=? "
+    query="update users set last_login= ? where email=? "
     dba.execute_query(query,[today,user])
     dba.close()
 
-def userdata(username):
+def userdata(email):
     dba.connect()
-    query="select fullname,email,userRole ,active from users where userName=?"
-    result=dba.execute_query(query,[username])
-
+    query="select fullname,userRole ,active from users where email=?"
+    result=dba.execute_query(query,[email])
     if result is not None:
         # Use the result DataFrame as needed.
-
         return result.reset_index(drop=True)
     else:
         print("No data returned from the query.")
@@ -198,30 +195,8 @@ def getinstaceinfo(type,institutionid):
     else:
         print("No data returned from the query.")
     dba.close()
-# def updateactive(user,activeid):
-#     dba.connect()
-#     query="select active from users where username=?"
-#     result = dba.execute_query(query,user)
-#     print(result)
-#     active=result['active'][0]
-#     print(active)
-#
-#     print(active!=activeid)
-#     #print((active==False or active =True))
-#     if (active!= activeid) and (active == False or active ==True):
-#         print("inn")
-#         if active==True:
-#             query="update users set active =0 where username =?"
-#             dba.execute_query(query,user)
-#         elif active==False:
-#             query = "update users set active =1 where username =?"
-#             dba.execute_query(query, user)
-#             print("in")
-#
-#
-#     dba.close()
 
-def updateactive(user, activeid):
+def updateactive(user,activeid):
     dba.connect()
     query = "select  active from  users where username = ?"
     result = dba.execute_query(query, user)
@@ -237,10 +212,11 @@ def updateactive(user, activeid):
 
 #updateactive("GOV", 1)
 
-def getprocessed():
+def getprocessed(institutionid):
     dba.connect()
-    query='select processedDate, processedBy, processedMsg,result,processor from processed'
-    result=dba.execute_query(query)
+    print("inst id is ",institutionid)
+    query='select processedDate, processedBy, processedMsg,result,processor from processed where institutionid=?'
+    result=dba.execute_query(query,[institutionid])
     if result is not None:
         # Use the result DataFrame as needed.
         return result.reset_index(drop=True)
@@ -266,6 +242,37 @@ def getinstances(institutionid):
     else:
         print("No data returned from the query.")
     dba.close()
+
+def allusers():
+    dba.connect()
+    query='select fullname, email,userName from users '
+    result = dba.execute_query(query)
+    if result is not None:
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query")
+    dba.close()
+
+def alllog():
+    dba.connect()
+    query='select p1.processedDate,p1.processedBy,p1.ProcessedMsg,p1.result, p1.processor,p2.institutionName from processed p1  join institutions p2 on p1.institutionid=p2.institutionid'
+    result=dba.execute_query(query)
+    if result is not None:
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query")
+    dba.close()
+
+def alluniversitties():
+    dba.connect()
+    query='select institutionName from institutions'
+    result=dba.execute_query(query)
+    if result is not None:
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query")
+    dba.close()
+
 
 # updateuser('test','abc','def','DDSO')
 #insertinstitutions('University of New Haven2',cursor,conn)
