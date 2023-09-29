@@ -12,56 +12,8 @@
       "page": "/",
       "matchers": [
         {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/(\\/?index|\\/?index\\.json))?[\\/#\\?]?$",
-          "originalSource": "/"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/notFound(.json)?[\\/#\\?]?$",
-          "originalSource": "/notFound"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/not-authorized(.json)?[\\/#\\?]?$",
-          "originalSource": "/not-authorized"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/i20(.json)?[\\/#\\?]?$",
-          "originalSource": "/i20"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/i20\\/pre-processor(.json)?[\\/#\\?]?$",
-          "originalSource": "/i20/pre-processor"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/i20\\/post-processor(.json)?[\\/#\\?]?$",
-          "originalSource": "/i20/post-processor"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin(.json)?[\\/#\\?]?$",
-          "originalSource": "/admin"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin\\/users(.json)?[\\/#\\?]?$",
-          "originalSource": "/admin/users"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin\\/instance(.json)?[\\/#\\?]?$",
-          "originalSource": "/admin/instance"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/dso(.json)?[\\/#\\?]?$",
-          "originalSource": "/dso"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/login(.json)?[\\/#\\?]?$",
-          "originalSource": "/login"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/profile(.json)?[\\/#\\?]?$",
-          "originalSource": "/profile"
-        },
-        {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/logs(.json)?[\\/#\\?]?$",
-          "originalSource": "/logs"
+          "regexp": "^/.*$",
+          "originalSource": "/:path*"
         }
       ],
       "wasm": [],

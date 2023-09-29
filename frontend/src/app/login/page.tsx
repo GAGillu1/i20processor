@@ -1,14 +1,14 @@
 "use client";
 import { Field, Form, Formik } from "formik";
-import ErrorMsg from "@/components/errorMsg";
+import ErrorMsg from "@/components/utils/errorMsg";
 import { loginSchema } from "@/components/utils/valSchemas";
 import { loginIV } from "@/components/utils/initialValues";
 import { useRouter } from "next/navigation";
 import { loginModel } from "@/components/utils/models";
-import { useContextDispatch } from "@/components/myContext";
+import { useContextDispatch } from "@/components/utils/myContext";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import MyModal from "@/components/myModal";
+import MyModal from "@/components/ui/forgotPwd";
 import { useState } from "react";
 import { MySubmit } from "@/components/utils/myInputs";
 
@@ -67,8 +67,8 @@ const Page = ({
             <section className="p-12 bg-gray-50  my-auto rounded-lg  font-semibold text-gray-700 w-[75%] col-span-2 justify-self-end">
               <h2 className="text-5xl mb-6 px-0">Login</h2>
               <Form className="flex flex-col gap-1">
-                <label htmlFor="username">Username</label>
-                <Field name="username" placeholder="john12" autoFocus />
+                <label htmlFor="username">Email</label>
+                <Field name="username" placeholder="john12@xyz.com" autoFocus />
                 <ErrorMsg name="username" />
                 <label htmlFor="password">Password</label>
                 <Field name="password" type="password" />

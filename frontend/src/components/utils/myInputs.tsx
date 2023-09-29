@@ -1,7 +1,8 @@
 "use client";
-import { useContextDispatch } from "../myContext";
+import { useContextDispatch } from "./myContext";
 import { useState } from "react";
 import { Switch } from "@headlessui/react";
+import PhoneInput from "react-phone-input-2";
 // -----------------------
 // CUSTOM INPUT
 export const MyInput = ({ ...props }) => {
@@ -115,5 +116,21 @@ export const MySubmit = ({ ...props }) => {
         {props.loading ? `${props.loadingMsg}` : `${props.action}`}
       </button>
     )
+  );
+};
+// -----------------------
+// PHONE INPUT
+export const PhInput = ({ ...props }) => {
+  return (
+    <PhoneInput
+      country={"us"}
+      specialLabel=""
+      isValid={true}
+      defaultErrorMessage="Please enter a valid phone number"
+      onChange={(phone: string) => {
+        props.form.setFieldValue(props.field.name, phone);
+      }}
+      {...props}
+    />
   );
 };

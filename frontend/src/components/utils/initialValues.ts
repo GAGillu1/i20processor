@@ -75,3 +75,12 @@ export const preProcessorIV = {
   excelFile: "",
   instance: "",
 };
+
+export const institutionIV = {
+  institutionName: "",
+  adminFullName: "",
+  email: "",
+  crm: "",
+  adminDisplayName: "",
+  adminContact: "",
+};

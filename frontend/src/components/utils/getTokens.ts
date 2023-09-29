@@ -5,9 +5,11 @@ export function getToken(request: NextRequest) {
   const token = request.cookies.get("authorization")?.value;
   const institutionid = request.cookies.get("institutionid")?.value;
   const username = request.cookies.get("username")?.value;
+  const role = request.cookies.get("role")?.value;
   if (token) headers.append("authorization", token);
   if (institutionid) headers.append("institutionid", institutionid);
   if (username) headers.append("username", username);
+  if (role) headers.append("role", role);
   headers.append("Access-Control-Allow-Origin", "*");
   return headers;
 }

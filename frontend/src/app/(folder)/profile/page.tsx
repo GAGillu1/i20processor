@@ -1,8 +1,8 @@
 "use client";
 
-import ChangePwd from "@/components/changePwd";
-import { useMyContext } from "@/components/myContext";
-import MyInfo from "@/components/myInfo";
+import ChangePwd from "@/app/(folder)/profile/changePwd";
+import { useMyContext } from "@/components/utils/myContext";
+import MyInfo from "./myInfo";
 
 const Profile = () => {
   const useData = useMyContext();

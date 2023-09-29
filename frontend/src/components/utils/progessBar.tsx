@@ -1,7 +1,7 @@
 // Upload > Split > Sign > Zip > Post to slate > Download
 
 import React, { useEffect, useState } from "react";
-import { useMyContext } from "../myContext";
+import { useMyContext } from "./myContext";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import Link from "next/link";

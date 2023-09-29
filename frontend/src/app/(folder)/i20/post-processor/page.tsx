@@ -2,13 +2,13 @@
 import * as React from "react";
 import { Field, Form, Formik } from "formik";
 import { useState, useEffect } from "react";
-import { useContextDispatch, useMyContext } from "@/components/myContext";
+import { useContextDispatch, useMyContext } from "@/components/utils/myContext";
 import { i20Schema } from "@/components/utils/valSchemas";
 import { i20Model, sParams } from "@/components/utils/models";
 import { i20IV } from "@/components/utils/initialValues";
 import { FileInput, MyInput, MySubmit } from "@/components/utils/myInputs";
-import DsoList from "@/components/dsoList";
-import ErrorMsg from "@/components/errorMsg";
+import DsoList from "@/app/(folder)/i20/dsoList";
+import ErrorMsg from "@/components/utils/errorMsg";
 import { toast } from "react-hot-toast";
 import getFormData from "@/components/utils/getFormData";
 import { ProgressBar, Response } from "@/components/utils/progessBar";

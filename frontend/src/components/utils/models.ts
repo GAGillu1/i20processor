@@ -71,9 +71,18 @@ export interface preProcessorModel {
 }
 
 export interface logModel {
-  date: string;
+  processedDate: string;
   processedBy: string;
-  message: string;
+  processedMsg: Array<string>;
   result: string;
-  system: string;
+  processor: string;
+}
+
+export interface institutionModel {
+  institutionName: string;
+  adminFullName: string;
+  email: string;
+  crm: string;
+  adminDisplayName: string;
+  adminContact: string;
 }

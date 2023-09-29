@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
       headers: getToken(request),
     });
     const data = await res.json();
+    console.log("log", data);
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     return NextResponse.json(

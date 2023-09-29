@@ -9,6 +9,7 @@ import {
   LogsIcon,
   PostProcessingIcon,
   PreProcessingIcon,
+  UniversityIcon,
   UsersIcon,
 } from "@/assets/myIcons";
 import Link from "next/link";
@@ -145,6 +146,15 @@ export const ChangePasswordCard = () => {
   );
 };
 // -------------------------------
+// UNIVERSITY CARD
+export const InstitutionCard = () => {
+  return (
+    <Card href="/admin/institution" title="Institution">
+      <UniversityIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </Card>
+  );
+};
+// -------------------------------
 // LARGE CARDS
 // -------------------------------
 // USERS CARD
@@ -162,6 +172,15 @@ export const InstanceCardLg = () => {
   return (
     <CardLg link="/admin/instance" title="Instance" description={lorem}>
       <InstanceIcon className="w-16 h-16 text-indigo-900 mx-auto" />
+    </CardLg>
+  );
+};
+// -------------------------------
+// UNIVERSITY CARD
+export const InstitutionCardLg = () => {
+  return (
+    <CardLg link="/admin/institution" title="Institution" description={lorem}>
+      <UniversityIcon className="w-16 h-16 text-indigo-900 mx-auto" />
     </CardLg>
   );
 };

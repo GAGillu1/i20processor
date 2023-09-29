@@ -1,15 +1,15 @@
 "use client";
-import UserList from "@/components/userList";
-import UserInfo from "@/components/userInfo";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Loading from "@/app/(folder)/admin/users/loading";
 import { Suspense } from "react";
-import AddUser from "@/components/addUser";
 import { sParams, userModel } from "@/components/utils/models";
 import { AddIcon, SearchIcon } from "@/assets/myIcons";
-import AddSign from "@/components/addSign";
+import AddSign from "@/app/(folder)/admin/users/addSign";
 import { toast } from "react-hot-toast";
+import UserInfo from "./userInfo";
+import AddUser from "./addUser";
+import UserList from "./userList";
 
 const Users = ({ searchParams }: sParams) => {
   const [userList, setUserList] = useState<userModel[]>([]);
@@ -28,6 +28,7 @@ const Users = ({ searchParams }: sParams) => {
       if (!res.ok) throw res;
       const data = await res.json();
       setUserList(data.data);
+      console.log("userList", data);
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);

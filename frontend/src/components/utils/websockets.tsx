@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { useContextDispatch } from "../myContext";
+import { useContextDispatch } from "./myContext";
 
 export default function Socket() {
   const [host, setHost] = useState("");
-  const socket = io(host);
+  const socket = io(host, { autoConnect: false });
 
   const dispatch = useContextDispatch();
   const getHostname = async () => {
@@ -19,7 +19,7 @@ export default function Socket() {
   }, []);
 
   useEffect(() => {
-    console.log("WShost", host);
+    // console.log("WShost", host);
     function onConnect() {
       socket.connect();
     }

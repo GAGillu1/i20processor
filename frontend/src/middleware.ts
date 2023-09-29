@@ -13,12 +13,19 @@ export function middleware(request: NextRequest) {
   const isStaffPath = path === "/dso";
   const isUserPath = !(isAdminPath || isStaffPath);
   const isAtHome = path === "/";
+  // update the below
+  const isSuperAdmin = role === "ADMIN";
+  const isSuperAdminPath = path === "/admin/university";
 
   if (token) {
     if (isPublicPath) {
       return NextResponse.redirect(new URL("/", request.url));
     }
-    if ((!isAdmin && isAdminPath) || (isUser && !isUserPath)) {
+    if (
+      (!isAdmin && isAdminPath) ||
+      (isUser && !isUserPath) ||
+      (!isSuperAdmin && isSuperAdminPath)
+    ) {
       return NextResponse.redirect(new URL("/not-Authorized", request.url));
     }
   } else {
@@ -39,6 +46,7 @@ export const config = {
     "/admin",
     "/admin/users",
     "/admin/instance",
+    "/admin/institution",
     "/dso",
     "/login",
     "/profile",

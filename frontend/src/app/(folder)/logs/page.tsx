@@ -1,5 +1,9 @@
 "use client";
-import { DataTable } from "primereact/datatable";
+import {
+  DataTable,
+  DataTableExpandedRows,
+  DataTableValueArray,
+} from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -20,6 +24,10 @@ const Tag = ({ value }: { value: string }) => {
 };
 
 const Logs = () => {
+  const [expandedRows, setExpandedRows] = useState<
+    DataTableExpandedRows | DataTableValueArray | undefined
+  >(undefined);
+
   const formatDate = (value: Date) => {
     return value.toLocaleDateString("en-US", {
       day: "2-digit",
@@ -30,19 +38,25 @@ const Logs = () => {
       timeZoneName: "short",
     });
   };
+
   const dateBodyTemplate = (rowData: logModel) => {
-    return formatDate(new Date(rowData.date));
+    return formatDate(new Date(rowData.processedDate));
   };
   const resultBodyTemplate = (rowData: logModel) => {
     return <Tag value={rowData.result} />;
   };
+
   const [logData, setLogData] = useState([]);
   useEffect(() => {
     getLogs();
   }, []);
+
   const getLogs = async () => {
     try {
       const res = await fetch("api/logs");
+      // const res = await fetch(
+      //   "https://63fbe49b1ff79e133295a2c7.mockapi.io/v1/logModel"
+      // );
       if (!res.ok) throw res;
       const data = await res.json();
       console.log("logData", data);
@@ -52,6 +66,29 @@ const Logs = () => {
       toast.error(data.message);
     }
   };
+
+  const rowExpansionTemplate = (rowData: logModel) => {
+    return (
+      <div className="p-2">
+        <h3>Processed I-20s</h3>
+        {rowData.processor === "ISSM to Slate" ? (
+          <div className=""> {rowData.processedMsg}</div>
+        ) : (
+          <div className="w-full">
+            <DataTable>
+              <Column field="admissionId" header="Admission Id" />
+              <Column sortable field="result" header="Status" />
+            </DataTable>
+          </div>
+        )}
+        {/* <div className="flex gap-3">
+          {rowData.processedMsg.map((item, i) => {
+            return <span key={i}>{item}</span>;
+          })}
+        </div> */}
+      </div>
+    );
+  };
   return (
     <main className="w-[80%] mx-auto">
       <h2>Logs</h2>
@@ -59,10 +96,12 @@ const Logs = () => {
         <DataTable
           value={logData}
           paginator
-          rows={20}
-          showGridlines
-          className=""
+          rows={18}
+          expandedRows={expandedRows}
+          onRowToggle={(e) => setExpandedRows(e.data)}
+          rowExpansionTemplate={rowExpansionTemplate}
         >
+          <Column expander style={{ width: "5rem" }} />
           <Column
             field="date"
             header="Date"
@@ -84,7 +123,7 @@ const Logs = () => {
             className="w-[25%] px-2"
             body={resultBodyTemplate}
           />
-          <Column field="system" header="Tool" className="w-[25%] px-2" />
+          <Column field="processor" header="Tool" className="w-[25%] px-2" />
         </DataTable>
       </section>
     </main>

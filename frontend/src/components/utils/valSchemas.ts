@@ -52,12 +52,16 @@ export const addSignSchema = Yup.object({
 });
 
 export const loginSchema = Yup.object({
-  username: Yup.string().required("Please provide the username"),
+  username: Yup.string()
+    .email("Please enter a valid email address")
+    .required("Please provide the email"),
   password: Yup.string().required("Please provide the password"),
 });
 
 export const forgotPwdSchema = Yup.object({
-  username: Yup.string().required("Please provide username"),
+  username: Yup.string()
+    .email("Please enter a valid email address")
+    .required("Please provide email address"),
 });
 
 export const changePwdSchema = Yup.object({
@@ -102,4 +106,24 @@ export const preProcessorSchema = Yup.object({
     .required("Please enter ISSM Password"),
   excelFile: Yup.mixed().required("Please attach the Excel file"),
   instance: Yup.string().required("Please select an Instance"),
+});
+
+export const institutionSchema = Yup.object({
+  institutionName: Yup.string()
+    .max(30, "You may only enter upto 30 characters")
+    .required("Please enter a University name"),
+  adminFullName: Yup.string()
+    .max(30, "You may only enter upto 30 characters")
+    .required("Please enter admin full name"),
+  adminDisplayName: Yup.string()
+    .max(30, "You may only enter upto 30 characters")
+    .required("Please enter a Password"),
+  email: Yup.string()
+    .email()
+    .required("Please enter a email address")
+    .max(50, "You may only enter upto 50 characters"),
+  crm: Yup.string()
+    .max(30, "You may only enter upto 30 characters")
+    .required("Please enter a Password"),
+  adminContact: Yup.mixed().required("Please enter a Phone number"),
 });

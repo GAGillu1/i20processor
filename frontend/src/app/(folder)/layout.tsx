@@ -1,6 +1,6 @@
 "use client";
-import NavBar from "@/components/navBar";
-import Header from "@/components/header";
+import NavBar from "@/components/ui/navBar";
+import Header from "@/components/ui/header";
 import * as React from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {

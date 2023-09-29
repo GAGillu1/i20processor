@@ -1,6 +1,6 @@
 "use client";
 
-import { useMyContext } from "@/components/myContext";
+import { useMyContext } from "@/components/utils/myContext";
 import {
   AddInstanceCard,
   AddUserCard,
@@ -9,6 +9,7 @@ import {
   LogsCard,
   PostProcessingCard,
   PreProcessingCard,
+  InstitutionCard,
   UsersCard,
 } from "@/components/utils/myCards";
 
@@ -24,6 +25,7 @@ const Home = () => {
         <PostProcessingCard />
         {isAdmin && <UsersCard />}
         {isAdmin && <InstanceCard />}
+        {isAdmin && <InstitutionCard />}
       </section>
       <div className="my-4" />
       <h2>Quick Links</h2>

@@ -1,11 +1,11 @@
 "use client";
 import * as React from "react";
 import { Field, Form, Formik, useFormikContext } from "formik";
-import ErrorMsg from "@/components/errorMsg";
+import ErrorMsg from "@/components/utils/errorMsg";
 import * as Yup from "yup";
-import DsoList from "@/components/dsoList";
+import DsoList from "@/app/(folder)/i20/dsoList";
 import { useState, useEffect } from "react";
-import { useContextDispatch, useMyContext } from "@/components/myContext";
+import { useContextDispatch, useMyContext } from "@/components/utils/myContext";
 import { dsoModel } from "@/components/utils/models";
 import { dsoIV } from "@/components/utils/initialValues";
 import {
