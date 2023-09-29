@@ -37,7 +37,7 @@ def indexFile1(sevid, issm):
         for i in range(len(merged_df)):
             sevisid = merged_df.iloc[i]['SEVIS ID']
             #print(sevisid)
-            i20formtype = i20type(os.pathjoin(cwd,f'{sevisid}.pdf'))
+            i20formtype = i20type(os.path.join(cwd,f'{sevisid}.pdf'))
             print('i20formtype',i20formtype)
             if 'CONTINUED ATTENDANCE' in i20formtype:
                 g = i20type1(os.path.join(cwd,f'{sevisid }.pdf'))
@@ -97,6 +97,7 @@ def indexFile1(sevid, issm):
             return message
     except Exception as e:
         issm_log.logger.error(f"Index file creation failed in initialindex.py {e}")
+        return f"Error in Index file {e} "
 
 """                if 'STEM OPT' in typeofemployment and len(typeofemployment)>1:
                     merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'STEM OPT'] = (typeofemployment[1])
@@ -127,7 +128,7 @@ def indexFile(sevid, issm):
         for i in range(len(merged_df)):
             sevisid = merged_df.iloc[i]['SEVIS ID']
             #print(sevisid)
-            i20formtype = i20type(os.pathjoin(cwd,f'{sevisid}.pdf'))
+            i20formtype = i20type(os.path.join(cwd,f'{sevisid}.pdf'))
             print(i20formtype)
             if 'CONTINUED ATTENDANCE' in i20formtype:
                 g = i20type1(os.path.join(cwd,f'{sevisid }.pdf'))
@@ -176,4 +177,5 @@ def indexFile(sevid, issm):
     except Exception as e:
         print('error in index file  ',e)
         issm_log.logger.error(f"Index file creation failed in initialindex.py {e}")
+        return f"Index file creation failed {e}"
 

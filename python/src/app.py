@@ -327,7 +327,6 @@ def upload():
 
             try:
                 if successful:
-
                     #calling sign_details() function and taking all the coordinates
                     length, width, xcoordinate, ycoordinate = sign_details(name)
                     #Getting signature file name
@@ -364,7 +363,7 @@ def upload():
                     if i20type=='initI20':
                         # redis_client.set("sevis_id", sev)
                         # print("sevis id in i20process post ", redis_client.get("sevis_id"))
-                        print("above index file")
+                        print("above index file/*/*////***/*///***/*")
                         result=indexFile(sevid, issm)
 
                     #if i20type is continued i20 then index file1 is called for creating index file
@@ -373,7 +372,6 @@ def upload():
                         #print("Tyoe is result is ",type(result))
                     # if index file returns a tuple then the values in tuple are assigned as size of indexfile , missing records
                     if isinstance(result,tuple):
-
                         sizeOfIndexfile, missing,tablehtml=result
                         issm_log.logger.info(f"Index file created successfully and size is {sizeOfIndexfile}.Record not included in Index but is in ISSM/Slate {missing}")
                         session["index_size"] = f"{sizeOfIndexfile}"
@@ -385,23 +383,23 @@ def upload():
                         if missing :
                             sender, password = get_credentials('email')
                             email,cc=get_emails('emails')
-                           # print(email)
-                           # print(cc)
                             email, cc = get_emails('emails')
                             #send_email1(sender, password, email, missing,pdf_filename,tablehtml,cc)
                     # if index file doesnot return a tuple then it contains a message string which is assigned to msg
                     else:
                        # print("Result",result)
                         msg=result
+                        print("msf is ",msg)
+                        successful=False
                         socketio.emit('rom',-3)
-                        session["index_error"] = f"Index file creation failed in index file {msg}"
-                        redis_client.set('index_error',f'')
+                        print("index_error in else ",msg)
+                        redis_client.set('index_error',f'Index file creation failed with error {msg}')
                         issm_log.logger.error(f"Index file creation failed {msg}")
                     #sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
             except Exception as e:
                 successful=False
                 session["index_error"]=f"Index file creation failed {e}"
-                redis_client.set('index_error',f"Index file creation failed {e}")
+                redis_client.set('index_error',f"Index file creation failed")
                 issm_log.logger.error(f"Index file creation failed {e}")
 
             try:
@@ -444,6 +442,8 @@ def upload():
             try:
                 if successful:
                     return response
+                else:
+                    return "Error in i20 file"
             except Exception as e:
                 successful=False
                 issm_log.logger.error(f"i20 response failed {e}")
@@ -487,6 +487,7 @@ def upload():
 
             indexError = redis_client.get('index_error')
             indexError=indexError.decode('utf-8') if indexError is not None else None
+            print("indexError is ", indexError)
 
             signMessage = redis_client.get('signmsg')
             signMessage=signMessage.decode('utf-8') if signMessage is not None else None
@@ -871,11 +872,17 @@ def instancetype(type):
 def processed():
     if request.method=='GET':
         institutionid=request.headers.get('institutionid')
-        result= issm_log.processedgetter(institutionid)
-        result_dict = result.to_dict(orient='records')
-        print("log suceesd")
+        role=request.headers.get('role')
+        if role=="superuser":
+            result = allprocessed()
+            result_dict = result.to_dict(orient='records')
+            return jsonify({'message': 'Logs Fetched', 'data': result_dict})
+        else:
+            result= issm_log.processedgetter(institutionid)
+            result_dict = result.to_dict(orient='records')
+            print("log suceesd")
 
-        return jsonify({'message':'logged fetched','data':result_dict})
+            return jsonify({'message':'logged fetched','data':result_dict})
 
 @app.route('/admin/<string:action>',methods=['GET'])
 def adminusersall(action):

@@ -186,7 +186,7 @@ def users(instituteid):
     try:
         dba.connect()
         df=selectusers(instituteid)
-        allUsers=df[['fullname','userName','userRole','active']]
+        allUsers=df[['fullname','userName','userRole','email','active']]
         print(allUsers)
         # retiving all users and changing  sorting based on fullnames
         allUsers = allUsers.rename(columns={'userRole': 'role','userName':'username'})
@@ -201,7 +201,8 @@ def users(instituteid):
 # print(email)
 # sender, password =get_credentials('email')
 # send_email(sender, password, email,username,passw)
-
+k=users('386FDB0A-EAD4-4916-829E-3196F4AC30F5')
+print(k)
 
 # g=login('GOV','ABCD')
 # print(g)
