@@ -10,8 +10,10 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from preProcessor.issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
+from dbstatements import insertprocessed
+# import requests
 # from flask_socketio import SocketIO
-# from flask import Flask
+from flask import request
 # from flask_cors import CORS
 # import secrets
 import math
@@ -195,6 +197,7 @@ def duplicate_check(student, driver, domain_url, config, progress_bar):
 
 
 def process_student(std, url, config, driver, progress_bar):
+    response_list = []
     try:
         logger.info(f"starting process_student function for {std.CampusID}")
         try:
@@ -206,8 +209,10 @@ def process_student(std, url, config, driver, progress_bar):
                 logger.info(f'Admissions ID: {std.AdmissionsID}')
                 logger.info("Process completed successfully")
                 progress_bar.success_count += 1
+                response_list.append(f'Name: {std.GivenName} and Campus ID: {std.CampusID} Success')
             else:
                 logger.error(f"Process failed for student with ID {std.CampusID} and name {std.GivenName}.")
+                response_list.append(f"Process failed for student with ID {std.CampusID} and name {std.GivenName}.")
                 progress_bar.failure_count += 1
         except Exception as e:
             logger.error(f"An error occurred for student with ID {std.CampusID}: {e}")
@@ -215,6 +220,11 @@ def process_student(std, url, config, driver, progress_bar):
     except Exception as e:
         logger.error(f"Process failed inside for process_student student : {std.CampusID} and error {e}")
         progress_bar.failure_count += 1
+    user = request.headers.get('username')
+
+    print("user in response", user)
+    institution = request.headers.get('institutionid')
+    insertprocessed(user, response_list, institution, "Success", processor='PreProcessor')
 class Student:
     def __init__(self, AdmissionsID, CampusID, GivenName, Surname, Birthdate, Department, Template, BirthCountry,
                  Citizenship,
