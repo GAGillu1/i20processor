@@ -30,7 +30,7 @@ def execute_query(query, params=None):
        # if 'select' in query:
         if query.strip().lower().startswith('select'):
             if params :
-                print(query)
+                #print(query)
                 print("in select params")
                 cursor.execute(query,params)
                 rows=cursor.fetchall()

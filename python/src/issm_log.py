@@ -27,7 +27,6 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 def processedgetter(institutionid):
     print("isnt id is ",institutionid)
     df=getprocessed(institutionid)
-    print("df is ",df)
     df['processedDate'] = pd.to_datetime(df['processedDate'], format='%Y:%m:%d %H:%M:%S.%f')
     df['processedDate'] = df['processedDate'].apply(lambda x: x.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')
 

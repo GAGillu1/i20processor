@@ -29,72 +29,73 @@ def indexFile1(sevid, issm):
         merged_df["OPT"] = ""
         merged_df["CPT"] = ""
         merged_df = merged_df.reset_index(drop=True)
-        merged_df=merged_df.reindex(columns=['Admissions Id','SEVIS ID','material','Filename','Memo','CPT','OPT','STEM OPT'])
+        merged_df=merged_df.reindex(columns=['SEVIS ID','material','Filename','Memo','CPT','OPT','STEM OPT'])
         size=len(merged_df)
         print(merged_df.head(0))
         print(merged_df)
-        #merged_df.to_excel('abc.xlsx')
-        for i in range(len(merged_df)):
-            sevisid = merged_df.iloc[i]['SEVIS ID']
-            #print(sevisid)
-            i20formtype = i20type(os.path.join(cwd,f'{sevisid}.pdf'))
-            print('i20formtype',i20formtype)
-            if 'CONTINUED ATTENDANCE' in i20formtype:
-                g = i20type1(os.path.join(cwd,f'{sevisid }.pdf'))
-                print("passed in g")
-                typeofemployment = i20memoemp(g,os.path.join(cwd,f'{sevisid}.pdf'))
-                print(type(typeofemployment))
-                print("TYPE OF EMP IS ",typeofemployment)
-
-                for emp_type in employment_types:
-                    if emp_type in typeofemployment and len(typeofemployment) > 1:
-                        date_obj = datetime.strptime(typeofemployment[1], '%d %B %Y')
-                        dateformat = date_obj.strftime('%Y%m%d')
-                        print(dateformat)
-                        merged_df.loc[merged_df['SEVIS ID'] == sevisid, emp_type] = dateformat
-                print("type of employment is ", dateformat)
-
-            elif "INITIAL ATTENDANCE" in i20formtype:
-                merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = i20formtype
         merged_df.to_csv("index_" + date + ".txt", index=False, sep='\t')
-        # checking if any sevisid is not in txt file but is there in sevis id
-        not_in_list = [x for x in sevid if x not in merged_df['SEVIS ID'].unique()]
-        #Create an empty DataFrame to store the results
-
-        table_html = ''
-        if not_in_list:
-            print("not in list",not_in_list)
-            df2 = pd.read_excel(issm)
-            df1 = pd.DataFrame(columns=['Admissions Id', 'Campus Id', 'SEVIS No', 'Lastname', 'First Name'])
-            sevisids = (df2['SEVIS ID'].values)
-            print(len(df2))
-
-            for i in not_in_list:
-                print("nooootttt in forrrr")
-                if i in df:
-                    uindex = df2[sevisids == i].index.values[0]
-                    print(df2)
-                    print(uindex)
-                    print("uindec",uindex)
-                    # userindex = df[usernames == user.lower()].index
-                    lastname = df2['Passport Last Name'].iloc[uindex]
-                    firstname = df2['Passport First Name'].iloc[uindex]
-                    campusid = int(df2['Campus Id'].iloc[uindex])
-
-                    df1 = df1._append({'Admissions Id': df['Admissions Id'].iloc[uindex], 'SEVIS No': i,
-                                       'Last Name': lastname, 'First Name': firstname, 'Campus Id': campusid},
-                                      ignore_index=True)
-
-            table_html = df1.to_html(index=False)
-        print("size is ",size)
-        if size !=0:
-            print("size is not  0")
-
-            return size,not_in_list,table_html
-        else:
-            print("size  0")
-            message="Please upload correct ISSM and Excel files . Index file size is 0"
-            return message
+        #merged_df.to_excel('abc.xlsx')
+    #     for i in range(len(merged_df)):
+    #         sevisid = merged_df.iloc[i]['SEVIS ID']
+    #         #print(sevisid)
+    #         i20formtype = i20type(os.path.join(cwd,f'{sevisid}.pdf'))
+    #         print('i20formtype',i20formtype)
+    #         if 'CONTINUED ATTENDANCE' in i20formtype:
+    #             g = i20type1(os.path.join(cwd,f'{sevisid }.pdf'))
+    #             print("passed in g")
+    #             typeofemployment = i20memoemp(g,os.path.join(cwd,f'{sevisid}.pdf'))
+    #             print(type(typeofemployment))
+    #             print("TYPE OF EMP IS ",typeofemployment)
+    #
+    #             for emp_type in employment_types:
+    #                 if emp_type in typeofemployment and len(typeofemployment) > 1:
+    #                     date_obj = datetime.strptime(typeofemployment[1], '%d %B %Y')
+    #                     dateformat = date_obj.strftime('%Y%m%d')
+    #                     print(dateformat)
+    #                     merged_df.loc[merged_df['SEVIS ID'] == sevisid, emp_type] = dateformat
+    #             print("type of employment is ", dateformat)
+    #
+    #         elif "INITIAL ATTENDANCE" in i20formtype:
+    #             merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = i20formtype
+    #     merged_df.to_csv("index_" + date + ".txt", index=False, sep='\t')
+    #     # checking if any sevisid is not in txt file but is there in sevis id
+    #     not_in_list = [x for x in sevid if x not in merged_df['SEVIS ID'].unique()]
+    #     #Create an empty DataFrame to store the results
+    #
+    #     table_html = ''
+    #     if not_in_list:
+    #         print("not in list",not_in_list)
+    #         df2 = pd.read_excel(issm)
+    #         df1 = pd.DataFrame(columns=['Admissions Id', 'Campus Id', 'SEVIS No', 'Lastname', 'First Name'])
+    #         sevisids = (df2['SEVIS ID'].values)
+    #         print(len(df2))
+    #
+    #         for i in not_in_list:
+    #             print("nooootttt in forrrr")
+    #             if i in df:
+    #                 uindex = df2[sevisids == i].index.values[0]
+    #                 print(df2)
+    #                 print(uindex)
+    #                 print("uindec",uindex)
+    #                 # userindex = df[usernames == user.lower()].index
+    #                 lastname = df2['Passport Last Name'].iloc[uindex]
+    #                 firstname = df2['Passport First Name'].iloc[uindex]
+    #                 campusid = int(df2['Campus Id'].iloc[uindex])
+    #
+    #                 df1 = df1._append({'Admissions Id': df['Admissions Id'].iloc[uindex], 'SEVIS No': i,
+    #                                    'Last Name': lastname, 'First Name': firstname, 'Campus Id': campusid},
+    #                                   ignore_index=True)
+    #
+    #         table_html = df1.to_html(index=False)
+    #     print("size is ",size)
+    #     if size !=0:
+    #         print("size is not  0")
+    #
+    #         return size,not_in_list,table_html
+    #     else:
+    #         print("size  0")
+    #         message="Please upload correct ISSM and Excel files . Index file size is 0"
+    #         return message
     except Exception as e:
         issm_log.logger.error(f"Index file creation failed in initialindex.py {e}")
         return f"Error in Index file {e} "
@@ -107,7 +108,7 @@ def indexFile1(sevid, issm):
                     merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'CPT'] = (typeofemployment[1])
                 merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = (typeofemployment)"""
 #indexFile1(['N0031368788','N0031664608'],'issm (2).xlsx','slate (2).xlsx')
-
+#indexFile1(['N0032480826', 'N0031632306', 'N0032029206', 'N0032470719', 'N0031858425', 'N0032410986', 'N0032130546', 'N0030729428', 'N0031803355', 'N0031315964 (F-2)', 'N0032535480', 'N0033375759', 'N0033172114', 'N0032521384', 'N0033011857', 'N0034861943 (F-2)', 'N0034861941', 'N0034861942 (F-2)', 'N0032832645 (F-1)', 'N0032914841 (F-1)'],'mixedExcel.xlsx')
 """creates index file """
 #indexFile1(['N0034683525','N0034688552','N0034688553','N0034688554'],'issm.xlsx')
 #indexFile1(['N0034688598', 'N0034688564', 'N0034688602', 'N0034688561', 'N0034688563', 'N0034688557', 'N0034688605', 'N0034688555', 'N0034688603', 'N0034688599', 'N0034688556', 'N0034688560', 'N0034688552', 'N0034688600', 'N0034688562', 'N0034688601', 'N0034688606', 'N0034683525', 'N0034688607', 'N0034688608', 'N0034688558', 'N0034688597', 'N0034688559', 'N0034688604', 'N0034688554', 'N0034688596', 'N0034688553'],'issm.xlsx')

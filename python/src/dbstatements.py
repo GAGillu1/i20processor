@@ -131,7 +131,7 @@ def updatepass(email,salt,hash):
     dba.close()
 
 
-def updateuser(username,fullname,email,role,active):
+def updateuser(user,fullname,email,role,active):
     dba.connect()
     query="update users set fullname=?,userRole=?,active=? where email=?"
     dba.execute_query(query,[fullname,role,active,email])
@@ -273,7 +273,15 @@ def alluniversitties():
         print("No data returned from the query")
     dba.close()
 
-
+def pcinstitute(institute):
+    dba.connect()
+    query="select p1.fullname,p1.userName,p1.email,p2.institutionName from users p1  join institutions p2 on p1.institutionid=p2.institutionid where userRole='PrimaryContact' and p2.institutionName=?"
+    result=dba.execute_query(query,institute)
+    if result is not None:
+        return result.reset_index(drop=True)
+    else:
+        print("No data returned from the query")
+    dba.close()
 # updateuser('test','abc','def','DDSO')
 #insertinstitutions('University of New Haven2',cursor,conn)
 #selectinstitutions()

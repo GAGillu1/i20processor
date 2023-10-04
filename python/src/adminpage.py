@@ -1,6 +1,6 @@
 import pandas as pd
 
-from dbstatements import allusers, alllog, alluniversitties, getprocessed
+from dbstatements import allusers, alllog, alluniversitties, getprocessed, pcinstitute
 
 
 def adminusers():
@@ -17,3 +17,6 @@ def allinstitutions():
     return result.reset_index(drop=True)
 
 
+def institutionsdat(institute):
+    result=pcinstitute(institute)
+    return result.reset_index(drop=True)

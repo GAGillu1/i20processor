@@ -201,8 +201,8 @@ def users(instituteid):
 # print(email)
 # sender, password =get_credentials('email')
 # send_email(sender, password, email,username,passw)
-k=users('386FDB0A-EAD4-4916-829E-3196F4AC30F5')
-print(k)
+# k=users('386FDB0A-EAD4-4916-829E-3196F4AC30F5')
+# print(k)
 
 # g=login('GOV','ABCD')
 # print(g)
@@ -328,7 +328,6 @@ def updateuserdata(user):
     data = userdata(user)
     if data is not None :
         fullname=data['fullname'].values[0]
-        email=data['email'].values[0]
         userRole=data['userRole'].values[0]
         status=data['active'].values[0]
-        return fullname,email,userRole,status
+        return fullname,userRole,status

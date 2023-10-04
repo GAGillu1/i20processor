@@ -283,11 +283,11 @@ def i20memoemp(my_dict, pdfFile):
                 status.append(line)
         result = {}
         #print(dates, types)
-        if len(types) > 1:
+        if len(types) > 0:
             #print('types are ', types)
             result['types'] = types
             # return types[-1]
-        if len(dates) > 1:
+        if len(dates) > 0:
             #print('dates are ', dates)
             result['dates'] = dates
             # return dates
@@ -334,12 +334,14 @@ def i20memoemp(my_dict, pdfFile):
             if len(dateofissue) > 0:
                 #print(dateofissue)
                 result['empissue'] = dateofissue
-        if result['types'] and result['status']:
-            empinfo = zip(result['types'], result['dates'], result['endates'], result['status'])
-        employment = next((t[0] for t in list(empinfo) if 'REQUESTED' in t), None)
-        #print(employment, (dateofissue[0]))
+            if result['types'] and result['status']:
+                empinfo = zip(result['types'], result['dates'], result['endates'], result['status'])
+            employment = next((t[0] for t in list(empinfo) if 'REQUESTED' in t), None)
+            #print(employment, (dateofissue[0]))
 
-        return (employment,dateofissue[0])
+            return (employment,dateofissue[0])
+
+
 
 # f=i20type1('N0034099187_unsigned.pdf')
 # print(f)
