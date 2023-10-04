@@ -26,5 +26,6 @@ def institutionsdat(institute):
     adminFullName=result['adminFullName'][0]
     institutionName=result['institutionName'][0]
     adminDisplayName=result['adminDisplayName'][0]
+    crm=result['systemType'][0]
 
-    return (email,adminFullName,institutionName,adminDisplayName)
+    return (email,adminFullName,institutionName,adminDisplayName,crm)

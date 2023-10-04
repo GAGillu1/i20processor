@@ -942,8 +942,8 @@ def institutionall():
 def institutiondata(institute):
     if request.method=='GET':
         result=institutionsdat(institute)
-        email, adminFullName, institutionName, adminDisplayName=result
-        return jsonify(({'Message':'Primary Contact fetched ','data':{'email':email,'adminFullName':adminFullName,'institutionName':institutionName,'adminDisplayName':adminDisplayName,'adminContact':123456}}))
+        email, adminFullName, institutionName, adminDisplayName,crm=result
+        return jsonify(({'Message':'Primary Contact fetched ','data':{'email':email,'adminFullName':adminFullName,'institutionName':institutionName,'adminDisplayName':adminDisplayName,'adminContact':123456,'crm':crm}}))
 
 if __name__ == '__main__':
     # app.run(debug=True,port=8081)
