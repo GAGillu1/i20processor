@@ -931,22 +931,12 @@ def processed():
             return jsonify({'message': 'logged fetched', 'data': result_dict})
 
 
-@app.route('/admin/<string:action>', methods=['GET'])
-def adminusersall(action):
-    if request.method == 'GET':
-        if action == 'users':
-            result = adminusers()
-            result_dict = result.to_dict(orient='records')
-            return jsonify({'message': 'All users fetched', 'data': result_dict})
-        elif action == 'log':
-            result = allprocessed()
-            result_dict = result.to_dict(orient='records')
-            return jsonify({'message': 'Logs Fetched', 'data': result_dict})
-        elif action == 'institutions':
-            result = allinstitutions()
-            result_dict = result.to_dict(orient='records')
-            return jsonify({'message': 'All institution names fetched', 'data': result_dict})
-
+@app.route('/institution',methods=['GET'])
+def institutionall():
+    if request.method=='GET':
+        result = allinstitutions()
+        result_dict = result.to_dict(orient='records')
+        return jsonify({'message': 'All institution names fetched', 'data': result_dict})
 
 @app.route('/institution/<string:institute>',methods=['GET'])
 def institutiondata(institute):
