@@ -8,7 +8,7 @@ import { forgotPwdSchema } from "@/components/utils/valSchemas";
 import { Field, Form, Formik } from "formik";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { MySubmit } from "../utils/myInputs";
+import { MySubmit } from "@/components/utils/myInputs";
 const MyInfo = ({ ...props }) => {
   const [dataLoading, setDataLoading] = useState(false);
   const [loading, setLoading] = useState(false);

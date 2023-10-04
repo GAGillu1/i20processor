@@ -11,6 +11,7 @@ import getFormData from "@/components/utils/getFormData";
 import { institutionSchema } from "@/components/utils/valSchemas";
 import { institutionIV } from "@/components/utils/initialValues";
 import { MySubmit } from "@/components/utils/myInputs";
+import Link from "next/link";
 
 const InstitutionInfo = () => {
   const [institutionInfo, setInstitutionInfo] =
@@ -69,6 +70,10 @@ const InstitutionInfo = () => {
               <label htmlFor="institutionName">Institution Name</label>
               <Field name="institutionName" readOnly={editable} />
               <ErrorMsg name="institutionName" />
+              <label htmlFor="crm">CRM</label>
+              <Field name="crm" readOnly={editable} />
+              <ErrorMsg name="crm" />
+              <h3 className="pt-3 text-center">Primary Contact</h3>
               <label htmlFor="adminFullName">Admin Full Name</label>
               <Field name="adminFullName" readOnly={editable} />
               <ErrorMsg name="adminFullName" />
@@ -78,13 +83,16 @@ const InstitutionInfo = () => {
               <label htmlFor="email">Email</label>
               <Field name="email" type="email" readOnly={editable} />
               <ErrorMsg name="email" />
-              <label htmlFor="crm">CRM</label>
-              <Field name="crm" readOnly={editable} />
-              <ErrorMsg name="crm" />
               <label htmlFor="adminContact">Admin Contact</label>
               <Field name="adminContact" readOnly={editable} />
               <ErrorMsg name="adminContact" />
               <div className="flex gap-2 items-center justify-end pt-4">
+                <Link
+                  href={`/admin/institution/?institution=${institutionName}&logs=true`}
+                  className="bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide"
+                >
+                  Institution Logs
+                </Link>
                 <button
                   type="button"
                   className={`bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide ${
