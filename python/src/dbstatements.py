@@ -275,7 +275,7 @@ def alluniversitties():
 
 def pcinstitute(institute):
     dba.connect()
-    query="select p1.fullname,p1.userName,p1.email,p2.institutionName from users p1  join institutions p2 on p1.institutionid=p2.institutionid where userRole='PrimaryContact' and p2.institutionName=?"
+    query="select p1.fullname,p1.userName,p1.email,p2.institutionName,p2.systemType from users p1  join institutions p2 on p1.institutionid=p2.institutionid where userRole='PrimaryContact' and p2.institutionName=?"
     result=dba.execute_query(query,institute)
     if result is not None:
         return result.reset_index(drop=True)
