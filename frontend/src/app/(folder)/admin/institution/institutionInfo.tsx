@@ -17,6 +17,9 @@ const InstitutionInfo = () => {
   const [institutionInfo, setInstitutionInfo] =
     useState<institutionModel>(institutionIV);
   const institutionName = useSearchParams().get("institution");
+  // ?.replaceAll("%20", " ") as string;
+  // institutionName = institutionName.replaceAll("%20", " ");
+
   const [loading, setLoading] = useState(true);
   const [editable, setEditable] = useState(true);
 
@@ -44,14 +47,18 @@ const InstitutionInfo = () => {
   };
 
   const getInstitutionInfo = async (institutionName: string | null) => {
-    await fetch("/api/institution/" + institutionName)
-      .then((res) => res.json())
-      .then((institutionInfo) => {
-        setInstitutionInfo(institutionInfo.data);
-      })
-      .then(() => {
-        setLoading(false);
-      });
+    try {
+      const res = await fetch("/api/institution/" + institutionName);
+      if (!res.ok) throw res;
+      const data = await res.json();
+      console.log(data);
+      setInstitutionInfo(data.data);
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

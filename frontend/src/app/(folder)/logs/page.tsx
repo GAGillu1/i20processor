@@ -29,7 +29,7 @@ const Logs = () => {
   >(undefined);
 
   const formatDate = (value: Date) => {
-    return value.toLocaleDateString("en-US", {
+    return value.toLocaleDateString(navigator.language, {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -54,9 +54,6 @@ const Logs = () => {
   const getLogs = async () => {
     try {
       const res = await fetch("api/logs");
-      // const res = await fetch(
-      //   "https://63fbe49b1ff79e133295a2c7.mockapi.io/v1/logModel"
-      // );
       if (!res.ok) throw res;
       const data = await res.json();
       console.log("logData", data);

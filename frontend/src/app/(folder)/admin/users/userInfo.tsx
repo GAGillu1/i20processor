@@ -51,7 +51,10 @@ const UserInfo = () => {
   const getUserInfo = async (usr: string | null) => {
     await fetch("/api/users/" + usr)
       .then((res) => res.json())
-      .then((usrInfo) => setUserInfo(usrInfo.data))
+      .then((usrInfo) => {
+        setUserInfo(usrInfo.data);
+        console.log(usrInfo);
+      })
       .then(() => {
         setDataLoading(false);
       });
