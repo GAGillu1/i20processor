@@ -9,12 +9,14 @@ import { toast } from "react-hot-toast";
 import InstitutionList from "./institutionList";
 import InstitutionInfo from "./institutionInfo";
 import AddUniversity from "./addInstitution";
+import InstitutionLogs from "./institutionLogs";
 
 const Institution = ({ searchParams }: sParams) => {
   const [institutionList, setInstitutionList] = useState<userModel[]>([]);
   const [findInstitution, setFindInstitution] = useState("");
   const showInstitution = searchParams?.institution;
   const showAddInstitution = !showInstitution;
+  const showLogs = searchParams?.logs;
 
   useEffect(() => {
     getUniversityList();
@@ -32,13 +34,15 @@ const Institution = ({ searchParams }: sParams) => {
     }
   };
 
-  return (
+  return showLogs ? (
+    <InstitutionLogs />
+  ) : (
     <main className="w-[95%] mx-auto">
       <h1 className=" p-4 font-bold text-slate-700 text-xl">
         Institution List
       </h1>
       <section className="grid grid-cols-2 gap-2 h-[70vh]">
-        <div className="bg-white rounded-lg p-4 w-full">
+        <div className="bg-white rounded-lg px-4 pb-4 pt-2">
           <div className="flex gap-2 justify-between">
             <Link
               href="/admin/institution"
