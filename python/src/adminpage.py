@@ -22,5 +22,9 @@ def institutionsdat(institute):
     print(result)
     result=result.rename(columns={'email':'email','fullname':'adminFullName',"institutionName": "institutionName",
             "userName":"adminDisplayName"})
-    print(result)
-    return result.reset_index(drop=True)
+    email=result['email'][0]
+    adminFullName=result['adminFullName'][0]
+    institutionName=result['institutionName'][0]
+    adminDisplayName=result['adminDisplayName'][0]
+
+    return (email,adminFullName,institutionName,adminDisplayName)
