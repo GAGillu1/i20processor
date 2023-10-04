@@ -224,7 +224,8 @@ def process_student(std, url, config, driver, progress_bar):
 
     print("user in response", user)
     institution = request.headers.get('institutionid')
-    insertprocessed(user, response_list, institution, "Success", processor='PreProcessor')
+    insertprocessed(user, response_list, institution, "Success", 'PreProcessor')
+    #  (processedBy, processedMsg, institutionId, result, processor) values
 class Student:
     def __init__(self, AdmissionsID, CampusID, GivenName, Surname, Birthdate, Department, Template, BirthCountry,
                  Citizenship,
