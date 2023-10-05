@@ -44,13 +44,11 @@ def depi20signature(pdf,signature_path,length, width, xco, yco):
         key = 0
         prev_page = None
         for page in d:
-            if prev_page is None or page != prev_page + 4:
-                g[key] = (page,)  # Create a new key-value pair with the current page number
+            if prev_page is None or page - prev_page > 3:
                 key += 1
-            else:
-                g[key] = g.get(key, ()) + (page,)  # Append the current page number to the existing key
+            g.setdefault(key, []).append(page)
             prev_page = page
-        print(g)
+
         original_doc = fitz.open(pdf)
         #g=updated_dict
         print("g is ",g)
