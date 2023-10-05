@@ -29,7 +29,7 @@ const Logs = () => {
   >(undefined);
 
   const formatDate = (value: Date) => {
-    return value.toLocaleDateString(navigator.language, {
+    return value.toLocaleDateString("en-US", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -100,15 +100,15 @@ const Logs = () => {
         >
           <Column expander style={{ width: "5rem" }} />
           <Column
-            field="date"
+            field="processedDate"
             header="Date"
             sortable
             body={dateBodyTemplate}
             className="w-[25%] px-2"
           />
-          {/* <Column field="date" header="Date" style={{ width: "25%" }} /> */}
           <Column
             field="processedBy"
+            sortable
             // filter
             // filterPlaceholder="Search by name"
             header="User"
@@ -117,10 +117,16 @@ const Logs = () => {
           <Column
             field="result"
             header="Result"
+            sortable
             className="w-[25%] px-2"
             body={resultBodyTemplate}
           />
-          <Column field="processor" header="Tool" className="w-[25%] px-2" />
+          <Column
+            field="processor"
+            header="Tool"
+            sortable
+            className="w-[25%] px-2"
+          />
         </DataTable>
       </section>
     </main>
