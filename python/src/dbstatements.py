@@ -94,6 +94,11 @@ def insertusers(fullname,username,email,userrole,institutionid,salt,hash):
     dba.execute_query(query, [fullname,username,email, userrole, institutionid,salt,hash])
     dba.close()
 
+def insertpc(fullname,username,email,userrole,institutionName,salt,hash,contact):
+    dba.connect()
+    query = "INSERT INTO users(fullname, userName, email, userRole, institutionId, salt, hash, active, contact) values (?,?, ?,? , (SELECT institutionId FROM Institutions WHERE institutionName =?), ?, ?, 1, ?)"
+    dba.execute_query(query, [fullname, username, email,userrole,institutionName, salt, hash,contact])
+    dba.close()
 
 def selectsignature():
     dba.connect()

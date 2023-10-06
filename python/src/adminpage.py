@@ -1,6 +1,8 @@
+import bcrypt
 import pandas as pd
 
-from dbstatements import allusers, alllog, alluniversitties, getprocessed, pcinstitute
+from dbstatements import allusers, alllog, alluniversitties, getprocessed, pcinstitute, insertinstitutions, insertpc
+from python.src.login import registeruser, generate_random_string
 
 
 def adminusers():
@@ -29,3 +31,23 @@ def institutionsdat(institute):
     crm=result['systemType'][0]
 
     return (email,adminFullName,institutionName,adminDisplayName,crm)
+
+def institutioninsert(institutionname,systemType,fullname,username,email,contact,role):
+
+    insertinstitutions(institutionname,systemType)
+    salt=bcrypt.gensalt()
+    password=generate_random_string()
+    stringsalt=salt.decode('utf-8')
+    #hashing the password with the generated salt
+    password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
+    pwd=password_hash.decode('utf-8')
+    insertpc(fullname, username, email, role, institutionname, salt, pwd, contact)
+
+# username='username'
+# fullname='fullname'
+# institutionname='University Of New Haven admin'
+# email='email.com'
+# contact='232032312'
+# role='PrimaryContact'
+# systemType='type'
+# institutioninsert(institutionname,systemType,fullname,username,email,contact,role)
