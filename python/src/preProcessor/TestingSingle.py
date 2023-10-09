@@ -3,14 +3,14 @@ import re
 import openpyxl
 import math
 import json
-from AddIndividual import AddIndividual
+from python.src.preProcessor.AddIndividual import AddIndividual
 import pandas as pd
 import configparser
 from selenium.webdriver.support.ui import *
 from openpyxl import load_workbook
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from issmfilelog import logger
+from python.src.preProcessor.issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
 from python.src.dbstatements import insertppreprocessed
 from flask import request
