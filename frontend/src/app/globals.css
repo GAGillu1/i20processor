@@ -85,28 +85,8 @@ h3 {
   @apply text-lg font-semibold text-slate-700;
 }
 
-/* body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div:nth-child(2)
-  > section
-  > section
-  > form
-  > div.react-tel-input
-  > div.special-label {
-  display: none;
-} */
 /* PAGINATOR DIV - TO PLACE NUMBERS INLINE*/
-body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div
-  > div.p-paginator.p-component.p-paginator-bottom
-  > span {
+div.p-paginator.p-component.p-paginator-bottom > span {
   @apply flex;
 }
 
@@ -116,84 +96,25 @@ body > div.grid.grid-cols-6 > section > main > section > div > div {
 }
 
 /* FOR SORT ICON */
-body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div
-  > div.p-datatable-wrapper
-  > table
-  > thead
-  > tr
-  > th.w-\[25\%\].px-2.p-sortable-column
-  > div,
-body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div
-  > div.p-datatable-wrapper
-  > table
-  > thead
-  > tr
-  > th.w-\[25\%\].px-2.p-sortable-column
-  > div {
+th.px-2.p-sortable-column > div {
   @apply flex gap-3 items-center justify-center;
 }
 
 /* FOR HEADER AND FOOTER */
-body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div
-  > div.p-datatable-wrapper
-  > table
-  > thead,
-body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div
-  > div.p-paginator.p-component.p-paginator-bottom {
+thead,
+div.p-paginator.p-component.p-paginator-bottom {
   @apply bg-indigo-50 text-indigo-900 rounded-b-lg text-lg;
 }
 
 /* FOR FOOTER */
-body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div
-  > div.p-paginator.p-component.p-paginator-bottom {
+div.p-paginator.p-component.p-paginator-bottom {
   @apply text-sm mt-1;
 }
 /* TO GIVE FULL SIZE FOR TABLE */
-body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div
-  > div.p-datatable-wrapper
-  > table {
+table {
   @apply w-full;
 }
 
-body
-  > div.grid.grid-cols-6
-  > section
-  > main
-  > section
-  > div
-  > div.p-datatable-wrapper
-  > table
-  > tbody
-  > tr {
+tr {
   @apply border-b-2 border-indigo-50 my-1;
 }
