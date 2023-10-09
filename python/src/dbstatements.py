@@ -94,6 +94,11 @@ def insertusers(fullname,username,email,userrole,institutionid,salt,hash):
     dba.execute_query(query, [fullname,username,email, userrole, institutionid,salt,hash])
     dba.close()
 
+def insertpc(fullname,username,email,userrole,institutionName,salt,hash,contact):
+    dba.connect()
+    query = "INSERT INTO users(fullname, userName, email, userRole, institutionId, salt, hash, active, contact) values (?,?, ?,? , (SELECT institutionId FROM Institutions WHERE institutionName =?), ?, ?, 1, ?)"
+    dba.execute_query(query, [fullname, username, email,userrole,institutionName, salt, hash,contact])
+    dba.close()
 
 def selectsignature():
     dba.connect()
@@ -255,7 +260,7 @@ def allusers():
 
 def alllog():
     dba.connect()
-    query='select p1.processedDate,p1.processedBy,p1.ProcessedMsg,p1.result, p1.processor,p2.institutionName from processed p1  join institutions p2 on p1.institutionid=p2.institutionid'
+    query='select p1.processedDate,p1.processedBy,p1.ProcessedMsg,p1.result, p1.processor,p2.institutionName,p1.errorMessage from processed p1  join institutions p2 on p1.institutionid=p2.institutionid'
     result=dba.execute_query(query)
     if result is not None:
         return result.reset_index(drop=True)
@@ -281,6 +286,12 @@ def pcinstitute(institute):
         return result.reset_index(drop=True)
     else:
         print("No data returned from the query")
+    dba.close()
+
+def insertppreprocessed(user, msg, institutionid, result,errormessage, processor):
+    dba.connect()
+    query = "insert into processed(processedDate,processedBy,processedMsg,institutionId,result,processor,errormessage) values(?,?,?,?,?,?,?)"
+    dba.execute_query(query, [today, user, msg, institutionid, result, processor,errormessage])
     dba.close()
 # updateuser('test','abc','def','DDSO')
 #insertinstitutions('University of New Haven2',cursor,conn)

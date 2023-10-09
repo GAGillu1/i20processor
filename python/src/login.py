@@ -11,7 +11,7 @@ from flask import jsonify
 import dba
 import issm_log
 from dbstatements import selectusers, insertusers, updatepass, updateuser, deleteusers, updatelogin, activeusers, \
-    loginusers, userdata
+    loginusers, userdata, insertpc
 import random
 import string
 from sendemail import get_credentials, send_email, send_email2
@@ -33,7 +33,7 @@ def generate_random_string(length=12):
 # Generate a 9-character random string
 
 """Below function is for registering user and parameters required are username, password, enail, role and fullname"""
-def registeruser(username,email,role,fullname,institutionid):
+def registeruser(username,email,role,fullname,institutionid,contact):
     df = selectusers(institutionid)
     #generating random salt to hash the password
     salt=bcrypt.gensalt()
@@ -43,43 +43,46 @@ def registeruser(username,email,role,fullname,institutionid):
     password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
     pwd=password_hash.decode('utf-8')
     #users=df['username'].astype(str).values.tolower()
-    usernames = (df['userName'].str.lower().values)
-    emails = (df['email'].str.lower().values)
-    username = username.lower()
-    email = email.lower()
+    if df is not None :
+        usernames = (df['userName'].str.lower().values)
+        emails = (df['email'].str.lower().values)
+        username = username.lower()
+        email = email.lower()
 
-    # if username and email is already in database
-    if ((usernames == username) & (emails == email)).any():
-        print("Username and email combination already registered.")
-        msg="Username and email combination already registered."
-        return msg
-    #if username is already in DB , returning the email
-    elif (usernames == username).any():
-        useremail=emails[usernames == username]
-        print(f"Username already registered and email {', '.join(useremail)}")
-        msg=f"Username already registered and email {', '.join(useremail)}"
-        return msg
-    #if email is in DB then returning the username
-    elif (emails == email).any():
-        userna = usernames[emails == email]
-        print(f"Email already registered with a different username: {', '.join(userna)}")
-        msg=f"Email already registered with a different username: {', '.join(userna)}"
-        return msg
-    # if email and username did not match in database then we are adding details to DB which is excel
-    elif ((emails != email) & (usernames != username)).any():
-        print("Username and email combination not registered yet.")
-        #data=pd.DataFrame({'username':[username],'fullname':[fullname],'salt':[stringsalt],'hash':[pwd],'Email':[email],'Role':[role]})
-        # with pd.ExcelWriter('user.xlsx', mode='a', engine='openpyxl', if_sheet_exists='overlay') as writer:
-        #     data.to_excel(writer, sheet_name="Sheet1",header=None, startrow=writer.sheets["Sheet1"].max_row,index=False)
-        #     return http.HTTPStatus.OK
-        data=insertusers(fullname,username,email,role,institutionid,salt,pwd)
-        sender, emailpassword = get_credentials('email')
-        # send email to as password is changed
-        send_email2(sender, emailpassword, email,fullname, username, password)
-        return http.HTTPStatus.OK
-    #any errors then unauthorized
-    else:
-        return http.HTTPStatus.UNAUTHORIZED
+        # if username and email is already in database
+        if ((usernames == username) & (emails == email)).any():
+            print("Username and email combination already registered.")
+            msg="Username and email combination already registered."
+            return msg
+        #if username is already in DB , returning the email
+        elif (usernames == username).any():
+            useremail=emails[usernames == username]
+            print(f"Username already registered and email {', '.join(useremail)}")
+            msg=f"Username already registered and email {', '.join(useremail)}"
+            return msg
+        #if email is in DB then returning the username
+        elif (emails == email).any():
+            userna = usernames[emails == email]
+            print(f"Email already registered with a different username: {', '.join(userna)}")
+            msg=f"Email already registered with a different username: {', '.join(userna)}"
+            return msg
+        # if email and username did not match in database then we are adding details to DB which is excel
+        elif ((emails != email) & (usernames != username)).any():
+            print("Username and email combination not registered yet.")
+            #data=pd.DataFrame({'username':[username],'fullname':[fullname],'salt':[stringsalt],'hash':[pwd],'Email':[email],'Role':[role]})
+            # with pd.ExcelWriter('user.xlsx', mode='a', engine='openpyxl', if_sheet_exists='overlay') as writer:
+            #     data.to_excel(writer, sheet_name="Sheet1",header=None, startrow=writer.sheets["Sheet1"].max_row,index=False)
+            #     return http.HTTPStatus.OK
+
+            data=insertusers(fullname,username,email,role,institutionid,salt,pwd)
+            sender, emailpassword = get_credentials('email')
+            # send email to as password is changed
+            send_email2(sender, emailpassword, email,fullname, username, password)
+            return http.HTTPStatus.OK
+        #any errors then unauthorized
+        else:
+            return http.HTTPStatus.UNAUTHORIZED
+
     # if user_df.empty:
     #
     #     data=pd.DataFrame({'username':[username],'salt':[stringsalt],'hash':[pwd],'Email':[email],'Role':[role]})

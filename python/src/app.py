@@ -33,7 +33,7 @@ from redis import Redis
 import issm_log
 from InitialIndex import indexFile, indexFile1
 from addSignature import add_signature1
-from adminpage import allprocessed, allinstitutions, adminusers, institutionsdat
+from adminpage import allprocessed, allinstitutions, adminusers, institutionsdat, institutioninsert
 from dbstatements import insertprocessed
 from deletefiles import remove_files
 from dependentsplit import depi20
@@ -648,9 +648,10 @@ def register():
         fullname = request.form.get('fullname')
         role = request.form.get('role')
         institutionid = request.headers.get('institutionid')
+        contact=""
         # institutionid=session['institutionid']
         # registering the user with the definition registeruser
-        register_result = registeruser(username, email, role, fullname, institutionid)
+        register_result = registeruser(username, email, role, fullname, institutionid,contact)
         # if register is successful then return the messages
         if register_result == http.HTTPStatus.OK:
             issm_log.logger.info(f"Registered Use {username},{role},{email} ")
@@ -931,12 +932,23 @@ def processed():
             return jsonify({'message': 'logged fetched', 'data': result_dict})
 
 
-@app.route('/institution',methods=['GET'])
+@app.route('/institution',methods=['GET','POST'])
 def institutionall():
     if request.method=='GET':
         result = allinstitutions()
         result_dict = result.to_dict(orient='records')
         return jsonify({'message': 'All institution names fetched', 'data': result_dict})
+    if request.method=='POST':
+        institutionName=request.form.get('institutionName')
+        crm=request.form.get('crm')
+        fullName=request.form.get('fullName')
+        username=request.form.get('displayname')
+        email=request.form.get('email')
+        contact=request.form.get('contact')
+        role='PrimaryContact'
+        print(institutionName, crm, fullName, username, email, contact, role)
+        institutioninsert(institutionName, crm, fullName, username, email, contact, role)
+        return jsonify({'message': 'Institution Name added'})
 
 @app.route('/institution/<string:institute>',methods=['GET'])
 def institutiondata(institute):
