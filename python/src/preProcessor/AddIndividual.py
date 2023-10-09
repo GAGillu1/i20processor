@@ -3,12 +3,13 @@ from selenium.webdriver.common.by import *
 from selenium.webdriver.support.ui import *
 import configparser
 from selenium.common.exceptions import NoSuchElementException
-from preProcessor.issmfilelog import logger
+from python.src.preProcessor.issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
-import inspect
+
 def AddIndividual(student, driver, check_val):
     config = configparser.ConfigParser()
-    config.read('preProcessor/config.ini')
+    config.read('python/src/preProcessor/config.ini')
+
     try:
         logger.info("start of AddIndividual")
         wait = WebDriverWait(driver, 10)  # 10 seconds timeout
@@ -191,12 +192,11 @@ def AddIndividual(student, driver, check_val):
         logger.info(f"final status: {final_status.text}")
         if final_status.text == "Complete":
             logger.info(f"inside final status : {final_status.text}")
-            return True
+            return True, "Success"
         else:
             logger.error(f"inside final status : {final_status.text}")
-            return False
+            return False, "Failed"
     except Exception as e:
-        line_number = inspect.currentframe().f_lineno
-        logger.error(f"Exception raised in AddIndividual function (line {line_number}): {e}")
-        logger.error(f"failed inside AddIndividual function of AddIndividual.py {e}")
-        return False
+        errorMessage = f"failed inside AddIndividual function of AddIndividual.py {e}"
+        logger.error(errorMessage)
+        return False, f"failed inside AddIndividual function of AddIndividual.py"

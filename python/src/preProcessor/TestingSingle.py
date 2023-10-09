@@ -1,34 +1,20 @@
 import time
 import re
 import openpyxl
-from preProcessor.AddIndividual import AddIndividual
+import math
+import json
+from python.src.preProcessor.AddIndividual import AddIndividual
 import pandas as pd
 import configparser
 from selenium.webdriver.support.ui import *
 from openpyxl import load_workbook
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from preProcessor.issmfilelog import logger
+from python.src.preProcessor.issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
-from dbstatements import insertprocessed
-# import requests
-# from flask_socketio import SocketIO
+from python.src.dbstatements import insertppreprocessed
 from flask import request
-# from flask_cors import CORS
-# import secrets
-import math
 
-# app = Flask(__name__, template_folder='../../', static_folder='../../static')
-# CORS(app)
-# app.secret_key = secrets.token_bytes(32)
-# socketio = SocketIO(app, cors_allowed_origins="*")
-#
-# @socketio.on('connect')
-# def handle_connect():
-#     print('Client connected')
-# @socketio.on('disconnect')
-# def handle_disconnect():
-#     print('Client disconnected')
 class ProgressBar:
     def __init__(self, max_count):
         self.processed_count = 0
@@ -50,13 +36,13 @@ def adding_to_excel(student, driver, config, progress_bar):
         error_text = error_element.text
         if 'Individual With Duplicate Campus ID Found - Please Correct' in error_text:
             logger.info(f'Error found : {error_text} for Last Name {student.Surname}')
-        workbook = load_workbook("preProcessor/Duplicate.xlsx")
+        workbook = load_workbook("python/src/preProcessor/Duplicate.xlsx")
         sheet = workbook.active
         if "Birthdate" not in [cell.value for cell in sheet[1]]:
             # Append the header if it is not present
             sheet.append(["Campus ID", "Admissions ID", "Name", "Birthdate"])
         sheet.append([student.CampusID, student.AdmissionsID, student.GivenName, student.Birthdate])
-        workbook.save("preProcessor/Duplicate.xlsx")
+        workbook.save("python/src/preProcessor/Duplicate.xlsx")
         logger.info(f"added student successfully adding_to_excel function for {student.CampusID}")
         progress_bar.deferral_count += 1
         return True
@@ -141,7 +127,6 @@ def duplicate_steps(student, driver, domain_url, config):
 def duplicate_check(student, driver, domain_url, config, progress_bar):
     logger.info(f"inside duplicate_check function for {student.CampusID}")
     try:
-
         driver.get(domain_url + 'AddNewIndividual.aspx')  # with VPN
         # driver.get(domain_url + '/AddNewIndividual.aspx')  # without VPN
         wait = WebDriverWait(driver, 10)  # 10 seconds timeout
@@ -189,15 +174,14 @@ def duplicate_check(student, driver, domain_url, config, progress_bar):
             else:
                 check_val = True
         # time.sleep(1)
-        status = AddIndividual(student, driver, check_val)
+        status, responseMessage = AddIndividual(student, driver, check_val)
         return status
     except Exception as e:
         logger.error(e)
         return False
 
 
-def process_student(std, url, config, driver, progress_bar):
-    response_list = []
+def process_student(std, url, config, driver, progress_bar, final_dict):
     try:
         logger.info(f"starting process_student function for {std.CampusID}")
         try:
@@ -209,23 +193,37 @@ def process_student(std, url, config, driver, progress_bar):
                 logger.info(f'Admissions ID: {std.AdmissionsID}')
                 logger.info("Process completed successfully")
                 progress_bar.success_count += 1
-                response_list.append(f'Name: {std.GivenName} and Campus ID: {std.CampusID} Success')
+                final_dict['processedRecords'].append({
+                    'studentId': std.CampusID,
+                    'status': 'Success',
+                    'message': 'Process completed successfully'
+                })
             else:
                 logger.error(f"Process failed for student with ID {std.CampusID} and name {std.GivenName}.")
-                response_list.append(f"Process failed for student with ID {std.CampusID} and name {std.GivenName}.")
                 progress_bar.failure_count += 1
+                final_dict['processedRecords'].append({
+                    'studentId': std.CampusID,
+                    'status': 'Failed',
+                    'message': f"Process failed for student with ID {std.CampusID} and name {std.GivenName}."
+                })
         except Exception as e:
             logger.error(f"An error occurred for student with ID {std.CampusID}: {e}")
             progress_bar.failure_count += 1
+            final_dict['processedRecords'].append({
+                'studentId': std.CampusID,
+                'status': 'Error',
+                'message': f"An error occurred for student with ID {std.CampusID}: {e}"
+            })
     except Exception as e:
         logger.error(f"Process failed inside for process_student student : {std.CampusID} and error {e}")
         progress_bar.failure_count += 1
-    user = request.headers.get('username')
+        final_dict['processedRecords'].append({
+            'studentId': std.CampusID,
+            'status': 'Error',
+            'message': f"Process failed inside for process_student student : {std.CampusID} and error {e}"
+        })
+    return final_dict
 
-    print("user in response", user)
-    institution = request.headers.get('institutionid')
-    insertprocessed(user, str(response_list), institution, "Success", 'PreProcessor')
-    #  (processedBy, processedMsg, institutionId, result, processor) values
 class Student:
     def __init__(self, AdmissionsID, CampusID, GivenName, Surname, Birthdate, Department, Template, BirthCountry,
                  Citizenship,
@@ -312,20 +310,26 @@ class Student:
 
 
 def testing_main(url, driver, excel_file, socketio):
-    # Load the Excel file into a DataFrame using pandas
-    df = pd.read_excel("preProcessor/Duplicate.xlsx", engine='openpyxl')
-    # Clear the DataFrame of any existing data (excluding the header)
-    data = df.drop(df.index.to_list()[0:], axis=0)
-    # Save the DataFrame (header row only) to the same Excel file
-    with pd.ExcelWriter("preProcessor/Duplicate.xlsx", engine='openpyxl') as writer:
-        data.to_excel(writer, index=False, sheet_name='Sheet1')
-    # Print the DataFrame with only the header row
-    # print(data)
-    logger.info("Deletion success")
+    sessionResult = "Failure"
+    backendProcessor = "Pre Processor"
+    userName = request.headers.get('username')
+    logger.info(f"user in request header: {userName}")
+    institutionId = request.headers.get('institutionid')
+    logger.info(f"institution in request header: {institutionId}")
+    logResponse = ""
     try:
+        df = pd.read_excel("python/src/preProcessor/Duplicate.xlsx", engine='openpyxl')
+        # Clear the DataFrame of any existing data (excluding the header)
+        data = df.drop(df.index.to_list()[0:], axis=0)
+        # Save the DataFrame (header row only) to the same Excel file
+        with pd.ExcelWriter("python/src/preProcessor/Duplicate.xlsx", engine='openpyxl') as writer:
+            data.to_excel(writer, index=False, sheet_name='Sheet1')
+        # Print the DataFrame with only the header row
+        # print(data)
+        logger.info("Deletion success")
         logger.info("Main program started.")
         config = configparser.ConfigParser()
-        config.read('preProcessor/config.ini')
+        config.read('python/src/preProcessor/config.ini')
         code_start_time = time.time()  # capturing the start time of the code execution
         # Load the Excel file
         logger.info(f"printing excel file name: {excel_file}")
@@ -441,20 +445,24 @@ def testing_main(url, driver, excel_file, socketio):
         # with ThreadPoolExecutor(max_workers=15) as executor:
         #     # Submit each student for processing concurrently
         #     executor.map(process_student, students, url, config)
+        final_dict = {'processedRecords': []}
         for index, student in enumerate(students):
             logger.info(f"Index No : {index}, student ID : {student.CampusID}")
-            process_student(student, url, config, driver, progress_bar)
+            #  Function call happening here
+            final_dict = (student, url, config, driver, progress_bar)
             progress_bar.processed_count = index + 1
             progressBar_value = math.floor((progress_bar.processed_count/progress_bar.max_count)*6)
             logger.info(f"percentage completed: {progressBar_value}")
             socketio.emit('preProcessor', progressBar_value)
             logger.info(progress_bar.__str__())
-
+        errorMessage = ""
+        sessionResult = "Success"
+        json_string = json.dumps(final_dict)
+        insertppreprocessed(userName, json_string, institutionId, sessionResult, errorMessage, backendProcessor)
         code_end_time = time.time()  # capturing the end time of the code execution
         total_time = code_end_time - code_start_time  # calculating the total execution time
         logger.info("Total execution time: {:.2f} seconds".format(total_time))  # logging the total execution time
         logger.info("Main program finished.")
-
 
         if progress_bar.deferral_count > 0 and progress_bar.max_count == progress_bar.success_count:
             logger.info(f"Deferral cases in this batch run.")
@@ -474,5 +482,7 @@ def testing_main(url, driver, excel_file, socketio):
             return True, message
             #  need to handle this mixed cases response in main.py and front end to show either in logs or after run.
     except Exception as e:
-        logger.error(f"An error occurred in testing single.py testing_main function: {e}")
+        errorMessage = f"An error occurred in testing single.py testing_main function: {e}"
+        logger.error(errorMessage)
+        insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
         return False, "Failed"
