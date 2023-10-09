@@ -73,7 +73,7 @@ export interface preProcessorModel {
 export interface logModel {
   processedDate: string;
   processedBy: string;
-  processedMsg: Array<string>;
+  processedMsg: any;
   result: string;
   processor: string;
 }

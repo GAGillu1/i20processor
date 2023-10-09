@@ -10,7 +10,7 @@ import { institutionModel } from "@/components/utils/models";
 import getFormData from "@/components/utils/getFormData";
 import { institutionSchema } from "@/components/utils/valSchemas";
 import { institutionIV } from "@/components/utils/initialValues";
-import { MySubmit } from "@/components/utils/myInputs";
+import { MySubmit, Toggle } from "@/components/utils/myInputs";
 import Link from "next/link";
 
 const InstitutionInfo = () => {
@@ -81,19 +81,25 @@ const InstitutionInfo = () => {
               <Field name="crm" readOnly={editable} />
               <ErrorMsg name="crm" />
               <h3 className="pt-3 text-center">Primary Contact</h3>
-              <label htmlFor="adminFullName">Admin Full Name</label>
+              <label htmlFor="adminFullName">Full Name</label>
               <Field name="adminFullName" readOnly={editable} />
               <ErrorMsg name="adminFullName" />
-              <label htmlFor="adminDisplayName">Admin Display Name</label>
+              <label htmlFor="adminDisplayName">Display Name</label>
               <Field name="adminDisplayName" readOnly={editable} />
               <ErrorMsg name="adminDisplayName" />
               <label htmlFor="email">Email</label>
               <Field name="email" type="email" readOnly={editable} />
               <ErrorMsg name="email" />
-              <label htmlFor="adminContact">Admin Contact</label>
+              <label htmlFor="adminContact">Contact</label>
               <Field name="adminContact" readOnly={editable} />
               <ErrorMsg name="adminContact" />
               <div className="flex gap-2 items-center justify-end pt-4">
+                <Link
+                  href={`/admin/users?institution=${institutionName}`}
+                  className="bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide"
+                >
+                  Institution User List
+                </Link>
                 <Link
                   href={`/admin/institution/?institution=${institutionName}&logs=true`}
                   className="bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide"

@@ -44,19 +44,21 @@ const AddUniversity = () => {
             <label htmlFor="institutionName">Institution Name</label>
             <Field name="institutionName" />
             <ErrorMsg name="institutionName" />
-            <label htmlFor="adminFullName">Admin Full Name</label>
+            <label htmlFor="crm">CRM</label>
+            <Field name="crm" />
+            <ErrorMsg name="crm" />
+            <h3 className="pt-3 text-center">Primary Contact</h3>
+            <label htmlFor="adminFullName">Full Name</label>
             <Field name="adminFullName" />
             <ErrorMsg name="adminDisplayName" />
-            <label htmlFor="adminDisplayName">Admin Display Name</label>
+            <label htmlFor="adminDisplayName">Display Name</label>
             <Field name="adminDisplayName" />
             <ErrorMsg name="adminFullName" />
             <label htmlFor="email">Email</label>
             <Field name="email" type="email" />
             <ErrorMsg name="email" />
-            <label htmlFor="crm">CRM</label>
-            <Field name="crm" />
-            <ErrorMsg name="crm" />
-            <label htmlFor="adminContact">Admin Contact</label>
+
+            <label htmlFor="adminContact">Contact</label>
             <Field name="adminContact" component={PhInput} />
             <ErrorMsg name="adminContact" />
             <div className="flex items-center justify-end  pt-2">

@@ -73,8 +73,22 @@ const Logs = () => {
         ) : (
           <div className="w-full">
             <DataTable>
-              <Column field="admissionId" header="Admission Id" />
-              <Column sortable field="result" header="Status" />
+              <Column
+                field="admissionId"
+                header="Admission Id"
+                className="px-2"
+              />
+              <Column
+                sortable
+                field="result"
+                header="Status"
+                className="px-2"
+              />
+              <Column
+                field="message"
+                header="Message"
+                className="w-[50%] px-2"
+              />
             </DataTable>
           </div>
         )}
@@ -109,8 +123,6 @@ const Logs = () => {
           <Column
             field="processedBy"
             sortable
-            // filter
-            // filterPlaceholder="Search by name"
             header="User"
             className="w-[25%] px-2"
           />
