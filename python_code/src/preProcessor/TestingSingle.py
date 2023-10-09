@@ -3,16 +3,16 @@ import re
 import openpyxl
 import math
 import json
-from python.src.preProcessor.AddIndividual import AddIndividual
+from python_code.src.preProcessor.AddIndividual import AddIndividual
 import pandas as pd
 import configparser
 from selenium.webdriver.support.ui import *
 from openpyxl import load_workbook
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from python.src.preProcessor.issmfilelog import logger
+from python_code.src.preProcessor.issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
-from python.src.dbstatements import insertppreprocessed
+from python_code.src.dbstatements import insertppreprocessed
 from flask import request
 
 class ProgressBar:
@@ -36,13 +36,13 @@ def adding_to_excel(student, driver, config, progress_bar):
         error_text = error_element.text
         if 'Individual With Duplicate Campus ID Found - Please Correct' in error_text:
             logger.info(f'Error found : {error_text} for Last Name {student.Surname}')
-        workbook = load_workbook("python/src/preProcessor/Duplicate.xlsx")
+        workbook = load_workbook("python_code/src/preProcessor/Duplicate.xlsx")
         sheet = workbook.active
         if "Birthdate" not in [cell.value for cell in sheet[1]]:
             # Append the header if it is not present
             sheet.append(["Campus ID", "Admissions ID", "Name", "Birthdate"])
         sheet.append([student.CampusID, student.AdmissionsID, student.GivenName, student.Birthdate])
-        workbook.save("python/src/preProcessor/Duplicate.xlsx")
+        workbook.save("python_code/src/preProcessor/Duplicate.xlsx")
         logger.info(f"added student successfully adding_to_excel function for {student.CampusID}")
         progress_bar.deferral_count += 1
         return True
@@ -318,11 +318,11 @@ def testing_main(url, driver, excel_file, socketio):
     logger.info(f"institution in request header: {institutionId}")
     logResponse = ""
     try:
-        df = pd.read_excel("python/src/preProcessor/Duplicate.xlsx", engine='openpyxl')
+        df = pd.read_excel("python_code/src/preProcessor/Duplicate.xlsx", engine='openpyxl')
         # Clear the DataFrame of any existing data (excluding the header)
         data = df.drop(df.index.to_list()[0:], axis=0)
         # Save the DataFrame (header row only) to the same Excel file
-        with pd.ExcelWriter("python/src/preProcessor/Duplicate.xlsx", engine='openpyxl') as writer:
+        with pd.ExcelWriter("python_code/src/preProcessor/Duplicate.xlsx", engine='openpyxl') as writer:
             data.to_excel(writer, index=False, sheet_name='Sheet1')
         # Print the DataFrame with only the header row
         # print(data)
