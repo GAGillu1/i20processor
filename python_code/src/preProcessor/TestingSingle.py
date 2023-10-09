@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from .issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
-from python_code.src.dbstatements import insertppreprocessed
+from python_code.src import dbstatements
 from flask import request
 
 class ProgressBar:
@@ -458,7 +458,7 @@ def testing_main(url, driver, excel_file, socketio):
         errorMessage = ""
         sessionResult = "Success"
         json_string = json.dumps(final_dict)
-        insertppreprocessed(userName, json_string, institutionId, sessionResult, errorMessage, backendProcessor)
+        dbstatements.insertppreprocessed(userName, json_string, institutionId, sessionResult, errorMessage, backendProcessor)
         code_end_time = time.time()  # capturing the end time of the code execution
         total_time = code_end_time - code_start_time  # calculating the total execution time
         logger.info("Total execution time: {:.2f} seconds".format(total_time))  # logging the total execution time
@@ -484,5 +484,5 @@ def testing_main(url, driver, excel_file, socketio):
     except Exception as e:
         errorMessage = f"An error occurred in testing single.py testing_main function: {e}"
         logger.error(errorMessage)
-        insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
+        dbstatements.insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
         return False, "Failed"
