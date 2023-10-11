@@ -1,10 +1,10 @@
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
-from .TestingSingle import testing_main
+from python_code.src.preProcessor.TestingSingle import testing_main
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from .issmfilelog import logger
+from python_code.src.preProcessor.issmfilelog import logger
 # from selenium.webdriver.chrome.service import Service
 from python_code.src import dbstatements
 from flask import request
