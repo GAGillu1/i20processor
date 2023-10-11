@@ -222,7 +222,7 @@ def updateactive(user,activeid):
 def getprocessed(institutionid):
     dba.connect()
     print("inst id is ",institutionid)
-    query='select processedDate, processedBy, processedMsg,result,processor from processed where institutionid=?'
+    query='select processedDate, processedBy, processedMsg,result,processor,errorMessage from processed where institutionid=?'
     result=dba.execute_query(query,[institutionid])
     if result is not None:
         # Use the result DataFrame as needed.
