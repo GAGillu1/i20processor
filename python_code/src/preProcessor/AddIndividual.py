@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 def AddIndividual(student, driver, check_val):
     config = configparser.ConfigParser()
-    config.read('python_code/src/preProcessor/config.ini')
+    config.read('preProcessor/config.ini')
 
     try:
         logger.info("start of AddIndividual")
