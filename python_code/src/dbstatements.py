@@ -78,9 +78,10 @@ def insertinstitutions(institutionname,systemType):
     query='''
         INSERT INTO Institutions (institutionName,systemType) values(?,?)
         '''
-    dba.execute_query(query,[institutionname,systemType])
-
+    result=dba.execute_query(query,[institutionname,systemType])
     dba.close()
+    return result
+
 
 def insertadmin(fullname,email,institutionname):
     dba.connect()
@@ -97,8 +98,9 @@ def insertusers(fullname,username,email,userrole,institutionid,salt,hash):
 def insertpc(fullname,username,email,userrole,institutionName,salt,hash,contact):
     dba.connect()
     query = "INSERT INTO users(fullname, userName, email, userRole, institutionId, salt, hash, active, contact) values (?,?, ?,? , (SELECT institutionId FROM Institutions WHERE institutionName =?), ?, ?, 1, ?)"
-    dba.execute_query(query, [fullname, username, email,userrole,institutionName, salt, hash,contact])
+    result=dba.execute_query(query, [fullname, username, email,userrole,institutionName, salt, hash,contact])
     dba.close()
+    return result
 
 def selectsignature():
     dba.connect()
@@ -270,7 +272,7 @@ def alllog():
 
 def alluniversitties():
     dba.connect()
-    query='select institutionName from institutions'
+    query='select institutionName,institutionId from institutions'
     result=dba.execute_query(query)
     if result is not None:
         return result.reset_index(drop=True)

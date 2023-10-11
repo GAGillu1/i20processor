@@ -867,7 +867,9 @@ def addsign(user):
 
             return response
 
-
+"""This is for all instances
+POST is for adding the instance 
+GET is to fetch all the instances of particular institution  """
 @app.route('/instance', methods=['POST', 'PUT', 'GET'])
 def isntance():
     if request.method == 'POST':
@@ -890,8 +892,12 @@ def isntance():
         result_dict = result.to_dict(orient='records')
         return jsonify({'message': 'Fetched instances', 'data': result_dict})
 
+""" This route is about particualr instance .
+ if GET then returns instance of particualr university 
+  PUT - updates instance password , username , inst id, type
+ if put then instance test is done connection test"""
 
-@app.route('/instance/<string:type>', methods=['GET', 'PUT'])
+@app.route('/instance/<string:type>', methods=['GET', 'PUT','POST'])
 def instancetype(type):
     if request.method == 'GET':
         institutionid = request.headers.get('institutionid')
@@ -905,7 +911,7 @@ def instancetype(type):
         institutionid = request.headers.get('institutionid')
         result = updateinstance(password, username, institutionid, type)
         return {'message': result}
-    if request.method == 'PUT':
+    if request.method == 'POST':
         instancetype = request.form.get('instancetype')
         institutionid = request.headers.get('institutionid')
         result = connectiontest(instancetype, institutionid)
@@ -914,7 +920,7 @@ def instancetype(type):
         elif False in result:
             return jsonify({'message': 'Connect test Failed', 'data': False})
 
-
+"""Returns the log of particular university  if superuser then returns all institutes log if any oth returns only that particular university"""
 @app.route('/log', methods=['GET'])
 def processed():
     if request.method == 'GET':
@@ -931,7 +937,7 @@ def processed():
 
             return jsonify({'message': 'logged fetched', 'data': result_dict})
 
-
+"""this route is admin section and if GET then all institution names are returned and in Post  the institiution is added and a primary contact is added """
 @app.route('/institution',methods=['GET','POST'])
 def institutionall():
     if request.method=='GET':
@@ -947,15 +953,17 @@ def institutionall():
         contact=request.form.get('contact')
         role='PrimaryContact'
         print(institutionName, crm, fullName, username, email, contact, role)
-        institutioninsert(institutionName, crm, fullName, username, email, contact, role)
-        return jsonify({'message': 'Institution Name added'})
+        result=institutioninsert(institutionName, crm, fullName, username, email, contact, role)
+        return jsonify({'message': 'Institution Name added','data':result})
 
+"""This route is to get the primary contact of the particular university and return to frontend """
 @app.route('/institution/<string:institute>',methods=['GET'])
 def institutiondata(institute):
     if request.method=='GET':
         result=institutionsdat(institute)
         email, adminFullName, institutionName, adminDisplayName,crm=result
         return jsonify(({'Message':'Primary Contact fetched ','data':{'email':email,'adminFullName':adminFullName,'institutionName':institutionName,'adminDisplayName':adminDisplayName,'adminContact':123456,'crm':crm}}))
+
 
 if __name__ == '__main__':
     # app.run(debug=True,port=8081)
