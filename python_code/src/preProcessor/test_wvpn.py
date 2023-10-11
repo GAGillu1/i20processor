@@ -1,12 +1,15 @@
 from selenium import webdriver
+import sys
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
-from python_code.src.preProcessor.TestingSingle import testing_main
+sys.path.append("preProcessor")
+sys.path.append("src")
+from TestingSingle import testing_main
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from python_code.src.preProcessor.issmfilelog import logger
+from issmfilelog import logger
 # from selenium.webdriver.chrome.service import Service
-from python_code.src import dbstatements
+from dbstatements import insertppreprocessed
 from flask import request
 import time
 
@@ -60,7 +63,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             error_text = vpn_login_error.text
             logger.error(error_text)
             errorMessage = "Invalid VPN username or password"
-            dbstatements.insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
+            insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
             browser.quit()
             return False, errorMessage
         except NoSuchElementException:
@@ -82,7 +85,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             else:
                 message = "Wrong instance name entered"
                 errorMessage = "Wrong instance name entered"
-                dbstatements.insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
+                insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
                 raise Exception
             logger.info(f"input url: {input_url}")
             browser.find_element(By.XPATH, '//*[@id="url"]').send_keys(input_url)
@@ -110,7 +113,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
                 error_message = login_failed.text
                 logger.error(error_message)
                 errorMessage = "Invalid ISSM username or password"
-                dbstatements.insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
+                insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
                 browser.quit()
                 return False, errorMessage
                 # print(text_login)
@@ -124,7 +127,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
     except Exception as e:
         errorMessage = f"exception in test_wvpn.py file vpn_function"
         print(f"{errorMessage}, {e}")
-        dbstatements.insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
+        insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
     logger.info(f"Logout success and driver quit and status: {status}, message: {message}")
     # Close the WebDriver when done
     # browser.quit()
