@@ -4,6 +4,8 @@ import openpyxl
 import math
 import json
 import sys
+sys.path.append("preProcessor")
+sys.path.append("src")
 from AddIndividual import AddIndividual
 import pandas as pd
 import configparser
@@ -15,8 +17,7 @@ from issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
 from dbstatements import insertppreprocessed
 from flask import request
-sys.path.append("preProcessor")
-sys.path.append("src")
+
 class ProgressBar:
     def __init__(self, max_count):
         self.processed_count = 0
