@@ -1,13 +1,12 @@
 import time
 import sys
-sys.path.append("preProcessor")
 from selenium.webdriver.common.by import *
 from selenium.webdriver.support.ui import *
 import configparser
 from selenium.common.exceptions import NoSuchElementException
 from issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
-
+sys.path.append("preProcessor")
 def AddIndividual(student, driver, check_val):
     config = configparser.ConfigParser()
     config.read('python_code/src/preProcessor/config.ini')

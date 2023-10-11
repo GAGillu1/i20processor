@@ -1,9 +1,7 @@
-from selenium import webdriver
 import sys
+from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
-sys.path.append("preProcessor")
-sys.path.append("src")
 from TestingSingle import testing_main
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -12,7 +10,8 @@ from issmfilelog import logger
 from dbstatements import insertppreprocessed
 from flask import request
 import time
-
+sys.path.append("preProcessor")
+sys.path.append("src")
 def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file, instance, socketio):
     status = None
     message = ""
