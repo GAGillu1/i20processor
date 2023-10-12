@@ -8,7 +8,8 @@ def connect():
         'Driver={ODBC Driver 17 for SQL Server};'
         #'Server=localhost\SQLEXPRESS;'
         #'Server=GOVARDHAN;'
-        'server=database-1.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
+        #'server=database-1.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
+        'server=database-2.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
         'Database=issm_test;'
         'UID=admin;'
         'PWD=password123;'
@@ -32,6 +33,7 @@ def execute_query(query, params=None):
             if params :
                 #print(query)
                 print("in select params")
+                print(query)
                 cursor.execute(query,params)
                 rows=cursor.fetchall()
             else:
@@ -45,8 +47,12 @@ def execute_query(query, params=None):
                 return data.reset_index(drop=True)
         else:
             cursor.execute(query, params)
-            print("in commit")
             conn.commit()
+            k=cursor.rowcount
+            if k==1:
+                return "success"
+            else:
+                return 'failed'
 
 
     except Exception as e:
