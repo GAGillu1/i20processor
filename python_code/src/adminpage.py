@@ -1,3 +1,5 @@
+import json
+
 import bcrypt
 import pandas as pd
 
@@ -12,6 +14,8 @@ def adminusers():
 
 def allprocessed():
     result=alllog()
+
+    #result['processedMsg']=result['processedMsg'].apply(json.loads)
     return result.reset_index(drop=True)
 
 def allinstitutions():
@@ -46,7 +50,7 @@ def institutioninsert(institutionname,systemType,fullname,username,email,contact
         if result=="success":
             return "success"
         else:
-            return "primary contact insetion failed"
+            return "primary contact insertion failed"
     else:
         return "Institution inserting is failed"
 

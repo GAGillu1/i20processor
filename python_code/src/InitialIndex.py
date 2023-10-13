@@ -35,67 +35,67 @@ def indexFile1(sevid, issm):
         print(merged_df)
         merged_df.to_csv("index_" + date + ".txt", index=False, sep='\t')
         #merged_df.to_excel('abc.xlsx')
-    #     for i in range(len(merged_df)):
-    #         sevisid = merged_df.iloc[i]['SEVIS ID']
-    #         #print(sevisid)
-    #         i20formtype = i20type(os.path.join(cwd,f'{sevisid}.pdf'))
-    #         print('i20formtype',i20formtype)
-    #         if 'CONTINUED ATTENDANCE' in i20formtype:
-    #             g = i20type1(os.path.join(cwd,f'{sevisid }.pdf'))
-    #             print("passed in g")
-    #             typeofemployment = i20memoemp(g,os.path.join(cwd,f'{sevisid}.pdf'))
-    #             print(type(typeofemployment))
-    #             print("TYPE OF EMP IS ",typeofemployment)
-    #
-    #             for emp_type in employment_types:
-    #                 if emp_type in typeofemployment and len(typeofemployment) > 1:
-    #                     date_obj = datetime.strptime(typeofemployment[1], '%d %B %Y')
-    #                     dateformat = date_obj.strftime('%Y%m%d')
-    #                     print(dateformat)
-    #                     merged_df.loc[merged_df['SEVIS ID'] == sevisid, emp_type] = dateformat
-    #             print("type of employment is ", dateformat)
-    #
-    #         elif "INITIAL ATTENDANCE" in i20formtype:
-    #             merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = i20formtype
-    #     merged_df.to_csv("index_" + date + ".txt", index=False, sep='\t')
-    #     # checking if any sevisid is not in txt file but is there in sevis id
-    #     not_in_list = [x for x in sevid if x not in merged_df['SEVIS ID'].unique()]
-    #     #Create an empty DataFrame to store the results
-    #
-    #     table_html = ''
-    #     if not_in_list:
-    #         print("not in list",not_in_list)
-    #         df2 = pd.read_excel(issm)
-    #         df1 = pd.DataFrame(columns=['Admissions Id', 'Campus Id', 'SEVIS No', 'Lastname', 'First Name'])
-    #         sevisids = (df2['SEVIS ID'].values)
-    #         print(len(df2))
-    #
-    #         for i in not_in_list:
-    #             print("nooootttt in forrrr")
-    #             if i in df:
-    #                 uindex = df2[sevisids == i].index.values[0]
-    #                 print(df2)
-    #                 print(uindex)
-    #                 print("uindec",uindex)
-    #                 # userindex = df[usernames == user.lower()].index
-    #                 lastname = df2['Passport Last Name'].iloc[uindex]
-    #                 firstname = df2['Passport First Name'].iloc[uindex]
-    #                 campusid = int(df2['Campus Id'].iloc[uindex])
-    #
-    #                 df1 = df1._append({'Admissions Id': df['Admissions Id'].iloc[uindex], 'SEVIS No': i,
-    #                                    'Last Name': lastname, 'First Name': firstname, 'Campus Id': campusid},
-    #                                   ignore_index=True)
-    #
-    #         table_html = df1.to_html(index=False)
-    #     print("size is ",size)
-    #     if size !=0:
-    #         print("size is not  0")
-    #
-    #         return size,not_in_list,table_html
-    #     else:
-    #         print("size  0")
-    #         message="Please upload correct ISSM and Excel files . Index file size is 0"
-    #         return message
+        for i in range(len(merged_df)):
+            sevisid = merged_df.iloc[i]['SEVIS ID']
+            #print(sevisid)
+            i20formtype = i20type(os.path.join(cwd,f'{sevisid}.pdf'))
+            print('i20formtype',i20formtype)
+            if 'CONTINUED ATTENDANCE' in i20formtype:
+                g = i20type1(os.path.join(cwd,f'{sevisid }.pdf'))
+                print("passed in g")
+                typeofemployment = i20memoemp(g,os.path.join(cwd,f'{sevisid}.pdf'))
+                print(type(typeofemployment))
+                print("TYPE OF EMP IS ",typeofemployment)
+
+                for emp_type in employment_types:
+                    if emp_type in typeofemployment and len(typeofemployment) > 1:
+                        date_obj = datetime.strptime(typeofemployment[1], '%d %B %Y')
+                        dateformat = date_obj.strftime('%Y%m%d')
+                        print(dateformat)
+                        merged_df.loc[merged_df['SEVIS ID'] == sevisid, emp_type] = dateformat
+                print("type of employment is ", dateformat)
+
+            elif "INITIAL ATTENDANCE" in i20formtype:
+                merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = i20formtype
+        merged_df.to_csv("index_" + date + ".txt", index=False, sep='\t')
+        # checking if any sevisid is not in txt file but is there in sevis id
+        not_in_list = [x for x in sevid if x not in merged_df['SEVIS ID'].unique()]
+        #Create an empty DataFrame to store the results
+
+        table_html = ''
+        if not_in_list:
+            print("not in list",not_in_list)
+            df2 = pd.read_excel(issm)
+            df1 = pd.DataFrame(columns=['Admissions Id', 'Campus Id', 'SEVIS No', 'Lastname', 'First Name'])
+            sevisids = (df2['SEVIS ID'].values)
+            print(len(df2))
+
+            for i in not_in_list:
+                print("nooootttt in forrrr")
+                if i in df:
+                    uindex = df2[sevisids == i].index.values[0]
+                    print(df2)
+                    print(uindex)
+                    print("uindec",uindex)
+                    # userindex = df[usernames == user.lower()].index
+                    lastname = df2['Passport Last Name'].iloc[uindex]
+                    firstname = df2['Passport First Name'].iloc[uindex]
+                    campusid = int(df2['Campus Id'].iloc[uindex])
+
+                    df1 = df1._append({'Admissions Id': df['Admissions Id'].iloc[uindex], 'SEVIS No': i,
+                                       'Last Name': lastname, 'First Name': firstname, 'Campus Id': campusid},
+                                      ignore_index=True)
+
+            table_html = df1.to_html(index=False)
+        print("size is ",size)
+        if size !=0:
+            print("size is not  0")
+
+            return size,not_in_list,table_html
+        else:
+            print("size  0")
+            message="Please upload correct ISSM and Excel files . Index file size is 0"
+            return message
     except Exception as e:
         issm_log.logger.error(f"Index file creation failed in initialindex.py {e}")
         return f"Error in Index file {e} "
@@ -133,10 +133,7 @@ def indexFile(sevid, issm):
             print(i20formtype)
             if 'CONTINUED ATTENDANCE' in i20formtype:
                 g = i20type1(os.path.join(cwd,f'{sevisid }.pdf'))
-                # print(g)
                 typeofemployment = i20memo(g,os.path.join(cwd,f'{sevisid}.pdf'))
-                #print(f)
-                #print(aa)
                 merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = typeofemployment
             elif "INITIAL ATTENDANCE" in i20formtype:
                 merged_df.loc[merged_df['SEVIS ID'] == sevisid, 'Memo'] = i20formtype
