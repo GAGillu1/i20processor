@@ -5,6 +5,7 @@ import pandas as pd
 
 from dbstatements import allusers, alllog, alluniversitties, getprocessed, pcinstitute, insertinstitutions, insertpc
 from login import registeruser, generate_random_string
+from issm_log import jsonconvert
 
 
 def adminusers():
@@ -14,6 +15,7 @@ def adminusers():
 
 def allprocessed():
     result=alllog()
+    result['processedMsg'] = result['processedMsg'].apply(jsonconvert)
 
     #result['processedMsg']=result['processedMsg'].apply(json.loads)
     return result.reset_index(drop=True)

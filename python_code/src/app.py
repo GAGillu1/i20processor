@@ -173,7 +173,6 @@ def names():
         username = session.get('name')
         print(split)
         print(sign)
-        print("in methooooddddd/*/*/*/*/*/")
         #  print(sign,split)
         # if sign and split are selected then below condition is execcuted
         if sign == 'on' and split == 'on':
@@ -399,8 +398,7 @@ def upload():
                         if missing:
                             sender, password = get_credentials('email')
                             email, cc = get_emails('emails')
-                            email, cc = get_emails('emails')
-                            # send_email1(sender, password, email, missing,pdf_filename,tablehtml,cc)
+                            #send_email1(sender, password, email, missing,pdf_filename,tablehtml,cc)
                     # if index file doesnot return a tuple then it contains a message string which is assigned to msg
                     else:
                         # print("Result",result)
