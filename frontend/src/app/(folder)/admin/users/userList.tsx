@@ -19,7 +19,7 @@ const UserList = ({ ...props }) => {
             className={
               "listItem " +
               `${
-                searchParams.get("user") === item.username
+                searchParams.get("user") === item.email
                   ? "bg-indigo-300"
                   : "bg-indigo-100"
               }`

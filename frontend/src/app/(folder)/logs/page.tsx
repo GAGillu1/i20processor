@@ -35,6 +35,7 @@ const Logs = () => {
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      second: "2-digit",
       timeZoneName: "short",
     });
   };
@@ -65,24 +66,31 @@ const Logs = () => {
   };
 
   const rowExpansionTemplate = (rowData: logModel) => {
+    let preProcessor = rowData.processedMsg;
+    const isPreprocessor = rowData.processor !== "ISSM to Slate";
+    const isError = rowData.errorMessage === null || rowData.errorMessage;
+
+    console.log(preProcessor);
     return (
       <div className="p-2">
         <h3>Processed I-20s</h3>
         {rowData.processor === "ISSM to Slate" ? (
           <div className=""> {rowData.processedMsg}</div>
+        ) : isError ? (
+          rowData.errorMessage
         ) : (
           <div className="w-full">
-            <DataTable>
+            <DataTable value={preProcessor.processedRecords}>
               <Column
-                field="admissionId"
+                field="studentId"
                 header="Admission Id"
-                className="px-2"
+                className="px-2 text-center"
               />
               <Column
                 sortable
-                field="result"
+                field="status"
                 header="Status"
-                className="px-2"
+                className="px-2 text-center"
               />
               <Column
                 field="message"
@@ -92,11 +100,6 @@ const Logs = () => {
             </DataTable>
           </div>
         )}
-        {/* <div className="flex gap-3">
-          {rowData.processedMsg.map((item, i) => {
-            return <span key={i}>{item}</span>;
-          })}
-        </div> */}
       </div>
     );
   };
@@ -111,6 +114,7 @@ const Logs = () => {
           expandedRows={expandedRows}
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
+          dataKey="processedDate+processedBy"
         >
           <Column expander style={{ width: "5rem" }} />
           <Column

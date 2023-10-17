@@ -29,7 +29,7 @@ const InstitutionLogs = () => {
     DataTableExpandedRows | DataTableValueArray | undefined
   >(undefined);
   const searchParams = useSearchParams();
-  const institutionName = searchParams.get("institution");
+  const institution = searchParams.get("institution");
 
   const formatDate = (value: Date) => {
     return value.toLocaleDateString("en-US", {
@@ -38,6 +38,7 @@ const InstitutionLogs = () => {
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      second: "2-digit",
       timeZoneName: "short",
     });
   };
@@ -57,7 +58,8 @@ const InstitutionLogs = () => {
 
   const getLogs = async () => {
     try {
-      const res = await fetch("api/logs/" + institutionName);
+      console.log("IN GETLOGS");
+      const res = await fetch("/api/logs/" + institution);
       // const res = await fetch(
       //   "https://63fbe49b1ff79e133295a2c7.mockapi.io/v1/logModel"
       // );
@@ -95,7 +97,7 @@ const InstitutionLogs = () => {
   };
   return (
     <main className="w-[80%] mx-auto">
-      <h2>{institutionName} Logs</h2>
+      <h2>{institution} Logs</h2>
       <section className="bg-white rounded-lg p-1">
         <DataTable
           value={logData}
@@ -104,6 +106,7 @@ const InstitutionLogs = () => {
           expandedRows={expandedRows}
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
+          dataKey="processedDate+processedBy"
         >
           <Column expander style={{ width: "5rem" }} />
           <Column

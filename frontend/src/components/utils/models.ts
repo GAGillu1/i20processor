@@ -1,3 +1,4 @@
+import { ErrorMessage } from "formik";
 export interface userModel {
   username: string;
   fullname?: string;
@@ -76,6 +77,7 @@ export interface logModel {
   processedMsg: any;
   result: string;
   processor: string;
+  errorMessage: string;
 }
 
 export interface institutionModel {

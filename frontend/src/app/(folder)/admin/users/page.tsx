@@ -16,15 +16,20 @@ const Users = ({ searchParams }: sParams) => {
   const [findUser, setFindUser] = useState("");
   const showModal = searchParams?.addSign;
   const showUser = searchParams?.user && !showModal;
+  const institution = searchParams?.institution;
   const showAddUser = !(showModal || showUser);
 
   useEffect(() => {
     getUserList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getUserList = async () => {
     try {
-      const res = await fetch("/api/users");
+      const res = await fetch("/api/users", {
+        headers: institution ? { institutionId: institution } : {},
+      });
+
       if (!res.ok) throw res;
       const data = await res.json();
       setUserList(data.data);
@@ -37,7 +42,9 @@ const Users = ({ searchParams }: sParams) => {
 
   return (
     <main className="w-[95%] mx-auto">
-      <h1 className=" p-4 font-bold text-slate-700 text-xl">User List</h1>
+      <h1 className=" p-4 font-bold text-slate-700 text-xl">
+        {institution ? institution : ""} User List
+      </h1>
       <section className="grid grid-cols-2 gap-2 h-[70vh]">
         <div className="bg-white rounded-lg p-4">
           <Link

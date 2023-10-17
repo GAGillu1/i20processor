@@ -19,8 +19,8 @@ const Institution = ({ searchParams }: sParams) => {
   const showLogs = searchParams?.logs;
 
   useEffect(() => {
-    getUniversityList();
-  }, []);
+    !showLogs && getUniversityList();
+  }, [showLogs]);
 
   const getUniversityList = async () => {
     try {

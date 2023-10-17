@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-export function getToken(request: NextRequest) {
+export function getToken(request: NextRequest, institution = "") {
   const headers = new Headers();
   const token = request.cookies.get("authorization")?.value;
   const institutionid = request.cookies.get("institutionid")?.value;
