@@ -940,7 +940,7 @@ def allogs():
     if request.method=='GET':
         role = request.headers.get('role')
         print("role is", role)
-        if role == "Superuser":
+        if role == "SuperUser":
             result = allprocessed()
             result_dict = result.to_dict(orient='records')
             return jsonify({'message': 'Logs Fetched superuser', 'data': result_dict})
