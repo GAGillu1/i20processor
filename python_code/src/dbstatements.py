@@ -262,7 +262,7 @@ def allusers():
 
 def alllog():
     dba.connect()
-    query='select p1.processedDate,p1.processedBy,p1.processedMsg,p1.result, p1.processor,p2.institutionName,p1.errorMessage,p2.institutionName from processed p1  join institutions p2 on p1.institutionid=p2.institutionid'
+    query='select p1.processedDate,p1.processedBy,p1.processedMsg,p1.result, p1.processor,p2.institutionName,p1.errorMessage from processed p1  join institutions p2 on p1.institutionid=p2.institutionid'
     result=dba.execute_query(query)
     if result is not None:
         return result.reset_index(drop=True)
