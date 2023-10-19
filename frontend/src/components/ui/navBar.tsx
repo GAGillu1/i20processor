@@ -14,6 +14,10 @@ const NavBar = () => {
   const dispatch = useContextDispatch();
   const userData = useMyContext();
   const router = useRouter();
+  const isAdmin =
+    userData.role === "PrimaryContact" ||
+    userData.role === "Admin" ||
+    userData.role === "SuperUser";
 
   async function logoutUser() {
     dispatch({ type: "logout" });
@@ -44,7 +48,7 @@ const NavBar = () => {
           <I20Icon />
           I20
         </Link>
-        {userData.role === "ADMIN" && (
+        {isAdmin && (
           <Link
             className={`navLink ${
               path.includes("/admin") ? "activeNavLink" : ""
@@ -55,7 +59,7 @@ const NavBar = () => {
             Admin
           </Link>
         )}
-        {userData.role !== "USER" && (
+        {userData.role !== "User" && (
           <Link
             className={`navLink ${path === "/dso" ? "activeNavLink" : ""}`}
             href={"/dso"}

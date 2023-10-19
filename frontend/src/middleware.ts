@@ -6,16 +6,16 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("authorization")?.value;
   const role = request.cookies.get("role")?.value;
 
-  const isAdmin = role === "ADMIN";
-  const isUser = role === "USER";
+  const isAdmin =
+    role === "PrimaryContact" || role === "SuperUser" || role === "Admin";
+  const isUser = role === "User";
   const isPublicPath = path === "/login" || path === "/support";
   const isAdminPath = path.includes("admin");
   const isStaffPath = path === "/dso";
   const isUserPath = !(isAdminPath || isStaffPath);
   const isAtHome = path === "/";
-  // update the below
-  const isSuperAdmin = role === "ADMIN";
-  const isSuperAdminPath = path === "/admin/university";
+  const isSuperAdmin = role === "SuperUser";
+  const isSuperAdminPath = path === "/admin/institution";
 
   if (token) {
     if (isPublicPath) {

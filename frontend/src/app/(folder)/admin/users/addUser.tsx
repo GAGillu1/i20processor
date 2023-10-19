@@ -9,9 +9,12 @@ import toast from "react-hot-toast";
 import { addUserIV } from "@/components/utils/initialValues";
 import { addUserSchema } from "@/components/utils/valSchemas";
 import { MySubmit } from "@/components/utils/myInputs";
+import { useMyContext } from "@/components/utils/myContext";
 
 const AddUser = () => {
   const [loading, setLoading] = useState(false);
+  const userData = useMyContext();
+  const isSuperUser = userData.role === "SuperUser";
   const addUser = async (values: userModel) => {
     try {
       setLoading(true);
@@ -57,9 +60,10 @@ const AddUser = () => {
               Role
             </label>
             <Field component="select" name="role" className="px-1">
-              <option value="USER">User</option>
-              <option value="ADMIN">Admin</option>
-              <option value="STAFF">Staff</option>
+              <option value="User">User</option>
+              <option value="PrimaryContact">Admin</option>
+              <option value="Staff">Staff</option>
+              {isSuperUser && <option value="SuperUser">Super User</option>}
             </Field>
 
             <ErrorMsg name="role" className="col-span-2 col-start-2" />

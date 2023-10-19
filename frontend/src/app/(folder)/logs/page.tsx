@@ -114,7 +114,6 @@ const Logs = () => {
           expandedRows={expandedRows}
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
-          dataKey="processedDate+processedBy"
         >
           <Column expander style={{ width: "5rem" }} />
           <Column

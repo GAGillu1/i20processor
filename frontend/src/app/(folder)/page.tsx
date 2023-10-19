@@ -15,7 +15,9 @@ import {
 
 const Home = () => {
   const userData = useMyContext();
-  const isAdmin = userData.role === "ADMIN";
+  const isAdmin =
+    userData.role === "PrimaryContact" || userData.role === "SuperUser";
+  const isSuperUser = userData.role === "SuperUser";
 
   return (
     <main className="w-[95%] mx-auto ">
@@ -25,7 +27,7 @@ const Home = () => {
         <PostProcessingCard />
         {isAdmin && <UsersCard />}
         {isAdmin && <InstanceCard />}
-        {isAdmin && <InstitutionCard />}
+        {isSuperUser && <InstitutionCard />}
       </section>
       <div className="my-4" />
       <h2>Quick Links</h2>
