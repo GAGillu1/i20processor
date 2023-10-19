@@ -13,6 +13,7 @@ import { userModel } from "@/components/utils/models";
 import getFormData from "@/components/utils/getFormData";
 import { userSchema } from "@/components/utils/valSchemas";
 import { MySubmit, Toggle } from "@/components/utils/myInputs";
+import { useMyContext } from "@/components/utils/myContext";
 
 const UserInfo = () => {
   const [userInfo, setUserInfo] = useState<userModel>(userInfoIV);
@@ -20,6 +21,8 @@ const UserInfo = () => {
   const [dataLoading, setDataLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editable, setEditable] = useState(true);
+  const userData = useMyContext();
+  const isSuperUser = userData.role === "SuperUser";
 
   useEffect(() => {
     setDataLoading(true);
@@ -100,9 +103,10 @@ const UserInfo = () => {
                 className="px-1"
                 disabled={editable}
               >
-                <option value="USER">User</option>
-                <option value="ADMIN">Admin</option>
-                <option value="STAFF">Staff</option>
+                <option value="User">User</option>
+                <option value="PrimaryContact">Admin</option>
+                <option value="Staff">Staff</option>
+                {isSuperUser && <option value="SuperUser">Super User</option>}
               </Field>
 
               <ErrorMsg name="role" className="col-span-2 col-start-2" />
