@@ -54,7 +54,7 @@ const Logs = () => {
 
   const getLogs = async () => {
     try {
-      const res = await fetch("api/logs");
+      const res = await fetch("/api/logs");
       if (!res.ok) throw res;
       const data = await res.json();
       console.log("logData", data);
