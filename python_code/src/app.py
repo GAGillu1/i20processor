@@ -925,18 +925,25 @@ def processed():
         institutionid = request.headers.get('institutionid')
         role = request.headers.get('role')
         print("role is",role)
-        if role == "ADMIN":
+        # if role == "ADMIN":
+        #     result = allprocessed()
+        #     result_dict = result.to_dict(orient='records')
+        #     return jsonify({'message': 'Logs Fetched superuser', 'data': result_dict})
+        result = issm_log.processedgetter(institutionid)
+        result_dict = result.to_dict(orient='records')
+        print("log suceesd")
 
+        return jsonify({'message': 'logged fetched all users', 'data': result_dict})
+
+@app.route('/alllogs',methods=['GET'])
+def allogs():
+    if request.method=='GET':
+        role = request.headers.get('role')
+        print("role is", role)
+        if role == "Superuser":
             result = allprocessed()
             result_dict = result.to_dict(orient='records')
-            return jsonify({'message': 'Logs Fetched', 'data': result_dict})
-        else:
-            result = issm_log.processedgetter(institutionid)
-            result_dict = result.to_dict(orient='records')
-            print("log suceesd")
-
-            return jsonify({'message': 'logged fetched', 'data': result_dict})
-
+            return jsonify({'message': 'Logs Fetched superuser', 'data': result_dict})
 """this route is admin section and if GET then all institution names are returned and in Post  the institiution is added and a primary contact is added """
 @app.route('/institution',methods=['GET','POST'])
 def institutionall():
