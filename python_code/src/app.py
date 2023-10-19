@@ -924,7 +924,9 @@ def processed():
     if request.method == 'GET':
         institutionid = request.headers.get('institutionid')
         role = request.headers.get('role')
-        if role == "superuser":
+        print("role is",role)
+        if role == "ADMIN":
+
             result = allprocessed()
             result_dict = result.to_dict(orient='records')
             return jsonify({'message': 'Logs Fetched', 'data': result_dict})
