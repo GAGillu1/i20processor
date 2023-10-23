@@ -2,12 +2,14 @@
 import {
   DataTable,
   DataTableExpandedRows,
+  DataTableFilterMeta,
   DataTableValueArray,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { logModel } from "@/components/utils/models";
+import { FilterMatchMode, FilterOperator } from "primereact/api";
 
 const Tag = ({ value }: { value: string }) => {
   return (
@@ -27,7 +29,7 @@ const Logs = () => {
   const [expandedRows, setExpandedRows] = useState<
     DataTableExpandedRows | DataTableValueArray | undefined
   >(undefined);
-
+  // const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const formatDate = (value: Date) => {
     return value.toLocaleDateString("en-US", {
       day: "2-digit",
@@ -39,6 +41,57 @@ const Logs = () => {
       timeZoneName: "short",
     });
   };
+  // const [filters, setFilters] = useState<DataTableFilterMeta>({
+  //   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  //   name: {
+  //     operator: FilterOperator.AND,
+  //     constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+  //   },
+  //   "country.name": {
+  //     operator: FilterOperator.AND,
+  //     constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+  //   },
+  //   representative: { value: null, matchMode: FilterMatchMode.IN },
+  //   date: {
+  //     operator: FilterOperator.AND,
+  //     constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],
+  //   },
+  //   balance: {
+  //     operator: FilterOperator.AND,
+  //     constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+  //   },
+  //   status: {
+  //     operator: FilterOperator.OR,
+  //     constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+  //   },
+  //   activity: { value: null, matchMode: FilterMatchMode.BETWEEN },
+  // });
+
+  // const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   let _filters = { ...filters };
+
+  //   _filters["global"].value = value;
+
+  //   setFilters(_filters);
+  //   setGlobalFilterValue(value);
+  // };
+
+  // const renderHeader = () => {
+  //   return (
+  //     <div className="flex flex-wrap gap-2 justify-content-between align-items-center">
+  //       <h4 className="m-0">Customers</h4>
+  //       <span className="p-input-icon-left">
+  //         <i className="pi pi-search" />
+  //         <InputText
+  //           value={globalFilterValue}
+  //           onChange={onGlobalFilterChange}
+  //           placeholder="Keyword Search"
+  //         />
+  //       </span>
+  //     </div>
+  //   );
+  // };
 
   const dateBodyTemplate = (rowData: logModel) => {
     return formatDate(new Date(rowData.processedDate));

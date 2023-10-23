@@ -37,7 +37,7 @@ const AddInstance = () => {
         onSubmit={(values: instanceModel) => addInstance(values)}
       >
         <section>
-          <h2 className="text-center">Add New Instance</h2>
+          <h2 className="text-center">Add New CRM Instance</h2>
           <Form>
             <label htmlFor="type">Instance Name:</label>
             <Field name="type" />

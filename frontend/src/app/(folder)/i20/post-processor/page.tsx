@@ -4,7 +4,7 @@ import { Field, Form, Formik } from "formik";
 import { useState, useEffect } from "react";
 import { useContextDispatch, useMyContext } from "@/components/utils/myContext";
 import { i20Schema } from "@/components/utils/valSchemas";
-import { i20Model, sParams } from "@/components/utils/models";
+import { i20Model, instanceModel, sParams } from "@/components/utils/models";
 import { i20IV } from "@/components/utils/initialValues";
 import { FileInput, MyInput, MySubmit } from "@/components/utils/myInputs";
 import DsoList from "@/app/(folder)/i20/dsoList";
@@ -13,11 +13,13 @@ import { toast } from "react-hot-toast";
 import getFormData from "@/components/utils/getFormData";
 import { ProgressBar, Response } from "@/components/utils/progessBar";
 import { useRouter } from "next/navigation";
+import InstanceList from "../instanceList";
 
 const Page = ({ searchParams }: sParams) => {
   const router = useRouter();
   const [toslate, setToslate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [instanceList, setInstanceList] = useState<instanceModel[]>([]);
   const showResults = searchParams?.result;
   const data = useMyContext();
   const dispatch = useContextDispatch();
@@ -51,6 +53,7 @@ const Page = ({ searchParams }: sParams) => {
   useEffect(() => {
     setToslate(data.toSlate === "y");
   }, [data.toSlate, data]);
+
   return (
     <main className="main">
       <h2>I20 Post-processor</h2>
@@ -113,16 +116,11 @@ const Page = ({ searchParams }: sParams) => {
                 <ErrorMsg name="toSlate" />
                 {toslate && (
                   <>
-                    <label htmlFor="prog"> Program:</label>
-                    <Field
-                      component="select"
-                      name="prog"
-                      className="col-span-2"
-                    >
-                      <option value="ug">Under Graduate</option>
-                      <option value="g">Graduate</option>
+                    <label htmlFor="instance">Instance:</label>
+                    <Field as="select" name="instance" className="col-span-2">
+                      <option value="">Select Instance</option>
+                      <InstanceList />
                     </Field>
-                    <ErrorMsg name="prog" className="col-span-2 col-start-2" />
                   </>
                 )}
                 <div className="mx-auto col-span-3 mt-8">

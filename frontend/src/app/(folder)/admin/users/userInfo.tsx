@@ -104,8 +104,11 @@ const UserInfo = () => {
                 disabled={editable}
               >
                 <option value="User">User</option>
-                <option value="PrimaryContact">Admin</option>
+                <option value="Admin">Admin</option>
                 <option value="Staff">Staff</option>
+                {isSuperUser && (
+                  <option value="PrimaryContact">Primary Contact</option>
+                )}
                 {isSuperUser && <option value="SuperUser">Super User</option>}
               </Field>
 

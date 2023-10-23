@@ -14,8 +14,8 @@ const Users = ({ searchParams }: sParams) => {
   const [findInstance, setFindInstance] = useState("");
   const [instanceList, setInstanceList] = useState<instanceModel[]>([]);
   const [filter, setFilter] = useState("");
-  const showAddInstance = searchParams?.addInstance;
   const showInstance = searchParams?.instance;
+  const showAddInstance = searchParams?.addInstance || !showInstance;
 
   useEffect(() => {
     getInstanceList();
