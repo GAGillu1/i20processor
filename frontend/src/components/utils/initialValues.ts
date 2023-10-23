@@ -27,7 +27,7 @@ export const i20IV = {
   issmFile: "",
   slateFile: "",
   toSlate: "n",
-  prog: "ug",
+  instance: "",
 };
 
 export const addSignIV = {
@@ -74,6 +74,7 @@ export const preProcessorIV = {
   issmPassword: "",
   excelFile: "",
   instance: "",
+  vpn: false,
 };
 
 export const institutionIV = {

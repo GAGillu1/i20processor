@@ -91,6 +91,17 @@ export const instanceSchema = Yup.object({
   endpoint: Yup.string().required("Please enter a endpoint address"),
 });
 
+export const NoVPNpreProcessorSchema = Yup.object({
+  issmUsername: Yup.string()
+    .max(20, "You may only enter upto 20 characters")
+    .required("Please enter ISSM Username"),
+  issmPassword: Yup.string()
+    .max(50, "You may only enter upto 50 characters")
+    .required("Please enter ISSM Password"),
+  excelFile: Yup.mixed().required("Please attach the Excel file"),
+  instance: Yup.string().required("Please select an Instance"),
+});
+
 export const preProcessorSchema = Yup.object({
   vpnUsername: Yup.string()
     .max(20, "You may only enter upto 20 characters")

@@ -3,25 +3,23 @@ import * as React from "react";
 import { Field, Form, Formik, useFormikContext } from "formik";
 import { useState } from "react";
 import { useContextDispatch, useMyContext } from "@/components/utils/myContext";
-import { preProcessorSchema } from "@/components/utils/valSchemas";
+import {
+  NoVPNpreProcessorSchema,
+  preProcessorSchema,
+} from "@/components/utils/valSchemas";
 import { preProcessorModel, sParams } from "@/components/utils/models";
 import { preProcessorIV } from "@/components/utils/initialValues";
-import { FileInput, MyCheckBox, MySubmit } from "@/components/utils/myInputs";
+import {
+  FileInput,
+  MyCheckBox,
+  MySubmit,
+  Toggle,
+} from "@/components/utils/myInputs";
 import ErrorMsg from "@/components/utils/errorMsg";
 import { toast } from "react-hot-toast";
 import getFormData from "@/components/utils/getFormData";
 import { ProgressBar, Response } from "@/components/utils/progessBar";
 import { useRouter } from "next/navigation";
-
-// const FormStatus = () => {
-//   const dispatch = useContextDispatch();
-//   const { values } = useFormikContext();
-//   React.useEffect(() => {
-//     if (values !== preProcessorIV)
-//       dispatch({ type: "preProcessorState", action: values });
-//   }, [values, dispatch]);
-//   return null;
-// };
 
 const Page = ({ searchParams }: sParams) => {
   const router = useRouter();
@@ -30,13 +28,24 @@ const Page = ({ searchParams }: sParams) => {
   const showResults = searchParams?.result;
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [vpn, setVpn] = useState(false);
   const [intialValues, setInitialValues] = useState(preProcessorIV);
+
+  const FormStatus = () => {
+    const { values }: { values: preProcessorModel } = useFormikContext();
+    React.useEffect(() => {
+      setVpn(values.vpn);
+    }, [values]);
+    return null;
+  };
+
   React.useEffect(() => {
     // setInitialValues(data.preProcessorState);
     setLoading(data.preProcessStatus !== 0);
     // setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   async function postI20(values: preProcessorModel) {
     try {
       setLoading(true);
@@ -77,7 +86,9 @@ const Page = ({ searchParams }: sParams) => {
         ) : (
           <Formik
             initialValues={preProcessorIV}
-            validationSchema={preProcessorSchema}
+            validationSchema={
+              vpn ? preProcessorSchema : NoVPNpreProcessorSchema
+            }
             onSubmit={(values: preProcessorModel) => postI20(values)}
           >
             <section className="w-[90%] mx-auto">
@@ -87,27 +98,39 @@ const Page = ({ searchParams }: sParams) => {
                 <option value="">Select Instance</option>
                 <DsoList />
               </Field> */}
-                <h3 className="col-span-3 text-center">VPN Credentials</h3>
-                <label htmlFor="vpnUsername">Username</label>
-                <Field
-                  name="vpnUsername"
-                  placeholder="john12"
-                  className="col-span-2"
-                />
-                <ErrorMsg
-                  name="vpnUsername"
-                  className="col-span-2 col-start-2"
-                />
-                <label htmlFor="vpnPassword">Password</label>
-                <Field
-                  name="vpnPassword"
-                  type="password"
-                  className="col-span-2"
-                />
-                <ErrorMsg
-                  name="vpnPassword"
-                  className="col-span-2 col-start-2"
-                />
+                <label htmlFor="vpn">VPN</label>
+                <div className="col-span-2 ">
+                  <Field
+                    component={Toggle}
+                    name="vpn"
+                    active={preProcessorIV.vpn}
+                  />
+                </div>
+                {vpn && (
+                  <React.Fragment>
+                    <h3 className="col-span-3 text-center">VPN Credentials</h3>
+                    <label htmlFor="vpnUsername">Username</label>
+                    <Field
+                      name="vpnUsername"
+                      placeholder="john12"
+                      className="col-span-2"
+                    />
+                    <ErrorMsg
+                      name="vpnUsername"
+                      className="col-span-2 col-start-2"
+                    />
+                    <label htmlFor="vpnPassword">Password</label>
+                    <Field
+                      name="vpnPassword"
+                      type="password"
+                      className="col-span-2"
+                    />
+                    <ErrorMsg
+                      name="vpnPassword"
+                      className="col-span-2 col-start-2"
+                    />
+                  </React.Fragment>
+                )}
                 <h3 className="col-span-3 text-center">CRM Credentials</h3>
                 <label htmlFor="instance">Instance:</label>
                 <Field name="instance" className="col-span-2" />
@@ -152,7 +175,7 @@ const Page = ({ searchParams }: sParams) => {
                     action={"Process"}
                   />
                 </div>
-                {/* <FormStatus /> */}
+                <FormStatus />
               </Form>
             </section>
           </Formik>

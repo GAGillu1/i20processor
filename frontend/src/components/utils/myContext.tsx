@@ -79,16 +79,17 @@ function MyReducer(data: data, action: any) {
         ...initialData,
       };
     }
-    case "slateInput": {
-      return {
-        ...data,
-        toSlate: action.data,
-      };
-    }
     case "dsoSign": {
       return {
         ...data,
         dsoSign: action.data,
+      };
+    }
+
+    case "vpn": {
+      return {
+        ...data,
+        vpn: action.data,
       };
     }
 
@@ -146,13 +147,13 @@ const initialData = {
   fullname: "",
   role: "",
   loggedIn: false,
-  toSlate: "n",
   dsoSign: false,
   preProcessStatus: 0,
   postProcessStatus: 0,
   preProcessMaxCount: 0,
   preProcessorState: {},
   postProcessorState: {},
+  vpn: false,
 };
 
 interface data {
@@ -160,11 +161,11 @@ interface data {
   fullname: string;
   role: string;
   loggedIn: boolean;
-  toSlate: string;
   dsoSign: boolean;
   preProcessStatus: number;
   postProcessStatus: number;
   preProcessMaxCount: number;
   preProcessorState: Object;
   postProcessorState: Object;
+  vpn: boolean;
 }

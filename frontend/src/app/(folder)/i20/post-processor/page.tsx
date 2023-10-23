@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, useFormikContext } from "formik";
 import { useState, useEffect } from "react";
 import { useContextDispatch, useMyContext } from "@/components/utils/myContext";
 import { i20Schema } from "@/components/utils/valSchemas";
@@ -50,9 +50,13 @@ const Page = ({ searchParams }: sParams) => {
     }
   }
 
-  useEffect(() => {
-    setToslate(data.toSlate === "y");
-  }, [data.toSlate, data]);
+  const CurrentValues = () => {
+    const { values }: { values: i20Model } = useFormikContext();
+    useEffect(() => {
+      setToslate(values.toSlate === "y");
+    }, [values]);
+    return null;
+  };
 
   return (
     <main className="main">
@@ -105,11 +109,7 @@ const Page = ({ searchParams }: sParams) => {
                 />
                 <ErrorMsg name="slateFile" className="col-span-2 col-start-2" />
                 <label htmlFor="toSlate"> Transfer File to Slate:</label>
-                <Field
-                  component={MyInput}
-                  name="toSlate"
-                  className="col-span-2"
-                >
+                <Field component="select" name="toSlate" className="col-span-2">
                   <option value="n">No</option>
                   <option value="y">Yes</option>
                 </Field>
@@ -130,6 +130,7 @@ const Page = ({ searchParams }: sParams) => {
                     action={"Process"}
                   />
                 </div>
+                <CurrentValues />
               </Form>
             </section>
           </Formik>

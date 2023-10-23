@@ -3,6 +3,7 @@ import { useContextDispatch } from "./myContext";
 import { useState } from "react";
 import { Switch } from "@headlessui/react";
 import PhoneInput from "react-phone-input-2";
+import { usePathname } from "next/navigation";
 // -----------------------
 // CUSTOM INPUT
 export const MyInput = ({ ...props }) => {
@@ -64,13 +65,13 @@ export const FileInput = ({ ...props }) => {
 // TOGGLE - HEADLESS UI
 export const Toggle = ({ ...props }) => {
   const [enabled, setEnabled] = useState(props.active);
-
-  const toggleUser = () => {
+  const path = usePathname();
+  const toggleActive = () => {
     setEnabled(!enabled);
     props.form.setFieldValue(props.field.name, !enabled);
   };
   return (
-    <div className="flex items-center justify-end gap-2">
+    <div className="flex items-center justify-end gap-2 ">
       <label>{enabled ? "Active" : "Inactive"}</label>
       <div
         className={`group ${
@@ -79,19 +80,27 @@ export const Toggle = ({ ...props }) => {
       >
         <Switch
           checked={enabled}
-          onChange={() => toggleUser()}
+          onChange={() => toggleActive()}
           className={`${
             enabled
-              ? "bg-green-600 group-hover:bg-green-700"
+              ? props.disabled
+                ? "bg-green-600 group-hover:bg-green-600"
+                : "bg-green-600 group-hover:bg-green-700"
+              : props.disabled
+              ? "bg-red-600 group-hover:bg-red-600"
               : "bg-red-600 group-hover:bg-red-700"
-          } relative inline-flex h-6 w-12 items-center rounded-full transition duration-150`}
+          }
+          
+          relative inline-flex h-6 w-12 items-center rounded-full transition duration-150`}
           disabled={props.disabled}
         >
           <span className="sr-only">{props.name}</span>
           <span
             className={`${
               enabled ? "translate-x-3" : "-translate-x-3"
-            } inline-block h-4 w-4 transform rounded-full bg-white transition group-hover:scale-125 duration-150`}
+            } inline-block h-4 w-4 transform rounded-full bg-white transition ${
+              props.disabled ? "" : "group-hover:scale-125"
+            } duration-150`}
           />
         </Switch>
       </div>

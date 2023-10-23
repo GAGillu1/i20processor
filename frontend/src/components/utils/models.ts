@@ -1,4 +1,3 @@
-import { ErrorMessage } from "formik";
 export interface userModel {
   username: string;
   fullname?: string;
@@ -22,7 +21,7 @@ export interface i20Model {
   issmFile: any;
   slateFile: any;
   toSlate: string;
-  prog: string;
+  instance: string;
 }
 
 export interface signModel {
@@ -69,6 +68,7 @@ export interface preProcessorModel {
   issmPassword: string;
   excelFile: any;
   instance: string;
+  vpn: boolean;
 }
 
 export interface logModel {
