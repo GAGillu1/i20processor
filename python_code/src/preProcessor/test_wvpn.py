@@ -9,8 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from issmfilelog import logger
 # from selenium.webdriver.chrome.service import Service
-# from dbstatements import insertppreprocessed
-from python_code.src.dbstatements import insertppreprocessed
+from dbstatements import insertppreprocessed
+# from python_code.src.dbstatements import insertppreprocessed
 from flask import request
 import time
 def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file, instance, socketio):

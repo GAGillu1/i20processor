@@ -17,8 +17,8 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
-# from dbstatements import insertppreprocessed
-from python_code.src.dbstatements import insertppreprocessed
+from dbstatements import insertppreprocessed
+# from python_code.src.dbstatements import insertppreprocessed
 from flask import request
 
 class ProgressBar:
