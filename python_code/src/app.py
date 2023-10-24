@@ -47,6 +47,7 @@ from postToSlate import instanceinsert
 from postToSlate import post, updateinstance, instanceget, instancetypeget, connectiontest
 from preProcessor.issmfilelog import set_new_log_file, logger
 from preProcessor.test_wvpn import vpn_function
+from preProcessor.test_wovpn import vpn_function_bulk
 from sendemail import get_credentials, get_emails, send_email
 from totalpages import pages
 
@@ -103,11 +104,10 @@ def home():
 def process():
     try:
         if request.method == "POST":
-            zip_filename = 'files.zip'
-            vpn_username = request.form.get('vpnUsername')
-            vpn_password = request.form.get('vpnPassword')
+            # zip_filename = 'files.zip'
             issm_username = request.form.get('issmUsername')
             issm_password = request.form.get('issmPassword')
+            toggleButton = request.form.get('vpn')
             excel_file = request.files['excelFile']
             excel_file_name = excel_file.filename
             excel_file.save(excel_file_name)
@@ -115,14 +115,14 @@ def process():
             set_new_log_file()
             logger.info(f"started process function in app.py")
             socketio.emit('preProcessor', 1.0)
-            status, text = vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file_name,
-                                        instance, socketio)
+            if toggleButton != "false":
+                vpn_username = request.form.get('vpnUsername')
+                vpn_password = request.form.get('vpnPassword')
+                status, text = vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file_name, instance, socketio)
+            else:
+                status, text = vpn_function_bulk(issm_username, issm_password, excel_file_name, instance, socketio)
             print(f"status: {status}, text: {text}")
             if status and text == "Partial success":
-                # with ZipFile(zip_filename, 'w') as zipf:
-                #     # Add the files to the zip archive
-                #     zipf.write('Duplicate.xlsx')
-                #     # zipf.write(file_name)
                 response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
                 response.headers['Content-Disposition'] = 'attachment; filename=duplicate issm.xlsx'
                 # logger.info(f"Process Completed")

@@ -1,9 +1,11 @@
 import time
 import re
 import openpyxl
-import math
+# import math
 import json
 import sys
+from selenium import webdriver
+from concurrent.futures import ThreadPoolExecutor
 sys.path.append("preProcessor")
 sys.path.append("src")
 from AddIndividual import AddIndividual
@@ -185,11 +187,28 @@ def duplicate_check(student, driver, domain_url, config, progress_bar):
         return False
 
 
-def process_student(std, url, config, driver, progress_bar, final_dict):
+def process_student(url, config, progress_bar, final_dict, issm_username, issm_password, std):
     try:
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        # chrome_options.binary_location = '/usr/bin/google-chrome'
+        chrome_options.page_load_strategy = 'normal'
+        print("before start of webdriver")
+        # browser = webdriver.Chrome(service=service, options=chrome_options)
+        # commented the below line for amazon instance.
+        browser = webdriver.Chrome(options=chrome_options)
+        browser.get(url)
+
+        browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(issm_username)
+        browser.find_element(By.XPATH, '//*[@id="password"]').send_keys(issm_password)
+        # log_message(f"Process started for student with ID {std.CampusID} and name {std.GivenName}.")
+        browser.find_element(By.ID, 'login-button').click()
+
         logger.info(f"starting process_student function for {std.CampusID}")
         try:
-            status = duplicate_check(std, driver, url, config, progress_bar)
+            status = duplicate_check(std, browser, url, config, progress_bar)
             if status:
                 logger.info(f'Name: {std.GivenName}')
                 logger.info(f'Birthdate: {std.Birthdate}')
@@ -313,7 +332,7 @@ class Student:
         return '\n'.join(attributes)
 
 
-def testing_main(url, driver, excel_file, socketio):
+def testing_main(url, excel_file, socketio, issm_username, issm_password):
     sessionResult = "Failure"
     backendProcessor = "Pre Processor"
     userName = request.headers.get('username')
@@ -450,15 +469,27 @@ def testing_main(url, driver, excel_file, socketio):
         #     # Submit each student for processing concurrently
         #     executor.map(process_student, students, url, config)
         final_dict = {'processedRecords': []}
-        for index, student in enumerate(students):
-            logger.info(f"Index No : {index}, student ID : {student.CampusID}")
-            #  Function call happening here
-            final_dict = process_student(student, url, config, driver, progress_bar, final_dict)
-            progress_bar.processed_count = index + 1
-            progressBar_value = math.floor((progress_bar.processed_count/progress_bar.max_count)*6)
-            logger.info(f"percentage completed: {progressBar_value}")
-            socketio.emit('preProcessor', progressBar_value)
-            logger.info(progress_bar.__str__())
+        # for index, student in enumerate(students):
+        #     logger.info(f"Index No : {index}, student ID : {student.CampusID}")
+        #     #  Function call happening here
+        #     final_dict = process_student(student, url, config, driver, progress_bar, final_dict)
+        #     progress_bar.processed_count = index + 1
+        #     progressBar_value = math.floor((progress_bar.processed_count/progress_bar.max_count)*6)
+        #     logger.info(f"percentage completed: {progressBar_value}")
+        #     socketio.emit('preProcessor', progressBar_value)
+        #     logger.info(progress_bar.__str__())
+        with ThreadPoolExecutor() as executor:
+            print("inside parallel execution")
+            futures = []
+            # Submit each student for processing concurrently
+            for std in students:
+                future = executor.submit(process_student, url, config, progress_bar, final_dict, issm_username, issm_password, std)
+                futures.append(future)
+        # Wait for all threads to finish
+        for future in futures:
+            future.result()
+        # Access the final_dict after all processing is done
+        print(final_dict)
         errorMessage = ""
         sessionResult = "Success"
         json_string = json.dumps(final_dict)

@@ -138,7 +138,7 @@ def checklogin(email, password):
 
 
     except pd.errors.EmptyDataError:
-        print("Error")
+        print("Error as empty data error")
         return http.HTTPStatus.INTERNAL_SERVER_ERROR  # return 500 if Excel file is empty
     except Exception as e:
         print(e)
