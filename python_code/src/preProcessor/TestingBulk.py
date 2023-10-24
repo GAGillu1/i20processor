@@ -1,7 +1,7 @@
 import time
 import re
 import openpyxl
-# import math
+import math
 import json
 import sys
 from selenium import webdriver
@@ -187,7 +187,7 @@ def duplicate_check(student, driver, domain_url, config, progress_bar):
         return False
 
 
-def process_student(url, config, progress_bar, final_dict, issm_username, issm_password, std):
+def process_student(url, config, progress_bar, final_dict, issm_username, issm_password, socketio, std):
     try:
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--no-sandbox")
@@ -237,6 +237,11 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
                 'status': 'Error',
                 'message': f"An error occurred for student with ID {std.CampusID}: {e}"
             })
+        progress_bar.processed_count += 1
+        progressBar_value = math.floor((progress_bar.processed_count / progress_bar.max_count) * 6)
+        logger.info(f"percentage completed: {progressBar_value}")
+        socketio.emit('preProcessor', progressBar_value)
+        logger.info(progress_bar.__str__())
     except Exception as e:
         logger.error(f"Process failed inside for process_student student : {std.CampusID} and error {e}")
         progress_bar.failure_count += 1
@@ -483,7 +488,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
             futures = []
             # Submit each student for processing concurrently
             for std in students:
-                future = executor.submit(process_student, url, config, progress_bar, final_dict, issm_username, issm_password, std)
+                future = executor.submit(process_student, url, config, progress_bar, final_dict, issm_username, issm_password, socketio, std)
                 futures.append(future)
         # Wait for all threads to finish
         for future in futures:
