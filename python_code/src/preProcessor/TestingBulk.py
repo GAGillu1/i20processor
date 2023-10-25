@@ -125,7 +125,7 @@ def duplicate_steps(student, driver, domain_url, config):
         # print("success8")
         # time.sleep(1)
         logger.info(f"successfully removed student inside duplicate_steps function for {student.CampusID}")
-        driver.get(domain_url + 'AddNewIndividual.aspx')
+        driver.get(domain_url + '/AddNewIndividual.aspx')
         return True
     except Exception as e:
         logger.error("failed in duplicate_steps function :", e)
