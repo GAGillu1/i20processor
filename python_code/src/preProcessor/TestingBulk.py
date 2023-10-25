@@ -133,8 +133,8 @@ def duplicate_steps(student, driver, domain_url, config):
 def duplicate_check(student, driver, domain_url, config, progress_bar):
     logger.info(f"inside duplicate_check function for {student.CampusID}")
     try:
-        driver.get(domain_url + 'AddNewIndividual.aspx')  # with VPN
-        # driver.get(domain_url + '/AddNewIndividual.aspx')  # without VPN
+        # driver.get(domain_url + 'AddNewIndividual.aspx')  # with VPN
+        driver.get(domain_url + '/AddNewIndividual.aspx')  # without VPN
         wait = WebDriverWait(driver, 10)  # 10 seconds timeout
         element = wait.until(
             ec.visibility_of_element_located(
