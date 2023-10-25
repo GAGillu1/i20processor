@@ -199,13 +199,13 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
         # browser = webdriver.Chrome(service=service, options=chrome_options)
         # commented the below line for amazon instance.
         browser = webdriver.Chrome(options=chrome_options)
+        print(f"printing url before chrome {url}")
         browser.get(url)
-
+        print("after get")
         browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(issm_username)
         browser.find_element(By.XPATH, '//*[@id="password"]').send_keys(issm_password)
         # log_message(f"Process started for student with ID {std.CampusID} and name {std.GivenName}.")
         browser.find_element(By.ID, 'login-button').click()
-
         logger.info(f"starting process_student function for {std.CampusID}")
         try:
             status = duplicate_check(std, browser, url, config, progress_bar)
