@@ -43,7 +43,7 @@ const AddUser = () => {
       >
         <section>
           <Form>
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Display Name</label>
             <Field name="username" />
             <ErrorMsg name="username" />
             <label htmlFor="fullname" className="pt-1">

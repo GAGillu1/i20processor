@@ -6,7 +6,7 @@ import MyInfo from "./myInfo";
 
 const Profile = () => {
   const useData = useMyContext();
-  const usr = useData.username;
+  const usr = useData.email;
   return (
     <main className="w-[95%] mx-auto">
       <h2>Account Settings</h2>

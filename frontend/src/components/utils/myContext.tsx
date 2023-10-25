@@ -70,6 +70,7 @@ function MyReducer(data: data, action: any) {
         username: action.action.username,
         fullname: action.action.fullname,
         role: action.action.role,
+        email: action.action.email,
         institutionname: action.action.institutionname,
       };
     }
@@ -94,7 +95,7 @@ function MyReducer(data: data, action: any) {
     }
 
     case "userUpdate": {
-      // console.log(action.data);
+      console.log(action.data);
       return {
         ...data,
         fullname: action.action.fullname,

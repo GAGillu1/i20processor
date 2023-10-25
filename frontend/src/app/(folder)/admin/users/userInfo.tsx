@@ -83,7 +83,7 @@ const UserInfo = () => {
             />
             {/* <Toggle /> */}
             <Form>
-              <label htmlFor="username">Username</label>
+              <label htmlFor="username">Display Name</label>
               <Field name="username" readOnly={editable} />
               <ErrorMsg name="username" />
               <label htmlFor="fullname">Full name</label>
@@ -91,7 +91,7 @@ const UserInfo = () => {
               <ErrorMsg name="fullname" />
               <label htmlFor="email">Email</label>
               <br />
-              <Field name="email" readOnly={editable} />
+              <Field name="email" readOnly />
               <ErrorMsg name="email" />
               <label htmlFor="role" className="">
                 Role

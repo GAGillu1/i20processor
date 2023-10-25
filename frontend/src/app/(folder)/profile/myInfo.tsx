@@ -4,7 +4,7 @@ import { useContextDispatch, useMyContext } from "@/components/utils/myContext";
 import getFormData from "@/components/utils/getFormData";
 import { updateUserIV } from "@/components/utils/initialValues";
 import { userModel } from "@/components/utils/models";
-import { forgotPwdSchema } from "@/components/utils/valSchemas";
+import { forgotPwdSchema, userSchema } from "@/components/utils/valSchemas";
 import { Field, Form, Formik } from "formik";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -39,7 +39,7 @@ const MyInfo = ({ ...props }) => {
       });
       if (!res.ok) throw res;
       const data = await res.json();
-      // console.log(data);
+      console.log(data);
       dispatch({ type: "userUpdate", action: data.data });
       toast.success(data.message);
     } catch (err: any) {
@@ -58,20 +58,20 @@ const MyInfo = ({ ...props }) => {
       {!dataLoading && (
         <Formik
           initialValues={userInfo}
-          validationSchema={forgotPwdSchema}
+          validationSchema={userSchema}
           onSubmit={(values) => updateUser(values)}
         >
           {
             <section className="p-12 max-h-[60%] my-auto rounded-lg w-[90%] font-semibold text-gray-700">
               <Form className="flex flex-col gap-1">
-                <label htmlFor="username">Username</label>
+                <label htmlFor="username">Display Name</label>
                 <Field name="username" />
                 <ErrorMsg name="username" />
                 <label htmlFor="fullname">Full Name</label>
                 <Field name="fullname" />
                 <ErrorMsg name="fullname" />
                 <label htmlFor="email">Email</label>
-                <Field name="email" type="email" />
+                <Field name="email" type="email" readOnly />
                 <ErrorMsg name="email" />
 
                 <div className="flex justify-end items-center mt-4">

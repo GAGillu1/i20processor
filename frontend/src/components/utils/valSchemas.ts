@@ -3,10 +3,10 @@ import * as Yup from "yup";
 export const userSchema = Yup.object({
   username: Yup.string()
     .max(20, "You may only enter upto 20 characters")
-    .required("Please enter a username"),
+    .required("Please enter a Display Name"),
   fullname: Yup.string()
     .max(50, "You may only enter upto 50 characters")
-    .required("Please enter fullname"),
+    .required("Please enter Full Name"),
   email: Yup.string()
     .email()
     .max(50, "You may only enter upto 50 characters")
@@ -24,7 +24,7 @@ export const i20Schema = Yup.object({
 export const addUserSchema = Yup.object({
   username: Yup.string()
     .max(20, "You may only enter upto 20 characters")
-    .required("Please enter a Username"),
+    .required("Please enter a Display Name"),
   fullname: Yup.string()
     .max(50, "You may only enter upto 50 characters")
     .required("Please enter a Full name"),
