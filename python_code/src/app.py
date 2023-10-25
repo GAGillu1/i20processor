@@ -583,11 +583,11 @@ def login():
                     # Encode token with secret key
                     #   print("78",token)
                     response = make_response({'message': 'Login successful',
-                                              'data': {'role': role, 'username': username, 'fullname': fullname,
+                                              'data': {'role': role, 'username': dbusername, 'fullname': fullname,
                                                        'institutionname': institutionname}})
                     response.headers['Role'] = role
                     response.headers['fullname'] = fullname
-                    response.headers['username'] = dbusername
+                    response.headers['username'] = username
                     response.headers['institutionid'] = institution_id
 
                     response.headers['Authorization'] = f"Bearer {token}"
