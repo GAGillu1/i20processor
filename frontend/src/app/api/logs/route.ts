@@ -7,13 +7,13 @@ const basePath = process.env.BASE_PATH as string;
 export async function GET(request: NextRequest) {
   try {
     const isSuperUser = request.cookies.get("role")?.value === "SuperUser";
-    console.log("admin", isSuperUser);
+    // console.log("admin", isSuperUser);
     const logsApi = isSuperUser ? "/alllogs" : (process.env.LOGS as string);
     const res = await fetch(basePath + logsApi, {
       headers: getToken(request),
     });
     const data = await res.json();
-    console.log("log headers", getToken(request));
+    // console.log("log headers", getToken(request));
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     return NextResponse.json(

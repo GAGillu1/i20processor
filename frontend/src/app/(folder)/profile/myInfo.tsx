@@ -16,7 +16,7 @@ const MyInfo = ({ ...props }) => {
   const usr = props.username;
   const dispatch = useContextDispatch();
   useEffect(() => {
-    console.log(usr);
+    // console.log(usr);
     setDataLoading(true);
     getUserInfo(usr);
   }, [usr]);
@@ -39,7 +39,7 @@ const MyInfo = ({ ...props }) => {
       });
       if (!res.ok) throw res;
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       dispatch({ type: "userUpdate", action: data.data });
       toast.success(data.message);
     } catch (err: any) {

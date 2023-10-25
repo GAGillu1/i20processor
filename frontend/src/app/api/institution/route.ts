@@ -18,14 +18,14 @@ export async function GET(request: NextRequest) {
     type cookies = { [s: string]: string };
     let cookies: cookies = {};
     let processedData = [];
-    console.log("Keys", data);
+    // console.log("Keys", data);
     for (const key in data) {
       const s = data[key].institutionName as keyof cookies;
-      console.log(s);
+      // console.log(s);
       cookies[s] = data[key].institutionId;
       processedData.push({ institutionName: data[key].institutionName });
     }
-    console.log("universities", data);
+    // console.log("universities", data);
     cookieStore.set("institutionList", JSON.stringify(cookies), {
       httpOnly: true,
       expires: Date.now() + 60 * 60 * 1000,

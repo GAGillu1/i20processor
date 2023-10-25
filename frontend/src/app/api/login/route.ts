@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
     const data = await res.json();
     if (res.ok) {
       res.headers.forEach((e, k) => {
-        console.log("headers", k, e);
         if (
           k === "username" ||
           k === "authorization" ||

@@ -12,7 +12,7 @@ const AddInstance = () => {
   const [loading, setLoading] = useState(false);
   const addInstance = async (values: instanceModel) => {
     try {
-      console.log(values);
+      // console.log(values);
       setLoading(true);
       const res = await fetch("/api/instance", {
         method: "POST",

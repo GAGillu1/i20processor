@@ -23,7 +23,7 @@ export async function GET(
         JSON.parse(institutionList)[params.institution]
       );
     }
-    console.log("headers", headers);
+    // console.log("headers", headers);
     const res = await fetch(basePath + logsApi, {
       headers: headers,
     });

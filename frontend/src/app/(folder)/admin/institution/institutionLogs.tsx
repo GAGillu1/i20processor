@@ -58,14 +58,14 @@ const InstitutionLogs = () => {
 
   const getLogs = async () => {
     try {
-      console.log("IN GETLOGS");
+      // console.log("IN GETLOGS");
       const res = await fetch("/api/logs/" + institution);
       // const res = await fetch(
       //   "https://63fbe49b1ff79e133295a2c7.mockapi.io/v1/logModel"
       // );
       if (!res.ok) throw res;
       const data = await res.json();
-      console.log("logData", data);
+      // console.log("logData", data);
       setLogData(data.data);
     } catch (err: any) {
       const data = await err.json();

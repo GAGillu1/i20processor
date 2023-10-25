@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     });
 
     const data = await res.json();
-    console.log("get response", data, res.status);
+    // console.log("get response", data, res.status);
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     return NextResponse.json(

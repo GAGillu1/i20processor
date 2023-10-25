@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const hostname = process.env.WS_HOSTNAME;
     const host = ("ws://" + hostname + ":" + process.env.WS_PORT) as string;
-    console.log("WShost", host);
+    // console.log("WShost", host);
     const res = {
       data: host,
       message: "Port fetch successful",

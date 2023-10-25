@@ -33,14 +33,14 @@ const UserInfo = () => {
   const updateUser = async (values: userModel) => {
     try {
       setLoading(true);
-      console.log("userInfo", values);
+      // console.log("userInfo", values);
       const res = await fetch("/api/users/" + username, {
         method: "PUT",
         body: getFormData(values),
       });
       if (!res.ok) throw res;
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       toast.success(data.message);
       getUserInfo(username);
     } catch (err: any) {
@@ -56,7 +56,7 @@ const UserInfo = () => {
       .then((res) => res.json())
       .then((usrInfo) => {
         setUserInfo(usrInfo.data);
-        console.log(usrInfo);
+        // console.log(usrInfo);
       })
       .then(() => {
         setDataLoading(false);

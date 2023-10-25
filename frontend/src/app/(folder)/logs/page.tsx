@@ -110,7 +110,7 @@ const Logs = () => {
       const res = await fetch("/api/logs");
       if (!res.ok) throw res;
       const data = await res.json();
-      console.log("logData", data);
+      // console.log("logData", data);
       setLogData(data.data);
     } catch (err: any) {
       const data = await err.json();
@@ -123,7 +123,7 @@ const Logs = () => {
     const isPreprocessor = rowData.processor !== "ISSM to Slate";
     const isError = rowData.errorMessage === null || rowData.errorMessage;
 
-    console.log(preProcessor);
+    // console.log(preProcessor);
     return (
       <div className="p-2">
         <h3>Processed I-20s</h3>

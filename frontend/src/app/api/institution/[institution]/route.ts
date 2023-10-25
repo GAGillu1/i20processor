@@ -15,7 +15,7 @@ export async function GET(
       headers: getToken(request),
     });
     const data = await res.json();
-    console.log("user details", data);
+    // console.log("user details", data);
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     return NextResponse.json(
@@ -83,14 +83,14 @@ export async function DELETE(
 ) {
   try {
     const university = params.university;
-    console.log("university", university);
+    // console.log("university", university);
     const res = await fetch(basePath + universityApi + university, {
       method: "DELETE",
       headers: getToken(request),
     });
     if (res.ok) return res;
     const data = await res.json();
-    console.log("res", data);
+    // console.log("res", data);
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     return NextResponse.json(

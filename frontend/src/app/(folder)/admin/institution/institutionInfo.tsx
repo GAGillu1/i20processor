@@ -31,7 +31,7 @@ const InstitutionInfo = () => {
 
   const updateInstitution = async (values: institutionModel) => {
     try {
-      console.log("Institution Info", values);
+      // console.log("Institution Info", values);
       const res = await fetch("/api/institution/" + institutionName, {
         method: "PUT",
         body: getFormData(values),

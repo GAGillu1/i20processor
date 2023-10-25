@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         ]
       );
     }
-    console.log("headers", headers);
+    // console.log("headers", headers);
     const res = await fetch(basePath + usersApi, {
       headers: headers,
     });

@@ -168,6 +168,8 @@ export const UsersCardLg = () => {
 
 // -------------------------------
 // INSTANCE CARD
+const instanceDesc =
+  "<ul className='list-disc'><li>Add Instanace</li><li>Update Instanace</li><li>Delete Instanace</li></ul>";
 export const InstanceCardLg = () => {
   return (
     <CardLg link="/admin/instance" title="Instance" description={lorem}>

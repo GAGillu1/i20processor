@@ -33,7 +33,7 @@ const Users = ({ searchParams }: sParams) => {
       if (!res.ok) throw res;
       const data = await res.json();
       setUserList(data.data);
-      console.log("userList", data);
+      // console.log("userList", data);
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);

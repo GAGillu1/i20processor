@@ -24,7 +24,7 @@ const AddUser = () => {
       });
       if (!res.ok) throw res;
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       toast.success(data.message);
     } catch (err: any) {
       const data = await err.json();

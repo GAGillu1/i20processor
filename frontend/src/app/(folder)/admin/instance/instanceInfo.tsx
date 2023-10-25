@@ -25,7 +25,7 @@ const InstanceInfo = () => {
 
   const updateInstance = async (values: instanceModel) => {
     try {
-      console.log("Instance Info", values);
+      // console.log("Instance Info", values);
       const res = await fetch("/api/instance/" + instanceType, {
         method: "PUT",
         body: getFormData(values),

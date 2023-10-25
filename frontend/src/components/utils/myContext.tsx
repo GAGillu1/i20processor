@@ -94,7 +94,7 @@ function MyReducer(data: data, action: any) {
     }
 
     case "userUpdate": {
-      console.log(action.data);
+      // console.log(action.data);
       return {
         ...data,
         fullname: action.action.fullname,

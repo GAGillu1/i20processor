@@ -14,7 +14,7 @@ const AddUniversity = () => {
   const [loading, setLoading] = useState(false);
   const addUniversity = async (values: institutionModel) => {
     try {
-      console.log("New Institution", values);
+      // console.log("New Institution", values);
       setLoading(true);
       const res = await fetch("/api/institution", {
         method: "POST",

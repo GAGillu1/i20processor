@@ -31,7 +31,7 @@ const Dso = () => {
 
   async function postI20(values: dsoModel) {
     try {
-      console.log(values);
+      // console.log(values);
       const res = await fetch("/api/dso", {
         method: "POST",
         body: getFormData(values),
