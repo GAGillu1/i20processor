@@ -176,7 +176,7 @@ def updatelogin(user):
 
 def userdata(email):
     dba.connect()
-    query="select fullname,userRole ,active from users where email=?"
+    query="select fullname,userRole ,active,userName from users where email=?"
     result=dba.execute_query(query,[email])
     dba.close()
     if result is not None:

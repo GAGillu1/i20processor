@@ -304,4 +304,5 @@ def updateuserdata(user):
         fullname=data['fullname'].values[0]
         userRole=data['userRole'].values[0]
         status=data['active'].values[0]
-        return fullname,userRole,status
+        username=data['userName'].values[0]
+        return fullname,userRole,status,username

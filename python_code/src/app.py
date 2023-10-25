@@ -628,7 +628,11 @@ def register():
         role = request.form.get('role')
         institutionid = request.headers.get('institutionid')
         contact=""
-
+        actrole=request.headers.get('role')
+        if actrole=='Admin' and role=='Superuser':
+            return 'Cannot add because of role '
+        if actrole=='User' or actrole=='Staff':
+            return 'Cannot add because of role'
         # institutionid=session['institutionid']
         # registering the user with the definition registeruser
         register_result = registeruser(username, email, role, fullname, institutionid,contact)
@@ -748,17 +752,17 @@ def userpop(user):
         # updating based on the details given it the function userupdate
         result = userupdate(user, fullname, email, role, status)
         if 'successfully' in result:
-            fullname,role, upstatus = updateuserdata(user)
+            fullname,role, upstatus,dbusername = updateuserdata(user)
 
             if status.lower() != str(upstatus).lower():
                 issm_log.logger.info(result)
                 return jsonify({'message': 'User Reactivated !!!',
-                                'data': {'username': user, 'fullname': fullname, 'email': email, 'role': role,
+                                'data': {'username': dbusername, 'fullname': fullname, 'email': user, 'role': role,
                                          'status': bool(upstatus)}})
             else:
                 issm_log.logger.info(result)
                 return jsonify({'message': 'User updated',
-                                'data': {'username': user, 'fullname': fullname, 'email': email, 'role': role,
+                                'data': {'username': dbusername, 'fullname': fullname, 'email': email, 'role': role,
                                          'status': bool(status)}})
         else:
             return jsonify(({'message': 'user couldnt be updated'}))
