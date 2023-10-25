@@ -202,6 +202,7 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
         print(f"printing url before chrome {url}")
         browser.get(url)
         print("after get")
+        time.sleep(2)
         browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(issm_username)
         browser.find_element(By.XPATH, '//*[@id="password"]').send_keys(issm_password)
         # log_message(f"Process started for student with ID {std.CampusID} and name {std.GivenName}.")
