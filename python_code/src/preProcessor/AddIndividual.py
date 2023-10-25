@@ -40,23 +40,15 @@ def AddIndividual(student, driver, check_val):
             # print("department id filled")
             driver.find_element(By.ID, config['ID_XPATH']['continue_btn']).click()
             logger.info("after continue button add individual.aspx")
-        try:
-            time.sleep(2)
-            ignore_and_add_element = wait.until(
-                ec.element_to_be_clickable((By.ID, config['ID_XPATH']['ignore_and_add'])))
-            ignore_and_add_element.click()
-            logger.info("after ignore and add")
-            # driver.find_element(By.ID, config['ID_XPATH']['ignore_and_add']).click()
-            # check_val = True
-            # print(f"duplicate caught duplicate_check function for {student.CampusID}")
-            # raise Exception
-            # # Perform actions with the error element (if needed)
-        except NoSuchElementException:
-            logger.info("no such element exception")
-            # print(f"no exceptions caught duplicate_check function for {student.CampusID}")
-            # check_val = False
-            pass
-
+            try:
+                time.sleep(2)
+                ignore_and_add_element = wait.until(
+                    ec.element_to_be_clickable((By.ID, config['ID_XPATH']['ignore_and_add'])))
+                ignore_and_add_element.click()
+                logger.info("after ignore and add")
+            except NoSuchElementException:
+                logger.info("no such element exception")
+                pass
         #  ----------------Choose Template ---------------------------#
         #  need to modify the below code according to config.ini parameters
         time.sleep(2)
