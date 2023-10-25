@@ -11,8 +11,10 @@ try:
     # browser = webdriver.Chrome(service=service, options=chrome_options)
     # commented the below line for amazon instance.
     browser = webdriver.Chrome(options=chrome_options)
-    browser.get('www.google.com')
-    print(browser.page_source)
+    print("before get")
+    browser.get("https://www.google.com")
+    print("after get")
+    # print(browser.page_source)
     print(browser.current_url)
     browser.quit()
 except Exception as e:
