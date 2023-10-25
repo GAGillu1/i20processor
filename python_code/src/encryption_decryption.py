@@ -8,6 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 private_key = rsa.generate_private_key(
     public_exponent=65537,
     key_size=2048,
+    key_size=2048,
     backend=default_backend()
 )
 
@@ -40,7 +41,6 @@ def encryptsalt(message):
             label=None
         )
     )
-    print("Original Message:", message.decode('utf-8'))
     return ciphertext
 
 def decryptsalt(enctext):

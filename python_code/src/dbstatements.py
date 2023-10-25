@@ -2,7 +2,6 @@
 import dba
 import datetime
 today = datetime.datetime.today()
-print(today)
 date = today.strftime('%Y%m%d_%H%M%S')
 timestamp=datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
@@ -13,57 +12,53 @@ def selectinstitutions():
     dba.close()
     if result is not None:
         # Use the result DataFrame as needed
-        print(result)
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
+        return "No data returned from the query"
 
 
 def selectadministrators():
     dba.connect()
     query='select fullname,email,userRole,institutionId from InsitutionAdministrators'
     result = dba.execute_query(query)
+    dba.close()
     if result is not None:
         # Use the result DataFrame as needed
-        print(result)
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return "No data returned from the query"
 
 def activeusers():
     dba.connect()
     query = "select userId,fullname,userName,email,salt,hash,active,userRole,institutionid from users where active=1 "
     result = dba.execute_query(query)
+    dba.close()
     if result is not None:
         # Use the result DataFrame as needed.
-        print(result)
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return "No data returned from the query"
 def loginusers():
     dba.connect()
     query="SELECT u.userId,u.fullname, u.userName,  u.email,  u.salt, u.hash, u.active, u.userRole, u.institutionid,  i.institutionName  from  users u JOIN   institutions i ON u.institutionid = i.institutionid WHERE   u.active = 1"
     result=dba.execute_query(query)
+    dba.close()
     if result is not None:
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return "No data returned from the query"
 
 
 def selectusers(institutionid):
     dba.connect()
     query="select userId,fullname,userName,email,salt,hash,active,userRole,institutionId from users where institutionId=? "
     result = dba.execute_query(query,[institutionid])
+    dba.close()
     if result is not None:
         # Use the result DataFrame as needed.
-        print(result)
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return "No data returned from the query"
 #selectusers('A0494CF8-A800-47B7-93DB-0974B04A4568')
 def deleteusers(user):
     dba.connect()
@@ -106,25 +101,24 @@ def selectsignature():
     dba.connect()
     query='select fullName,userName,email,signatureLength,signatureWidth,signatureXCordinate,signatureYCordinate from signatures'
     result=dba.execute_query(query)
+    dba.close()
     if result is not None:
         # Use the result DataFrame as needed
-        print(result)
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return "No data returned from the query"
 
 def selectsignaturename():
     dba.connect()
     query="select fullName from signatures"
     result=dba.execute_query(query)
+    dba.close()
+
     if result is not None:
         # Use the result DataFrame as needed.
-        print(result)
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return "No data returned from the query"
 
 def insertsignatures(fullName,userName,email,signatureLength,signatureWidth,signatureXCordinate,signatureYCordinate,universityname):
     dba.connect()
@@ -152,7 +146,6 @@ def updatesignature(username,fullname,email,signaturelength,signaturewidth,signa
 
 def insertprocessed(user,msg,institutionid,result,processor):
     dba.connect()
-    print(msg)
     query="insert into processed(processedDate,processedBy,processedMsg,institutionId,result,processor) values(?,?,?,?,?,?)"
 
     dba.execute_query(query,[today,user,msg,institutionid,result,processor])
@@ -168,11 +161,12 @@ def selectinstance(instancetype,institutionid):
     dba.connect()
     query="select jsonendpoint,username,instancePassword from instance where jsontype=? and institutionID=?"
     result=dba.execute_query(query,[instancetype,institutionid])
+    dba.close()
+
     if result is not None:
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return "No data returned from the query"
 
 def updatelogin(user):
     dba.connect()
@@ -184,24 +178,24 @@ def userdata(email):
     dba.connect()
     query="select fullname,userRole ,active from users where email=?"
     result=dba.execute_query(query,[email])
+    dba.close()
     if result is not None:
         # Use the result DataFrame as needed.
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return" No Data returned from the query"
 
 def getinstaceinfo(type,institutionid):
     dba.connect()
     query="select jsonendpoint,username,instancePassword,jsontype from instance where jsontype=? and institutionID=? "
     result=dba.execute_query(query,[type,institutionid])
+    dba.close()
     if result is not None:
         # Use the result DataFrame as needed.
 
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return" No data returned from the query"
 
 def updateactive(user,activeid):
     dba.connect()
@@ -221,15 +215,14 @@ def updateactive(user,activeid):
 
 def getprocessed(institutionid):
     dba.connect()
-    print("inst id is ",institutionid)
     query='select processedDate, processedBy, processedMsg,result,processor,errorMessage from processed where institutionid=?'
     result=dba.execute_query(query,[institutionid])
+    dba.close()
     if result is not None:
         # Use the result DataFrame as needed.
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return" No data returned from the query"
 
 
 def updateinstancedb(password,username,institutionid,type):
@@ -243,52 +236,53 @@ def getinstances(institutionid):
     dba.connect()
     query='select jsonendpoint,jsontype,username from instance where institutionID=?'
     result = dba.execute_query(query,[institutionid])
+    dba.close()
+
     if result is not None:
         # Use the result DataFrame as needed.
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query.")
-    dba.close()
+        return "No data returned from the query."
 
 def allusers():
     dba.connect()
     query='select fullname, email,userName from users '
     result = dba.execute_query(query)
+    dba.close()
     if result is not None:
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query")
-    dba.close()
+        return "No data returned from the query"
 
 def alllog():
     dba.connect()
     query='select p1.processedDate,p1.processedBy,p1.processedMsg,p1.result, p1.processor,p2.institutionName,p1.errorMessage from processed p1  join institutions p2 on p1.institutionid=p2.institutionid'
     result=dba.execute_query(query)
+    dba.close()
     if result is not None:
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query")
-    dba.close()
+        return "No data returned from the query"
 
 def alluniversitties():
     dba.connect()
     query='select institutionName,institutionId from institutions'
     result=dba.execute_query(query)
+    dba.close()
     if result is not None:
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query")
-    dba.close()
+        return "No data returned from the query"
 
 def pcinstitute(institute):
     dba.connect()
     query="select p1.fullname,p1.userName,p1.email,p2.institutionName,p2.systemType from users p1  join institutions p2 on p1.institutionid=p2.institutionid where userRole='PrimaryContact' and p2.institutionName=?"
     result=dba.execute_query(query,institute)
+    dba.close()
     if result is not None:
         return result.reset_index(drop=True)
     else:
-        print("No data returned from the query")
-    dba.close()
+        return "No data returned from the query"
 
 def insertppreprocessed(user, msg, institutionid, result,errormessage, processor):
     dba.connect()

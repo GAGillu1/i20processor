@@ -11,7 +11,6 @@ date = today.strftime('%Y%m%d')
 
 
 def depsignature(doc,signaturepath,length,width,xco,yco):
-    print(signaturepath,length,width,xco,yco)
     signature_path = signaturepath  # Replace with the actual path to your signature image
     first_page = doc[0]
     user_signatures = {"elisa": {"size": (length, width), "position": (xco, yco)}}
@@ -19,7 +18,6 @@ def depsignature(doc,signaturepath,length,width,xco,yco):
     y = (792 - user_signature["position"][1] - user_signature['size'][1])
     z = y + user_signature['size'][1]
     sig_rect = fitz.Rect(user_signature["position"][0], y, user_signature['position'][0] + user_signature['size'][0], z)
-    print(sig_rect)
     signature_image = fitz.Pixmap(signature_path)
     first_page.insert_image(sig_rect, pixmap=signature_image)
 
@@ -40,7 +38,6 @@ def depi20signature(pdf,signature_path,length, width, xco, yco):
                       if 'THIS PAGE INTENTIONALLY LEFT BLANK' in line:
                           d.append(i+1)
 
-        print(d)
         key = 0
         prev_page = None
         for page in d:
@@ -51,21 +48,15 @@ def depi20signature(pdf,signature_path,length, width, xco, yco):
 
         original_doc = fitz.open(pdf)
         #g=updated_dict
-        print("g is ",g)
         removepage = fitz.open()
         #print("kehafuhafh",len(g[0]))
         for key, values in g.items():
-            print("values",values)
-            print(len(values))
-            print(values[0])
             for value in values:
                 start=value
                 remove_pages=list(range(start-4,start))
-                print(start-4,start)
                 removed_doc = fitz.open()
                 for j in remove_pages:
                     # get the page from the original document and insert it into the removed document
-                    print("j is ",j)
                     removed_doc.insert_pdf(original_doc, from_page=j, to_page=j)
                     f.append(j)
             # remove the pages from the original document
@@ -75,8 +66,6 @@ def depi20signature(pdf,signature_path,length, width, xco, yco):
                 for line in page_text.split("\n"):
                     if "SEVIS ID" in line:
                         sevis_id = line.split(":")[1].strip()
-                        print(line)
-                        print(sevis_id)
                         seevis_ids.append(sevis_id)
                         msg="F1"
                         break
@@ -84,15 +73,10 @@ def depi20signature(pdf,signature_path,length, width, xco, yco):
                     if "STUDENT'S SEVIS ID:" in line:
                         F2 = True
                         break
-                print(j)
-                print("Removed",sevis_id)
-                print("afafaf",original_doc.page_count)
             #original_doc.delete_pages(remove_pages)
             # save the removed and original documents
             #print(removed_doc.page_count)
-                print(msg,sevis_id)
                 if removed_doc.page_count  and F2:
-                    print("Saved F2")
                     depsignature(removed_doc,signature_path,length,width,xco,yco)
                     removed_doc.save('F2-' + sevis_id + '.pdf')
 
@@ -100,7 +84,6 @@ def depi20signature(pdf,signature_path,length, width, xco, yco):
                     depsignature(removed_doc, signature_path, length, width, xco, yco)
                     removed_doc.save(sevis_id + '.pdf')
         filename=f'original{date}'+'.pdf'
-        print("f is ",f)
         original_doc.delete_pages(f)
         if original_doc.page_count != 0:
             original_doc.save(filename)
@@ -125,8 +108,6 @@ def depi20signature(pdf,signature_path,length, width, xco, yco):
                                 seevis_ids.append(sevis_id)
                                 g.append(sevis_id)
                                 msg='F1'
-                                print(msg,sevis_id)
-                                print(line)
                                 break
 
                         for line in page_text.split("\n"):
@@ -135,13 +116,11 @@ def depi20signature(pdf,signature_path,length, width, xco, yco):
                                 break
 
                         if out_doc.page_count and F2:
-                            print("saved F2")
                             depsignature(out_doc, signature_path, length, width, xco, yco)
 
                             out_doc.save('F2-' + sevis_id + ".pdf")
                         elif out_doc.page_count:
                             depsignature(out_doc, signature_path, length, width, xco, yco)
-                            print("saved F1")
                             out_doc.save(sevis_id + ".pdf")
 
 

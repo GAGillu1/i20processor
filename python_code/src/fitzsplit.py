@@ -16,7 +16,6 @@ def sign_details(name):
     width = row['signatureWidth'].values[0]
     xcoordinate = row['signatureXCordinate'].values[0]
     ycoordinate = row['signatureYCordinate'].values[0]
-    print("sign details aree",length,width,xcoordinate,ycoordinate)
     return length, width, xcoordinate, ycoordinate
 """Split signature """
 def splitsignature(pdf_path, signature_path,length,width,xco,yco):
@@ -33,13 +32,9 @@ def splitsignature(pdf_path, signature_path,length,width,xco,yco):
                     #initiating count and incrementing it in loop so we get total number of signs added
                     count=0
                     #opening signature image
-                    print("signature path is ",signature_path)
                     #signaturepath="../../"+signature_path
                     signaturepath = os.path.abspath(os.path.join(os.path.dirname(pdf_path), '../../signatures', signature_path))
-
-                    print("signature path is ",signaturepath)
                     signature_image = fitz.Pixmap(signaturepath)
-                    print("signature apth is okay ")
                     signature_image.dpi = (50, 50)
                     for i in range(total_pages):
                         if i % 3 == 0:
@@ -64,13 +59,10 @@ def splitsignature(pdf_path, signature_path,length,width,xco,yco):
                                 # sig_rect = fitz.Rect(user_signature["position"][0], y, user_signature['position'][0] + user_signature['size'][0], z)
                                 # first_page.insert_image(sig_rect, pixmap=signature_image)
                                 out_doc.save(sevis_id+".pdf")
-                                print(cwd+'\\'+sevis_id+'.pdf')
                                 count=count+1
-
-                print("Count is in split file  ",count)
                 return d, total_pages, count
             except Exception as e:
-                print("error in splitting",e)
+                return f"error in splitting {e}"
 
 
 

@@ -8,16 +8,12 @@ from pdfminer.layout import LAParams
 def i20type(pdf_file):
     # Define the parameters for the layout analysis
     laparams = LAParams()
-
     # Extract the text from the PDF file
-    print(pdf_file)
     with open(pdf_file, 'rb') as f:
         page_numbers = [0]
         pdf_text = extract_text(f,page_numbers=page_numbers, laparams=laparams)
-
     # Split the text into pages
     pages = pdf_text.split('\x0c')
-
     # Loop through each page of the PDF
     for page_number, page_content in enumerate(pages):
         # Split the page content into lines
@@ -35,11 +31,9 @@ def i20type(pdf_file):
                 #print(lines[line_number])
             #print(line)
             if line=="FORM ISSUE REASON":
-                print(line)
                 #print(line)
                 #print(lines[line_number+1])
                 return lines[line_number+1]
-
     return None
 
 def i20type1(pdf_file):
@@ -179,7 +173,6 @@ def i20memo(my_dict,pdfFile):
         dates = []
         sessionstartdate=[]
         sessionenddate=[]
-        print("end date is ",end_date)
         # Print the lines from TYPE to STATUS
         for line_num, line in enumerate(lines):
             if type_line is not None and line_num >= type_line + 1 and (full_line is not None and line_num < full_line) and line.strip():
@@ -195,7 +188,6 @@ def i20memo(my_dict,pdfFile):
                 sessionenddate.append(line)
 
         result = {}
-        print(dates, types)
         if len(types)>1:
             result['types'] = types
             #return types[-1]
@@ -211,7 +203,7 @@ def i20memo(my_dict,pdfFile):
 
         return result
     except Exception as e:
-        print("Failed in i20memo function",e)
+        return(f"Failed in i20memo function {e}")
 
 def i20memoemp(my_dict, pdfFile):
 
@@ -272,7 +264,6 @@ def i20memoemp(my_dict, pdfFile):
             if start_date is not None and line_num == start_date + 1 and line.strip():
                 sessionstartdate.append(line)
             if end_date is not None and line_num == end_date + 1 and line.strip():
-                print("in")
                 sessionenddate.append(line)
             if end_line is not None and line_num >= end_line + 1 and (
                     empinfo is not None and line_num < empinfo) and line.strip():
@@ -299,7 +290,6 @@ def i20memoemp(my_dict, pdfFile):
         #print("result is", result)
         #print(len(result['types']))
         if 'REQUESTED' in result['status']:
-            print('yes')
             laparams = LAParams()
             with open(pdfFile, 'rb') as i20:
                 page_numbers = [0]

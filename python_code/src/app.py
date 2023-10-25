@@ -305,7 +305,6 @@ def upload():
             index_size = None
             missing_records = None
             index_error = None
-            print("here")
             # session_id = connected_clients.get(user)
             issm_log.logger.log_filename = f'response_{timestamp}.log'
             issm_log.set_new_log_file()
@@ -320,19 +319,14 @@ def upload():
             slate_file.save(slate)
             pdf_file.save(pdf_filename)
             name = request.form['dsoName']
-            print("dsoname okay ")
             slaterequest = request.form['toSlate']
             i20type = request.form['i20Type']
-            print("okay till i20type")
             institutionid = request.headers.get('institutionid')
             user = session.get('name')
             issm_log.logger.info(f"User logged in  :{user}")
             issm_log.logger.info(f"Intial I20. Received post request with files :{pdf_filename, issm, slate}")
             # Total number of pages in i20
-            print("starting process")
             num_pages = pages(pdf_filename)
-
-            print("in")
             sevid = ""
             socketio.emit('rom', 1)
             successful = True
@@ -350,7 +344,6 @@ def upload():
                     sev = sevid
                     key = "sevis"
                     redis_client.rpush(key, *sev)
-                    print("sevis id after splitting ", sev)
                     # sevid, totalpagessplit = splitting(pdf_filename)
                     totalpagessplit = totalpages / 3
                     numberoffiles = totalpagessplit
@@ -377,7 +370,6 @@ def upload():
                     if i20type == 'initI20':
                         # redis_client.set("sevis_id", sev)
                         # print("sevis id in i20process post ", redis_client.get("sevis_id"))
-                        print("above index file/*/*////***/*///***/*")
                         result = indexFile(sevid, issm)
 
                     # if i20type is continued i20 then index file1 is called for creating index file
@@ -403,10 +395,8 @@ def upload():
                     else:
                         # print("Result",result)
                         msg = result
-                        print("msf is ", msg)
                         successful = False
                         socketio.emit('rom', -3)
-                        print("index_error in else ", msg)
                         redis_client.set('index_error', f'Index file creation failed with error {msg}')
                         issm_log.logger.error(f"Index file creation failed {msg}")
                     # sizeOfIndexfile,missing=indexFile(sevid, issm, slate)
@@ -499,7 +489,6 @@ def upload():
 
         indexError = redis_client.get('index_error')
         indexError = indexError.decode('utf-8') if indexError is not None else None
-        print("indexError is ", indexError)
 
         signMessage = redis_client.get('signmsg')
         signMessage = signMessage.decode('utf-8') if signMessage is not None else None
@@ -509,20 +498,13 @@ def upload():
 
         addSign = redis_client.get('addSign')
         addSign = addSign.decode('utf-8') if addSign is not None else None
-        print('addSign is ///', addSign)
-        print(type(addSign))
         # addSign=int(addSign)
 
         sevisids1 = redis_client.lrange("sevis", 0, -1)
         sevisids1 = [x.decode("utf-8") for x in sevisids1]
 
-        print(type(sevisids1))
-        print("Sevisids1", sevisids1)
-
-        print("Sevisids in response/*/*/*", sevisids1)
         user = request.headers.get('username')
 
-        print("user in response", user)
         institution = request.headers.get('institutionid')
 
         result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
@@ -548,7 +530,6 @@ def upload():
             'addSign': addSign
         }
 
-        print("response msgg is ", response_msg)
         issm_log.logger.info(f"Response message at end is {response_msg}")
         # print(response_msg)
         keys_to_delete = [
@@ -585,7 +566,6 @@ def login():
             password = decoded_credentials[1]
             # print(username)
             session['name'] = decoded_credentials[0]
-            print("name in session is ", session.get('name'))
             result = checklogin(username, password)
 
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
@@ -667,8 +647,6 @@ def register():
         # fucntion returns all users in ascending order of fullnames
         institutionid = request.headers.get('institutionid')
         allusers = users(institutionid)
-        print(type(allusers))
-
         return jsonify({'message': 'user details fetched', 'data': allusers.to_dict('records')})
 
 
@@ -741,7 +719,6 @@ def userpop(user):
             userinf = userpopup(user, institutionid)
             issm_log.logger.info(f"Clicked on user info for user- {user}")
             username, email, role, fullname, active = userinf
-            print('userinf is ', userinf)
             # returning json with all details
             issm_log.logger.info(f"Users for particular user fetched {user}")
             return jsonify({'message': 'User details fetched',
@@ -793,7 +770,6 @@ def changepwd(user):
     if request.method == 'PUT':
         # getting all details from the form
         pwd = request.form.get('nPwd')
-        print("passwored is ", pwd)
         cPwd = request.form.get('cPwd')
         # institutionid=session['institutionid']
         institutionid = request.headers.get('institutionid')
@@ -878,9 +854,7 @@ def isntance():
         username = request.form.get('username')
         password = request.form.get('password')
         institutionid = request.headers.get('institutionid')
-        print(url, type, username, password, institutionid)
         msg = instanceinsert(url, type, username, password, institutionid)
-        print(msg)
         if msg == 'Instance inserted successfully':
             return jsonify({'message': 'Instance inserted successfully'})
         else:
@@ -902,7 +876,6 @@ def instancetype(type):
     if request.method == 'GET':
         institutionid = request.headers.get('institutionid')
         result = instancetypeget(institutionid, type)
-        print("result is ", result)
         # result_dict = result.to_dict(orient='records')
         return jsonify({'message': 'Fetched instance info ', 'data': result})
     if request.method == 'PUT':
@@ -927,22 +900,18 @@ def processed():
     if request.method == 'GET':
         institutionid = request.headers.get('institutionid')
         role = request.headers.get('role')
-        print("role is",role)
         # if role == "ADMIN":
         #     result = allprocessed()
         #     result_dict = result.to_dict(orient='records')
         #     return jsonify({'message': 'Logs Fetched superuser', 'data': result_dict})
         result = issm_log.processedgetter(institutionid)
         result_dict = result.to_dict(orient='records')
-        print("log suceesd")
-
         return jsonify({'message': 'logged fetched all users', 'data': result_dict})
 @token_required
 @app.route('/alllogs',methods=['GET'])
 def allogs():
     if request.method=='GET':
         role = request.headers.get('role')
-        print("role is", role)
         if role == "SuperUser":
             result = allprocessed()
             result_dict = result.to_dict(orient='records')
@@ -963,7 +932,6 @@ def institutionall():
         email=request.form.get('email')
         contact=request.form.get('contact')
         role='PrimaryContact'
-        print(institutionName, crm, fullName, username, email, contact, role)
         result=institutioninsert(institutionName, crm, fullName, username, email, contact, role)
         return jsonify({'message': 'Institution Name added','data':result})
 

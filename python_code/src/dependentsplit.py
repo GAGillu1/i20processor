@@ -150,7 +150,6 @@ def depi20(pdf):
                 if 'THIS PAGE INTENTIONALLY LEFT BLANK' in line:
                     d.append(i + 1)
 
-        print("d:", d)
 
     # Sort the page numbers for grouping
     d.sort()
@@ -170,8 +169,6 @@ def depi20(pdf):
     if current_group:
         g[len(g)] = current_group
 
-    print("g:", g)
-
     original_doc = fitz.open(pdf)
     f = []
 
@@ -179,9 +176,6 @@ def depi20(pdf):
         # Calculate the range for the group
         start_page = group[0] - 4
         end_page = group[-1] + 2
-        print("startpage is ", start_page)
-        print("endpage is ", end_page)
-
         # Ensure the start_page is not less than 0
         if start_page < 0:
             start_page = 0
@@ -243,8 +237,6 @@ def depi20(pdf):
                             seevis_ids.append(sevis_id)
                             g.append(sevis_id)
                             msg = 'F1'
-                            print(msg, sevis_id)
-                            print(line)
                             break
 
                     for line in page_text.split("\n"):
@@ -253,10 +245,8 @@ def depi20(pdf):
                             break
 
                     if out_doc.page_count and F2:
-                        print("saved F2 ", sevis_id)
                         out_doc.save('F2-' + sevis_id + ".pdf")
                     elif out_doc.page_count:
-                        print("saved F1 ", sevis_id)
                         out_doc.save(sevis_id + ".pdf")
 
     return len(seevis_ids)

@@ -32,12 +32,10 @@ def execute_query(query, params=None):
         if query.strip().lower().startswith('select'):
             if params :
                 #print(query)
-                print("in select params")
                 print(query)
                 cursor.execute(query,params)
                 rows=cursor.fetchall()
             else:
-                print("in select no params")
                 cursor.execute(query)
                 rows = cursor.fetchall()
             if rows:
@@ -56,7 +54,7 @@ def execute_query(query, params=None):
 
 
     except Exception as e:
-        print('Failed with', e)
+        return e
 
     finally:
         cursor.close()

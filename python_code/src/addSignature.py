@@ -47,20 +47,16 @@ def add_signature(pdf_path, signature_path, output_path,length,width,xco,yco):
         page = doc[page_num]
         output_pdf.insert_pdf(doc, from_page=page_num, to_page=page_num)
 
-    print("addsign",output_path)
     output_pdf.save(output_path)
     return output_pdf
 
 """Addubg sugnature to the pdf file """
 
 def add_signature1(pdf_path, signature_path, output_path, length, width, xco, yco):
-    print(signature_path)
     issm_log.logger.info(f"Adding Signature to file {pdf_path} with signature {signature_path}")
     doc = fitz.open(pdf_path)
     num_pages = doc.page_count
     output_pdf = fitz.open()
-    print("ininijninn")
-
     user_signatures = {"elisa": {"size": (length, width), "position": (xco, yco)}}
     user_signature = user_signatures["elisa"]
     # 792 is total height and subtracting from it to get the Y coordinate
@@ -77,7 +73,6 @@ def add_signature1(pdf_path, signature_path, output_path, length, width, xco, yc
             page.insert_image(sig_rect, pixmap=signature_image)
 
         output_pdf.insert_pdf(doc, from_page=page_num, to_page=page_num)
-    print(output_path)
     output_pdf.save(output_path)
     issm_log.logger.info(f"Output file saved ,{output_path}")
     return output_path

@@ -27,7 +27,6 @@ def allinstitutions():
 
 def institutionsdat(institute):
     result=pcinstitute(institute)
-    print(result)
     result=result.rename(columns={'email':'email','fullname':'adminFullName',"institutionName": "institutionName",
             "userName":"adminDisplayName"})
     email=result['email'][0]
