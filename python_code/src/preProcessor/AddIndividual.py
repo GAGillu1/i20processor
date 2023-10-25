@@ -19,6 +19,7 @@ def AddIndividual(student, driver, check_val):
         #  template_url = domain_url + '/WizardPickTemplate.aspx?SysId=56527&Mode=F'
         # driver.get(domain_url + '/AddNewIndividual.aspx')
         # Find the username and password input fields using XPath
+        print(f"printing checkval {check_val}")
         if check_val:
             logger.info("Inside check val true condition")
             element = wait.until(
@@ -59,7 +60,7 @@ def AddIndividual(student, driver, check_val):
         #  ----------------Choose Template ---------------------------#
         #  need to modify the below code according to config.ini parameters
         time.sleep(2)
-        logger.info("before select template")
+        print("before select template")
         # Use the WebDriverWait to wait for the element to be visible and enabled
         element = wait.until(ec.element_to_be_clickable((By.ID, config['ID_XPATH']['select_template'])))
 
@@ -67,11 +68,11 @@ def AddIndividual(student, driver, check_val):
         Select(element).select_by_visible_text(student.Template)
         # Select(driver.find_element(By.ID, config['ID_XPATH']['select_template'])).select_by_visible_text(student.Template)
         # print("template filled")
-        logger.info("after selecting template")
+        print("after selecting template")
         driver.find_element(By.ID, config['ID_XPATH']['continue_btn']).click()
         # ----------------Fill F/M Information---------------------------#
         #  https://issm-test.newhaven.edu/WizardPickTemplate.aspx?SysId=13019&Mode=F
-        logger.info("after continue button template")
+        print("after continue button template")
         time.sleep(2)
         # Wait for and select an option in 'country_of_birth' element
         country_of_birth_element = wait.until(
