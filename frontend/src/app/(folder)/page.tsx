@@ -16,7 +16,9 @@ import {
 const Home = () => {
   const userData = useMyContext();
   const isAdmin =
-    userData.role === "PrimaryContact" || userData.role === "SuperUser";
+    userData.role === "PrimaryContact" ||
+    userData.role === "SuperUser" ||
+    userData.role === "Admin";
   const isSuperUser = userData.role === "SuperUser";
 
   return (
