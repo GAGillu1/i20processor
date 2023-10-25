@@ -584,7 +584,7 @@ def login():
                     #   print("78",token)
                     response = make_response({'message': 'Login successful',
                                               'data': {'role': role, 'username': dbusername, 'fullname': fullname,
-                                                       'institutionname': institutionname}})
+                                                       'institutionname': institutionname,'email':username}})
                     response.headers['Role'] = role
                     response.headers['fullname'] = fullname
                     response.headers['username'] = username
