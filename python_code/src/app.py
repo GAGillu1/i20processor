@@ -571,7 +571,7 @@ def login():
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
             if isinstance(result, tuple):
-                login_result, role, institution_id, fullname, institutionname = result
+                login_result, role, institution_id, fullname, institutionname,dbusername = result
                 # print("Id is ",institution_id)
                 #  print("/*/*/*/",result)
                 if login_result == http.HTTPStatus.OK:
@@ -587,8 +587,9 @@ def login():
                                                        'institutionname': institutionname}})
                     response.headers['Role'] = role
                     response.headers['fullname'] = fullname
-                    response.headers['username'] = username
+                    response.headers['username'] = dbusername
                     response.headers['institutionid'] = institution_id
+
                     response.headers['Authorization'] = f"Bearer {token}"
                     # Set JWT token in Authorization header
                     # print("4124145",response)
@@ -627,6 +628,7 @@ def register():
         role = request.form.get('role')
         institutionid = request.headers.get('institutionid')
         contact=""
+
         # institutionid=session['institutionid']
         # registering the user with the definition registeruser
         register_result = registeruser(username, email, role, fullname, institutionid,contact)

@@ -119,10 +119,12 @@ def checklogin(email, password):
                 if password_hash == stored_hash:
                     roles=user_df['userRole'].values[0]
                     institutionId=user_df['institutionid'].values[0]
-                    fullname=user_df['userName'].values[0]
+                    fullname=user_df['fullname'].values[0]
+                    username=user_df['userName'].values[0]
+
                     institutionname=user_df['institutionName'].values[0]
                     updatelogin(email)
-                    return http.HTTPStatus.OK,roles,institutionId,fullname,institutionname  # return 200 if login successful
+                    return http.HTTPStatus.OK,roles,institutionId,fullname,institutionname,username  # return 200 if login successful
         return http.HTTPStatus.UNAUTHORIZED  # return 401 if login unsuccessful
 
 
