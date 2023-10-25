@@ -35,27 +35,60 @@ class ProgressBar:
     def __str__(self):
         return f"ProgressBar(processed_count={self.processed_count}, success_count={self.success_count}, failure_count={self.failure_count}, deferral_count={self.deferral_count}, max_count={self.max_count})"
 
+# def adding_to_excel(student, driver, config, progress_bar):
+#     logger.info(f"inside adding_to_excel function for {student.CampusID}")
+#     try:
+#         error_element = driver.find_element(By.ID, config['ID_XPATH']['error_element'])
+#         error_text = error_element.text
+#         if 'Individual With Duplicate Campus ID Found - Please Correct' in error_text:
+#             logger.info(f'Error found : {error_text} for Last Name {student.Surname}')
+#         workbook = load_workbook("preProcessor/Duplicate.xlsx")
+#         sheet = workbook.active
+#         if "Birthdate" not in [cell.value for cell in sheet[1]]:
+#             # Append the header if it is not present
+#             sheet.append(["Campus ID", "Admissions ID", "Name", "Birthdate"])
+#         sheet.append([student.CampusID, student.AdmissionsID, student.GivenName, student.Birthdate])
+#         workbook.save("preProcessor/Duplicate.xlsx")
+#         logger.info(f"added student successfully adding_to_excel function for {student.CampusID}")
+#         progress_bar.deferral_count += 1
+#         return True
+#     except Exception as e:
+#         logger.error(f"adding student failed adding_to_excel function for {student.CampusID}")
+#         logger.error(e)
+#         return False
+
 def adding_to_excel(student, driver, config, progress_bar):
-    logger.info(f"inside adding_to_excel function for {student.CampusID}")
+    logger.info(f"Inside adding_to_excel function for {student.CampusID}")
     try:
         error_element = driver.find_element(By.ID, config['ID_XPATH']['error_element'])
         error_text = error_element.text
         if 'Individual With Duplicate Campus ID Found - Please Correct' in error_text:
             logger.info(f'Error found : {error_text} for Last Name {student.Surname}')
-        workbook = load_workbook("preProcessor/Duplicate.xlsx")
-        sheet = workbook.active
-        if "Birthdate" not in [cell.value for cell in sheet[1]]:
-            # Append the header if it is not present
-            sheet.append(["Campus ID", "Admissions ID", "Name", "Birthdate"])
-        sheet.append([student.CampusID, student.AdmissionsID, student.GivenName, student.Birthdate])
-        workbook.save("preProcessor/Duplicate.xlsx")
-        logger.info(f"added student successfully adding_to_excel function for {student.CampusID}")
+        data = {
+            "Campus ID": [student.CampusID],
+            "Admissions ID": [student.AdmissionsID],
+            "Name": [student.GivenName],
+            "Birthdate": [student.Birthdate]
+        }
+        try:
+            # Load the existing Excel file
+            df = pd.read_excel("preProcessor/Duplicate.xlsx")
+        except FileNotFoundError:
+            # Create a new DataFrame if the file doesn't exist
+            df = pd.DataFrame(data)
+        # Append the student's data
+        df = df.append(pd.DataFrame(data))
+
+        # Save the DataFrame to the Excel file
+        df.to_excel("preProcessor/Duplicate.xlsx", index=False)
+        logger.info(f"Added student successfully in adding_to_excel function for {student.CampusID}")
         progress_bar.deferral_count += 1
         return True
     except Exception as e:
-        logger.error(f"adding student failed adding_to_excel function for {student.CampusID}")
+        logger.error(f"Adding student failed in adding_to_excel function for {student.CampusID}")
         logger.error(e)
         return False
+
 def duplicate_steps(student, driver, domain_url, config):
     logger.info(f"inside duplicate_steps function for {student.CampusID}")
     # time.sleep(1)
