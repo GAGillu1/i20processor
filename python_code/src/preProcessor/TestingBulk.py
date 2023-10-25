@@ -63,7 +63,7 @@ def duplicate_steps(student, driver, domain_url, config):
         logger.info(f"starting removal of student id duplicate_steps function for {student.CampusID}")
         logger.info(f"domain url : {domain_url}")
         logger.info(f"domain url : {domain_url+'QuickSearch.aspx?ForceCacheSearch=Y&amp;lname=&amp;fname='}")
-        driver.get(domain_url+'QuickSearch.aspx?ForceCacheSearch=Y&amp;lname=&amp;fname=')
+        driver.get(domain_url+'/QuickSearch.aspx?ForceCacheSearch=Y&amp;lname=&amp;fname=')
         wait = WebDriverWait(driver, 10)  # 10 seconds timeout
         element = wait.until(
             ec.visibility_of_element_located(
@@ -96,7 +96,7 @@ def duplicate_steps(student, driver, domain_url, config):
             logger.info("No value inside parentheses found.")
             raise Exception
         # logger.info("domain url+ additional : ", domain_url + 'BioInfo.aspx?Id='+extracted_value)
-        driver.get(domain_url+'BioInfo.aspx?Id='+str(extracted_value))
+        driver.get(domain_url+'/BioInfo.aspx?Id='+str(extracted_value))
         # time.sleep(1)
         # wait = WebDriverWait(driver, 10)  # 10 seconds timeout
         # wait = WebDriverWait(driver, 10)  # 10 seconds timeout
