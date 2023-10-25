@@ -41,7 +41,7 @@ from dsodependedntsignature import depensignature
 from dsodependentsignsplit import depi20signature
 from fitzsplit import splitsignature, sign_details
 from login import checklogin, registeruser, forgotpassword1, users, userpopup, change_password, deleteuser, \
-    userupdate, updateuserdata
+    userupdate, updateuserdata, token_required
 from name import names_list, signaturefile, signadd
 from postToSlate import instanceinsert
 from postToSlate import post, updateinstance, instanceget, instancetypeget, connectiontest
@@ -99,7 +99,7 @@ def home():
 #     connected_clients[user] = session_id
 #     print(f'Registered {user} with session ID {session_id}')
 #
-
+@token_required
 @app.route('/i20preprocessor', methods=['GET', 'POST'])
 def process():
     try:
@@ -151,7 +151,7 @@ def process():
 Gets all the names from names_list() function which is defined in name.py .
 Returns all the names in json format to frontend """
 
-
+@token_required
 @app.route('/dso', methods=['GET', 'POST'])
 def names():
     if request.method == 'GET':
@@ -291,7 +291,7 @@ At the end all these inidividal i20's , zip file and index files are deleted fro
 In each step log is recorded   """
 connected_clients = {}
 
-
+@token_required
 @app.route('/i20process', methods=['POST', 'GET'])
 def upload():
     if request.method == 'POST':
@@ -572,7 +572,7 @@ This takes username and password . Password is hashed and checked with the hashe
 This retuns a token, HTTP response and message 
  """
 
-
+@token_required
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
@@ -636,7 +636,7 @@ function registeruser() is called which is defined in login.py It takes in usern
 At the end it returns the result message and HTTP response 
 """
 
-
+@token_required
 @app.route('/users', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
@@ -676,7 +676,7 @@ def register():
 If the username which user entered is in excel we send en email with password to their registred email
 and returns a message as successful if mail is sent. If username is not in excel then message will be invalid data"""
 
-
+@token_required
 @app.route('/forgot', methods=['PUT', 'GET'])
 def forgotpassword():
     if request.method == 'PUT':
@@ -724,7 +724,7 @@ If Split is selected then a zip file is returned with the all the files split in
 """ This route returns the details of selected user using the function userpopup() .
  Sending in json format """
 
-
+@token_required
 @app.route('/users/<string:user>', methods=['GET', 'DELETE', 'PUT'])
 def userpop(user):
     if request.method == 'GET':
@@ -770,7 +770,8 @@ def userpop(user):
         result = userupdate(user, fullname, email, role, status)
         if 'successfully' in result:
             fullname,role, upstatus = updateuserdata(user)
-            if status != upstatus:
+
+            if status.lower() != str(upstatus).lower():
                 issm_log.logger.info(result)
                 return jsonify({'message': 'User Reactivated !!!',
                                 'data': {'username': user, 'fullname': fullname, 'email': email, 'role': role,
@@ -786,7 +787,7 @@ def userpop(user):
 
 """Change Password in Profile dropdown"""
 
-
+@token_required
 @app.route('/changePwd/<string:user>', methods=['PUT', 'POST'])
 def changepwd(user):
     if request.method == 'PUT':
@@ -825,7 +826,7 @@ def changepwd(user):
 
 """Adding new signature"""
 
-
+@token_required
 @app.route('/addSign/<string:user>', methods=['POST'])
 #
 def addsign(user):
@@ -868,6 +869,7 @@ def addsign(user):
 """This is for all instances
 POST is for adding the instance 
 GET is to fetch all the instances of particular institution  """
+@token_required
 @app.route('/instance', methods=['POST', 'PUT', 'GET'])
 def isntance():
     if request.method == 'POST':
@@ -894,7 +896,7 @@ def isntance():
  if GET then returns instance of particualr university 
   PUT - updates instance password , username , inst id, type
  if put then instance test is done connection test"""
-
+@token_required
 @app.route('/instance/<string:type>', methods=['GET', 'PUT','POST'])
 def instancetype(type):
     if request.method == 'GET':
@@ -919,6 +921,7 @@ def instancetype(type):
             return jsonify({'message': 'Connect test Failed', 'data': False})
 
 """Returns the log of particular university  if superuser then returns all institutes log if any oth returns only that particular university"""
+@token_required
 @app.route('/log', methods=['GET'])
 def processed():
     if request.method == 'GET':
@@ -934,7 +937,7 @@ def processed():
         print("log suceesd")
 
         return jsonify({'message': 'logged fetched all users', 'data': result_dict})
-
+@token_required
 @app.route('/alllogs',methods=['GET'])
 def allogs():
     if request.method=='GET':
@@ -945,6 +948,7 @@ def allogs():
             result_dict = result.to_dict(orient='records')
             return jsonify({'message': 'Logs Fetched superuser', 'data': result_dict})
 """this route is admin section and if GET then all institution names are returned and in Post  the institiution is added and a primary contact is added """
+@token_required
 @app.route('/institution',methods=['GET','POST'])
 def institutionall():
     if request.method=='GET':
