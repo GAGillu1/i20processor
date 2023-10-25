@@ -237,11 +237,13 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
                 'status': 'Error',
                 'message': f"An error occurred for student with ID {std.CampusID}: {e}"
             })
+            browser.quit()
         progress_bar.processed_count += 1
         progressBar_value = math.floor((progress_bar.processed_count / progress_bar.max_count) * 6)
         logger.info(f"percentage completed: {progressBar_value}")
         socketio.emit('preProcessor', progressBar_value)
         logger.info(progress_bar.__str__())
+        browser.quit()
     except Exception as e:
         logger.error(f"Process failed inside for process_student student : {std.CampusID} and error {e}")
         progress_bar.failure_count += 1
