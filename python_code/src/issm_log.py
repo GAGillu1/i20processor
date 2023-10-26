@@ -42,6 +42,5 @@ def processedgetter(institutionid):
     df['processedDate'] = pd.to_datetime(df['processedDate'], format='%Y:%m:%d %H:%M:%S.%f')
     df['processedDate'] = df['processedDate'].apply(lambda x: x.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')
     df['processedMsg'] = df['processedMsg'].apply(jsonconvert)
-    print(df)
     return df
 
