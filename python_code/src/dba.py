@@ -46,6 +46,7 @@ def execute_query(query, params=None):
         else:
             cursor.execute(query, params)
             conn.commit()
+            print("Near commit")
             k=cursor.rowcount
             if k==1:
                 print("Suceess in db")
