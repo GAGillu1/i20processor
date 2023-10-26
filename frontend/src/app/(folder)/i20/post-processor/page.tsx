@@ -6,7 +6,7 @@ import { useContextDispatch, useMyContext } from "@/components/utils/myContext";
 import { i20Schema } from "@/components/utils/valSchemas";
 import { i20Model, instanceModel, sParams } from "@/components/utils/models";
 import { i20IV } from "@/components/utils/initialValues";
-import { FileInput, MyInput, MySubmit } from "@/components/utils/myInputs";
+import { FileInput, MyInput, MyButton } from "@/components/utils/myInputs";
 import DsoList from "@/app/(folder)/i20/dsoList";
 import ErrorMsg from "@/components/utils/errorMsg";
 import { toast } from "react-hot-toast";
@@ -124,7 +124,7 @@ const Page = ({ searchParams }: sParams) => {
                   </>
                 )}
                 <div className="mx-auto col-span-3 mt-8">
-                  <MySubmit
+                  <MyButton
                     loading={loading}
                     loadingMsg={"Processing"}
                     action={"Process"}

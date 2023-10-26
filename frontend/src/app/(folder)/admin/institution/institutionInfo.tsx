@@ -10,7 +10,7 @@ import { institutionModel } from "@/components/utils/models";
 import getFormData from "@/components/utils/getFormData";
 import { institutionSchema } from "@/components/utils/valSchemas";
 import { institutionIV } from "@/components/utils/initialValues";
-import { MySubmit, Toggle } from "@/components/utils/myInputs";
+import { MyButton, Toggle } from "@/components/utils/myInputs";
 import Link from "next/link";
 
 const InstitutionInfo = () => {
@@ -116,14 +116,14 @@ const InstitutionInfo = () => {
                   <EditIcon />
                   Edit
                 </button>
-                <MySubmit
+                <MyButton
                   hidden={editable}
                   loading={loading}
                   loadingMsg={"Saving"}
                   action="Save"
                 >
                   <SaveIcon />
-                </MySubmit>
+                </MyButton>
               </div>
             </Form>
           </section>

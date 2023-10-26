@@ -8,7 +8,7 @@ import getFormData from "@/components/utils/getFormData";
 import { institutionModel } from "@/components/utils/models";
 import { institutionIV } from "@/components/utils/initialValues";
 import { institutionSchema } from "@/components/utils/valSchemas";
-import { MySubmit, PhInput } from "@/components/utils/myInputs";
+import { MyButton, PhInput } from "@/components/utils/myInputs";
 
 const AddUniversity = () => {
   const [loading, setLoading] = useState(false);
@@ -62,7 +62,7 @@ const AddUniversity = () => {
             <Field name="adminContact" component={PhInput} />
             <ErrorMsg name="adminContact" />
             <div className="flex items-center justify-end  pt-2">
-              <MySubmit loading={loading} loadingMsg="Adding" action="Add" />
+              <MyButton loading={loading} loadingMsg="Adding" action="Add" />
             </div>
           </Form>
         </section>

@@ -3,13 +3,13 @@ import { getToken } from "../../../components/utils/getTokens";
 import { cookies } from "next/headers";
 import { object } from "yup";
 // -----------------------
-// GET - ALL UNIVERSITIES
+// GET - ALL INSTITUTIONS
 const basePath = process.env.BASE_PATH as string;
-const universityApi = process.env.UNIVERSITY as string;
+const institutionApi = process.env.INSTITUTION as string;
 export async function GET(request: NextRequest) {
   const cookieStore = cookies();
   try {
-    const res = await fetch(basePath + universityApi, {
+    const res = await fetch(basePath + institutionApi, {
       headers: getToken(request),
     });
     let data = await res.json();
@@ -42,11 +42,11 @@ export async function GET(request: NextRequest) {
   }
 }
 // -----------------------
-// POST - ADD UNIVERSITY
+// POST - ADD INSTITUTION
 export async function POST(request: NextRequest) {
   try {
     const body = await request.formData();
-    const res = await fetch(basePath + universityApi, {
+    const res = await fetch(basePath + institutionApi, {
       method: "POST",
       body: body,
       headers: getToken(request),

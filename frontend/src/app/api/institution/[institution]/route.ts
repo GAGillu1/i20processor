@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "@/components/utils/getTokens";
 
 const basePath = process.env.BASE_PATH as string;
-const universityApi = process.env.UNIVERSITY as string;
+const institutionApi = process.env.INSTITUTION as string;
 // -----------------------
-// GET - UNIVERSITY INFO
+// GET - INSTITUTION INFO
 export async function GET(
   request: NextRequest,
   { params }: { params: { institution: string } }
 ) {
   try {
     const institution = "/" + params.institution;
-    const res = await fetch(basePath + universityApi + institution, {
+    const res = await fetch(basePath + institutionApi + institution, {
       headers: getToken(request),
     });
     const data = await res.json();
@@ -25,7 +25,7 @@ export async function GET(
   }
 }
 // -----------------------
-// PUT - UPDATE UNIVERSITY
+// PUT - UPDATE INSTITUTION
 export async function PUT(
   request: NextRequest,
   { params }: { params: { university: string } }
@@ -33,7 +33,7 @@ export async function PUT(
   try {
     const university = "/" + params.university;
     const body = await request.formData();
-    const res = await fetch(basePath + universityApi + university, {
+    const res = await fetch(basePath + institutionApi + university, {
       method: "PUT",
       body: body,
       headers: getToken(request),
@@ -84,7 +84,7 @@ export async function DELETE(
   try {
     const university = params.university;
     // console.log("university", university);
-    const res = await fetch(basePath + universityApi + university, {
+    const res = await fetch(basePath + institutionApi + university, {
       method: "DELETE",
       headers: getToken(request),
     });

@@ -12,12 +12,12 @@ import { userInfoIV } from "@/components/utils/initialValues";
 import { userModel } from "@/components/utils/models";
 import getFormData from "@/components/utils/getFormData";
 import { userSchema } from "@/components/utils/valSchemas";
-import { MySubmit, Toggle } from "@/components/utils/myInputs";
+import { MyButton, Toggle } from "@/components/utils/myInputs";
 import { useMyContext } from "@/components/utils/myContext";
 
 const UserInfo = () => {
   const [userInfo, setUserInfo] = useState<userModel>(userInfoIV);
-  const username = useSearchParams().get("user");
+  const email = useSearchParams().get("user");
   const [dataLoading, setDataLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editable, setEditable] = useState(true);
@@ -26,15 +26,15 @@ const UserInfo = () => {
 
   useEffect(() => {
     setDataLoading(true);
-    getUserInfo(username);
+    getUserInfo(email);
     setEditable(true);
-  }, [username]);
+  }, [email]);
 
   const updateUser = async (values: userModel) => {
     try {
       setLoading(true);
       // console.log("userInfo", values);
-      const res = await fetch("/api/users/" + username, {
+      const res = await fetch("/api/users/" + email, {
         method: "PUT",
         body: getFormData(values),
       });
@@ -42,7 +42,7 @@ const UserInfo = () => {
       const data = await res.json();
       // console.log(data);
       toast.success(data.message);
-      getUserInfo(username);
+      getUserInfo(email);
     } catch (err: any) {
       const data = await err.json();
       toast.error(data.message);
@@ -52,15 +52,19 @@ const UserInfo = () => {
   };
 
   const getUserInfo = async (usr: string | null) => {
-    await fetch("/api/users/" + usr)
-      .then((res) => res.json())
-      .then((usrInfo) => {
-        setUserInfo(usrInfo.data);
-        // console.log(usrInfo);
-      })
-      .then(() => {
-        setDataLoading(false);
-      });
+    try {
+      setDataLoading(true);
+      const res = await fetch("/api/users/" + usr);
+      if (!res.ok) throw res;
+      const data = await res.json();
+      setUserInfo(data.data);
+      console.log(data);
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    } finally {
+      setDataLoading(false);
+    }
   };
 
   return (
@@ -115,7 +119,7 @@ const UserInfo = () => {
               <ErrorMsg name="role" className="col-span-2 col-start-2" />
               <div className="flex gap-2 items-center justify-end pt-4">
                 <Link
-                  href={`/admin/users/?user=${username}&addSign=true`}
+                  href={`/admin/users/?user=${email}&addSign=true`}
                   className="bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide"
                 >
                   + Add Signature
@@ -130,14 +134,14 @@ const UserInfo = () => {
                   <EditIcon />
                   Edit
                 </button>
-                <MySubmit
+                <MyButton
                   hidden={editable}
                   loading={loading}
                   loadingMsg={"Saving"}
                   action="Save"
                 >
                   <SaveIcon />
-                </MySubmit>
+                </MyButton>
               </div>
             </Form>
           </section>

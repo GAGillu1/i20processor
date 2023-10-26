@@ -11,6 +11,7 @@ export const userInfoIV = {
   email: "",
   role: "",
   signature: "",
+  active: false,
 };
 
 export const dsoIV = {
