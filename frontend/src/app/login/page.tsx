@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import MyModal from "@/components/ui/forgotPwd";
 import { useState } from "react";
-import { MySubmit } from "@/components/utils/myInputs";
+import { MyButton } from "@/components/utils/myInputs";
 
 const Page = ({
   searchParams,
@@ -81,7 +81,7 @@ const Page = ({
                     Forgot Password?
                   </Link>
 
-                  <MySubmit
+                  <MyButton
                     loading={loading}
                     loadingMsg="Processing"
                     action="Login"

@@ -3,13 +3,15 @@ import ErrorMsg from "@/components/utils/errorMsg";
 import { instanceIV } from "@/components/utils/initialValues";
 import { instanceModel } from "@/components/utils/models";
 import { instanceSchema } from "@/components/utils/valSchemas";
-import { Field, Form, Formik } from "formik";
-import { MySubmit } from "../../../../components/utils/myInputs";
-import { useState } from "react";
+import { Field, Form, Formik, useFormikContext } from "formik";
+import { MyButton } from "../../../../components/utils/myInputs";
+import { useEffect, useState } from "react";
 import getFormData from "../../../../components/utils/getFormData";
 import { toast } from "react-hot-toast";
 const AddInstance = () => {
   const [loading, setLoading] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [formData, setFormData] = useState<instanceModel>(instanceIV);
   const addInstance = async (values: instanceModel) => {
     try {
       // console.log(values);
@@ -28,6 +30,32 @@ const AddInstance = () => {
     } finally {
       setLoading(false);
     }
+  };
+  const testInstance = async () => {
+    try {
+      // console.log(values);
+      setTesting(true);
+      const res = await fetch("/api/instance/test", {
+        method: "POST",
+        body: getFormData(formData),
+      });
+      if (!res.ok) throw res;
+      const data = await res.json();
+      console.log(data);
+      toast.success(data.message);
+    } catch (err: any) {
+      const data = await err.json();
+      toast.error(data.message);
+    } finally {
+      setTesting(false);
+    }
+  };
+  const CurrentValues = () => {
+    const { values }: { values: instanceModel } = useFormikContext();
+    useEffect(() => {
+      setFormData(values);
+    }, [values]);
+    return null;
   };
   return (
     <section>
@@ -55,13 +83,22 @@ const AddInstance = () => {
             <label htmlFor="endpoint">JSON Endpoint:</label>
             <Field name="endpoint" as="textarea" />
             <ErrorMsg name="endpoint" className="col-start-2 col-span-2" />
-            <div className="flex items-center justify-end  pt-2">
-              <MySubmit
+            <div className="flex items-center justify-end pt-2 gap-2">
+              <div className="" onClick={() => testInstance()}>
+                <MyButton
+                  loading={testing}
+                  loadingMsg="Testing"
+                  action="Test Instance"
+                  type="button"
+                />
+              </div>
+              <MyButton
                 loading={loading}
                 loadingMsg="Adding"
                 action="Register"
               />
             </div>
+            <CurrentValues />
           </Form>
         </section>
       </Formik>

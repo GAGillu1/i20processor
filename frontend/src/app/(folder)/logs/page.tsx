@@ -31,15 +31,24 @@ const Logs = () => {
   >(undefined);
   // const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const formatDate = (value: Date) => {
-    return value.toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      timeZoneName: "short",
-    });
+    // console.log(value);
+    // const offset = value.getTimezoneOffset();
+    // const hoursOffset = offset / 60;
+    // const estOffset = -5;
+    // const estHours = hoursOffset + estOffset;
+    // const estTime = new Date(value.getTime() + estHours * 60 * 60 * 1000);
+    return value.toLocaleString(
+      "en-US",
+      { timeZone: "UTC" }
+      // {
+      //   day: "2-digit",
+      //   month: "2-digit",
+      //   year: "numeric",
+      //   hour: "2-digit",
+      //   minute: "2-digit",
+      //   second: "2-digit",
+      // }
+    );
   };
   // const [filters, setFilters] = useState<DataTableFilterMeta>({
   //   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -107,10 +116,13 @@ const Logs = () => {
 
   const getLogs = async () => {
     try {
-      const res = await fetch("/api/logs");
+      const res = await fetch("/api/logs", { cache: "no-store" });
+      // const res = await fetch(
+      //   "https://63fbe49b1ff79e133295a2c7.mockapi.io/v1/logModel"
+      // );
       if (!res.ok) throw res;
       const data = await res.json();
-      // console.log("logData", data);
+      console.log("logData", data);
       setLogData(data.data);
     } catch (err: any) {
       const data = await err.json();
@@ -169,6 +181,12 @@ const Logs = () => {
           rowExpansionTemplate={rowExpansionTemplate}
         >
           <Column expander style={{ width: "5rem" }} />
+          {/* <Column
+            field="processedDate"
+            header="Date"
+            sortable
+            className="w-[25%] px-2"
+          /> */}
           <Column
             field="processedDate"
             header="Date"

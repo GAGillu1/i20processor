@@ -12,7 +12,7 @@ import { preProcessorIV } from "@/components/utils/initialValues";
 import {
   FileInput,
   MyCheckBox,
-  MySubmit,
+  MyButton,
   Toggle,
 } from "@/components/utils/myInputs";
 import ErrorMsg from "@/components/utils/errorMsg";
@@ -169,7 +169,7 @@ const Page = ({ searchParams }: sParams) => {
                 />
                 <ErrorMsg name="excelFile" className="col-span-2 col-start-2" />
                 <div className="mx-auto col-span-3 mt-8">
-                  <MySubmit
+                  <MyButton
                     loading={loading}
                     loadingMsg={"Processing"}
                     action={"Process"}

@@ -1,25 +1,23 @@
 import { getToken } from "@/components/utils/getTokens";
 import { NextRequest, NextResponse } from "next/server";
-
 // -----------------------
-// GET - LOGS
+// POST - TEST INSTANCE
 const basePath = process.env.BASE_PATH as string;
-export async function GET(request: NextRequest) {
+const instanceApi = process.env.INSTANCE as string;
+export async function POST(request: NextRequest) {
   try {
-    const isSuperUser = request.cookies.get("role")?.value === "SuperUser";
-    // console.log("admin", isSuperUser);
-    const logsApi = isSuperUser ? "/alllogs" : (process.env.LOGS as string);
-    const res = await fetch(basePath + logsApi, {
+    const body = await request.formData();
+    const res = await fetch(basePath + instanceApi + "/test", {
+      method: "POST",
+      body: body,
       headers: getToken(request),
     });
     const data = await res.json();
-    // console.log("logs", data.data);
-    // console.log("log headers", getToken(request));
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     return NextResponse.json(
       { message: "Something went wrong!" },
-      { status: 500 }
+      { status: err.status }
     );
   }
 }

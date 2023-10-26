@@ -109,10 +109,11 @@ export const Toggle = ({ ...props }) => {
 };
 // -----------------------
 // SUBMIT BUTTON
-export const MySubmit = ({ ...props }) => {
+export const MyButton = ({ ...props }) => {
+  const type = props.type ? props.type : "submit";
   return (
     !props.hidden && (
-      <button type="submit" disabled={props.loading}>
+      <button type={type} disabled={props.loading}>
         <span
           className="animate-ping w-2 h-2 bg-indigo-700 rounded-full absolute"
           hidden={!props.loading}

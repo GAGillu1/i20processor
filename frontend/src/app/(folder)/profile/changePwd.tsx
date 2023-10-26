@@ -8,7 +8,7 @@ import { changePwdSchema } from "@/components/utils/valSchemas";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { MySubmit } from "../../../components/utils/myInputs";
+import { MyButton } from "../../../components/utils/myInputs";
 
 const ChangePwd = () => {
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const ChangePwd = () => {
               <ErrorMsg name="cNPwd" />
 
               <div className="flex justify-end items-center mt-4">
-                <MySubmit
+                <MyButton
                   loading={loading}
                   loadingMsg="Updating"
                   action="Update Password"

@@ -8,7 +8,7 @@ import { forgotPwdSchema, userSchema } from "@/components/utils/valSchemas";
 import { Field, Form, Formik } from "formik";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { MySubmit } from "@/components/utils/myInputs";
+import { MyButton } from "@/components/utils/myInputs";
 const MyInfo = ({ ...props }) => {
   const [dataLoading, setDataLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -75,7 +75,7 @@ const MyInfo = ({ ...props }) => {
                 <ErrorMsg name="email" />
 
                 <div className="flex justify-end items-center mt-4">
-                  <MySubmit
+                  <MyButton
                     loading={loading}
                     loadingMsg="Updating"
                     action="Update Profile"

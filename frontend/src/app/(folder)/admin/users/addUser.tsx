@@ -8,7 +8,7 @@ import getFormData from "@/components/utils/getFormData";
 import toast from "react-hot-toast";
 import { addUserIV } from "@/components/utils/initialValues";
 import { addUserSchema } from "@/components/utils/valSchemas";
-import { MySubmit } from "@/components/utils/myInputs";
+import { MyButton } from "@/components/utils/myInputs";
 import { useMyContext } from "@/components/utils/myContext";
 
 const AddUser = () => {
@@ -68,7 +68,7 @@ const AddUser = () => {
 
             <ErrorMsg name="role" className="col-span-2 col-start-2" />
             <div className="flex items-center justify-end  pt-2">
-              <MySubmit
+              <MyButton
                 loading={loading}
                 loadingMsg="Adding"
                 action="Register"
