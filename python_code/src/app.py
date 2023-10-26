@@ -465,7 +465,7 @@ def upload():
          # from the session all the session messages are taken and returned as json
         TotalPages = redis_client.get('Total_Pages')
         TotalPages = TotalPages.decode('utf-8') if TotalPages is not None else None
-        print("total pages is ",TotalPages)
+        print("TotalPages is ",TotalPages)
 
         # TotalPages = int(TotalPages)
 

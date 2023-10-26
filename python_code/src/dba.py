@@ -48,8 +48,10 @@ def execute_query(query, params=None):
             conn.commit()
             k=cursor.rowcount
             if k==1:
+                print("Suceess in db")
                 return "success"
             else:
+                print("Failed in db")
                 return 'failed'
 
 
