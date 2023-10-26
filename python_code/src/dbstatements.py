@@ -215,7 +215,7 @@ def updateactive(user,activeid):
 
 def getprocessed(institutionid):
     dba.connect()
-    query='select processedDate, processedBy, processedMsg,result,processor,errorMessage from processed where institutionid=?'
+    query='select processedDate, processedBy, processedMsg,result,processor,errorMessage from processed where institutionid=? order by processedDate desc'
     result=dba.execute_query(query,[institutionid])
     dba.close()
     if result is not None:
