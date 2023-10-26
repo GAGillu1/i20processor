@@ -25,7 +25,7 @@ def decrypt(instancetype, institutionid):
 
 def post(file, instance, institutionid):
     client_url, username, pw = decrypt(instance, institutionid)
-
+    print("in post")
     print(client_url, username, pw)
     password = pw
     # Define the file to upload
@@ -44,8 +44,8 @@ def post(file, instance, institutionid):
     return (response.text)
 
 
-def connectiontest(instance, institutionid):
-    client_url, username, pw = decrypt(instance, institutionid)
+def connectiontest(nstancetype,client_url,username,pw, institutionid):
+    #client_url, username, pw = decrypt(instance, institutionid)
     print(client_url, username, pw)
     password = pw
     # Define the file to upload
@@ -62,9 +62,9 @@ def connectiontest(instance, institutionid):
     # Print the response from the client
     # If the response status code is 200, the connection is successful.
     if response.status_code == 200:
-        return True, "Connection Successful"
+        return True,response.status_code, "Connection Successful"
     else:
-        return False, f"Connection Failed with status code {response.status_code}"
+        return False,response.status_code, f"Connection Failed with status code {response.status_code}"
 
 
 

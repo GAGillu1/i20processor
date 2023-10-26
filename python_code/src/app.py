@@ -874,9 +874,12 @@ def isntance():
 @app.route('/instance/test',methods=['GET','POST'])
 def instancetesting():
     if request.method=='POST':
-        instancetype = request.form.get('instancetype')
+        url = request.form.get('endpoint')
+        instancetype = request.form.get('type')
+        username = request.form.get('username')
+        password = request.form.get('password')
         institutionid = request.headers.get('institutionid')
-        result = connectiontest(instancetype, institutionid)
+        result = connectiontest(instancetype,url,username,password, institutionid)
         if True in result:
             return jsonify({'message': 'Connect test success', 'data': True})
         elif False in result:
