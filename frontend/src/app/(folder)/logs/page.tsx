@@ -192,26 +192,32 @@ const Logs = () => {
             header="Date"
             sortable
             body={dateBodyTemplate}
-            className="w-[25%] px-2"
+            className="w-[20%] px-2"
           />
           <Column
             field="processedBy"
             sortable
             header="User"
-            className="w-[25%] px-2"
+            className="w-[20%] px-2"
           />
           <Column
             field="result"
             header="Result"
             sortable
-            className="w-[25%] px-2"
+            className="w-[10%] px-2"
             body={resultBodyTemplate}
           />
           <Column
             field="processor"
             header="Tool"
             sortable
-            className="w-[25%] px-2"
+            className="w-[10%] px-2"
+          />
+          <Column
+            field="institutionName"
+            header="Institution"
+            sortable
+            className="px-2"
           />
         </DataTable>
       </section>
