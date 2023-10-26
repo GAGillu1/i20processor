@@ -16,6 +16,8 @@ def adminusers():
 def allprocessed():
     result=alllog()
     result['processedMsg'] = result['processedMsg'].apply(jsonconvert)
+    result['processedDate'] = pd.to_datetime(result['processedDate'], format='%Y:%m:%d %H:%M:%S.%f')
+    result['processedDate'] = result['processedDate'].apply(lambda x: x.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')
 
     #result['processedMsg']=result['processedMsg'].apply(json.loads)
     return result.reset_index(drop=True)
