@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const logsApi = isSuperUser ? "/alllogs" : (process.env.LOGS as string);
     const res = await fetch(basePath + logsApi, {
       headers: getToken(request),
-      cache: "no-store",
+      cache: "no-cache",
     });
     const data = await res.json();
     // console.log("logs", data.data);

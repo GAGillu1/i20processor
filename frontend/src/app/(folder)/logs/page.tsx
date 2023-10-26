@@ -37,18 +37,14 @@ const Logs = () => {
     // const estOffset = -5;
     // const estHours = hoursOffset + estOffset;
     // const estTime = new Date(value.getTime() + estHours * 60 * 60 * 1000);
-    return value.toLocaleString(
-      "en-US",
-      { timeZone: "UTC" }
-      // {
-      //   day: "2-digit",
-      //   month: "2-digit",
-      //   year: "numeric",
-      //   hour: "2-digit",
-      //   minute: "2-digit",
-      //   second: "2-digit",
-      // }
-    );
+    return value.toLocaleString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
   };
   // const [filters, setFilters] = useState<DataTableFilterMeta>({
   //   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
