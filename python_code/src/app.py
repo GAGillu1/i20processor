@@ -871,7 +871,16 @@ def isntance():
         result = instanceget(institutionid)
         result_dict = result.to_dict(orient='records')
         return jsonify({'message': 'Fetched instances', 'data': result_dict})
-
+@app.route('/instance/test',methods=['GET','POST'])
+def instancetesting():
+    if request.method=='POST':
+        instancetype = request.form.get('instancetype')
+        institutionid = request.headers.get('institutionid')
+        result = connectiontest(instancetype, institutionid)
+        if True in result:
+            return jsonify({'message': 'Connect test success', 'data': True})
+        elif False in result:
+            return jsonify({'message': 'Connect test Failed', 'data': False})
 """ This route is about particualr instance .
  if GET then returns instance of particualr university 
   PUT - updates instance password , username , inst id, type
@@ -890,14 +899,7 @@ def instancetype(type):
         institutionid = request.headers.get('institutionid')
         result = updateinstance(password, username, institutionid, type)
         return {'message': result}
-    if request.method == 'POST':
-        instancetype = request.form.get('instancetype')
-        institutionid = request.headers.get('institutionid')
-        result = connectiontest(instancetype, institutionid)
-        if True in result:
-            return jsonify({'message': 'Connect test success', 'data': True})
-        elif False in result:
-            return jsonify({'message': 'Connect test Failed', 'data': False})
+
 
 """Returns the log of particular university  if superuser then returns all institutes log if any oth returns only that particular university"""
 @token_required
