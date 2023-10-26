@@ -146,9 +146,9 @@ def updatesignature(username,fullname,email,signaturelength,signaturewidth,signa
 
 def insertprocessed(user,msg,institutionid,result,processor):
     dba.connect()
-    query="insert into processed(processedDate,processedBy,processedMsg,institutionId,result,processor) values(?,?,?,?,?,?)"
+    query="insert into processed(processedBy,processedMsg,institutionId,result,processor) values(?,?,?,?,?,?)"
 
-    dba.execute_query(query,[today,user,msg,institutionid,result,processor])
+    dba.execute_query(query,[user,msg,institutionid,result,processor])
     dba.close()
 
 def insertinstance(url,msg,username,password,universityid):
@@ -286,8 +286,8 @@ def pcinstitute(institute):
 
 def insertppreprocessed(user, msg, institutionid, result,errormessage, processor):
     dba.connect()
-    query = "insert into processed(processedDate,processedBy,processedMsg,institutionId,result,processor,errormessage) values(?,?,?,?,?,?,?)"
-    dba.execute_query(query, [today, user, msg, institutionid, result, processor,errormessage])
+    query = "insert into processed(processedBy,processedMsg,institutionId,result,processor,errormessage) values(?,?,?,?,?,?,?)"
+    dba.execute_query(query, [ user, msg, institutionid, result, processor,errormessage])
     dba.close()
 # updateuser('test','abc','def','DDSO')
 #insertinstitutions('University of New Haven2',cursor,conn)

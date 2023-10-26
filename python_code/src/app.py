@@ -327,6 +327,7 @@ def upload():
             issm_log.logger.info(f"Intial I20. Received post request with files :{pdf_filename, issm, slate}")
             # Total number of pages in i20
             num_pages = pages(pdf_filename)
+            print(num_pages)
             sevid = ""
             socketio.emit('rom', 1)
             successful = True
@@ -349,7 +350,7 @@ def upload():
                     numberoffiles = totalpagessplit
                     # Storing total pages, total files afte splitting , total signatures added to session
                     session['Total_Pages'] = f"{num_pages}"
-                    redis_client.set('Total_Pages', f"{num_pages}")
+                    redis_client.set('Total_Pages', num_pages)
                     session['Total_Files'] = f"{int(numberoffiles)}"
                     redis_client.set('Total_Files', f"{numberoffiles}")
                     session['Total_Signatures'] = f"{totalsigns}"
@@ -461,10 +462,12 @@ def upload():
 
     if request.method == 'GET':
 
-        # from the session all the session messages are taken and returned as json
+         # from the session all the session messages are taken and returned as json
         TotalPages = redis_client.get('Total_Pages')
         TotalPages = TotalPages.decode('utf-8') if TotalPages is not None else None
-        TotalPages = int(TotalPages)
+        print("total pages is ",TotalPages)
+
+        # TotalPages = int(TotalPages)
 
         TotalFiles = redis_client.get('Total_Files')
         TotalFiles = TotalFiles.decode('utf-8') if TotalFiles is not None else None
