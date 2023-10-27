@@ -518,7 +518,7 @@ def upload():
             result = "Error"
             # print("sevis is ",sevisids)
             # print("institution is ",institution)
-            insertprocessed(user, sevisids1, institution, str(result), processor='ISSM to Slate')
+            insertprocessed(user, str(sevisids1), institution, str(result), processor='ISSM to Slate')
         response_msg = {
             'TotalPages': TotalPages,
             'TotalFiles': TotalFiles,
