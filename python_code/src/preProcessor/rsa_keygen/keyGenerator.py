@@ -10,3 +10,4 @@ with open("privatekey.pem", "wb") as private_key:
 # Writing public key to file
 with open("public_key.pem", "wb") as public_key:
     public_key.write(key_pair.publickey().export_key())
+#  https://medium.com/@DannyAziz97/rsa-encryption-with-js-python-7e031cbb66bb

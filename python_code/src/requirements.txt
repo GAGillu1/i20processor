@@ -18,3 +18,4 @@ requests
 flask_cors
 redis
 Crypto
+base64
