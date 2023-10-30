@@ -35,59 +35,59 @@ class ProgressBar:
     def __str__(self):
         return f"ProgressBar(processed_count={self.processed_count}, success_count={self.success_count}, failure_count={self.failure_count}, deferral_count={self.deferral_count}, max_count={self.max_count})"
 
-# def adding_to_excel(student, driver, config, progress_bar):
-#     logger.info(f"inside adding_to_excel function for {student.CampusID}")
-#     try:
-#         error_element = driver.find_element(By.ID, config['ID_XPATH']['error_element'])
-#         error_text = error_element.text
-#         if 'Individual With Duplicate Campus ID Found - Please Correct' in error_text:
-#             logger.info(f'Error found : {error_text} for Last Name {student.Surname}')
-#         workbook = load_workbook("preProcessor/Duplicate.xlsx")
-#         sheet = workbook.active
-#         if "Birthdate" not in [cell.value for cell in sheet[1]]:
-#             # Append the header if it is not present
-#             sheet.append(["Campus ID", "Admissions ID", "Name", "Birthdate"])
-#         sheet.append([student.CampusID, student.AdmissionsID, student.GivenName, student.Birthdate])
-#         workbook.save("preProcessor/Duplicate.xlsx")
-#         logger.info(f"added student successfully adding_to_excel function for {student.CampusID}")
-#         progress_bar.deferral_count += 1
-#         return True
-#     except Exception as e:
-#         logger.error(f"adding student failed adding_to_excel function for {student.CampusID}")
-#         logger.error(e)
-#         return False
-
 def adding_to_excel(student, driver, config, progress_bar):
-    logger.info(f"Inside adding_to_excel function for {student.CampusID}")
+    logger.info(f"inside adding_to_excel function for {student.CampusID}")
     try:
         error_element = driver.find_element(By.ID, config['ID_XPATH']['error_element'])
         error_text = error_element.text
         if 'Individual With Duplicate Campus ID Found - Please Correct' in error_text:
             logger.info(f'Error found : {error_text} for Last Name {student.Surname}')
-        data = {
-            "Campus ID": [student.CampusID],
-            "Admissions ID": [student.AdmissionsID],
-            "Name": [student.GivenName],
-            "Birthdate": [student.Birthdate]
-        }
-        try:
-            # Load the existing Excel file
-            df = pd.read_excel("preProcessor/Duplicate.xlsx")
-        except FileNotFoundError:
-            # Create a new DataFrame if the file doesn't exist
-            df = pd.DataFrame(data)
-        # Append the student's data
-        df = df.append(pd.DataFrame(data))
-
-        # Save the DataFrame to the Excel file
-        df.to_excel("preProcessor/Duplicate.xlsx", index=False)
-        logger.info(f"Added student successfully in adding_to_excel function for {student.CampusID}")
+        workbook = load_workbook("preProcessor/Duplicate.xlsx")
+        sheet = workbook.active
+        if "Birthdate" not in [cell.value for cell in sheet[1]]:
+            # Append the header if it is not present
+            sheet.append(["Campus ID", "Admissions ID", "Name", "Birthdate"])
+        sheet.append([student.CampusID, student.AdmissionsID, student.GivenName, student.Birthdate])
+        workbook.save("preProcessor/Duplicate.xlsx")
+        logger.info(f"added student successfully adding_to_excel function for {student.CampusID}")
         progress_bar.deferral_count += 1
         return True
     except Exception as e:
-        logger.error(f"Adding student failed in adding_to_excel function for {student.CampusID}")
+        logger.error(f"adding student failed adding_to_excel function for {student.CampusID}")
         logger.error(e)
         return False
+#
+# def adding_to_excel(student, driver, config, progress_bar):
+#     logger.info(f"Inside adding_to_excel function for {student.CampusID}")
+#     try:
+#         error_element = driver.find_element(By.ID, config['ID_XPATH']['error_element'])
+#         error_text = error_element.text
+#         if 'Individual With Duplicate Campus ID Found - Please Correct' in error_text:
+#             logger.info(f'Error found : {error_text} for Last Name {student.Surname}')
+#         data = {
+#             "Campus ID": [student.CampusID],
+#             "Admissions ID": [student.AdmissionsID],
+#             "Name": [student.GivenName],
+#             "Birthdate": [student.Birthdate]
+#         }
+#         try:
+#             # Load the existing Excel file
+#             df = pd.read_excel("preProcessor/Duplicate.xlsx")
+#         except FileNotFoundError:
+#             # Create a new DataFrame if the file doesn't exist
+#             df = pd.DataFrame(data)
+#         # Append the student's data
+#         df = df.append(pd.DataFrame(data))
+#
+#         # Save the DataFrame to the Excel file
+#         df.to_excel("preProcessor/Duplicate.xlsx", index=False)
+#         logger.info(f"Added student successfully in adding_to_excel function for {student.CampusID}")
+#         progress_bar.deferral_count += 1
+#         return True
+#     except Exception as e:
+#         logger.error(f"Adding student failed in adding_to_excel function for {student.CampusID}")
+#         logger.error(e)
+#         return False
 
 def duplicate_steps(student, driver, domain_url, config):
     logger.info(f"inside duplicate_steps function for {student.CampusID}")
@@ -151,7 +151,7 @@ def duplicate_steps(student, driver, domain_url, config):
         # print("success6")
         element.clear()
         # time.sleep(1)
-        Select(driver.find_element(By.ID, config['ID_XPATH']['database_status'])).select_by_value(" ")
+        Select(driver.find_element(By.ID, config['ID_XPATH']['database_status'])).select_by_value("Deleted")
         # print("success7")
         # time.sleep(1)
         driver.find_element(By.ID, config['ID_XPATH']['save_button']).click()
@@ -382,10 +382,12 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
     logger.info(f"institution in request header: {institutionId}")
     logResponse = ""
     try:
+        print("before reading excel")
         df = pd.read_excel("preProcessor/Duplicate.xlsx", engine='openpyxl')
         # Clear the DataFrame of any existing data (excluding the header)
         data = df.drop(df.index.to_list()[0:], axis=0)
         # Save the DataFrame (header row only) to the same Excel file
+        print("before writing excel")
         with pd.ExcelWriter("preProcessor/Duplicate.xlsx", engine='openpyxl') as writer:
             data.to_excel(writer, index=False, sheet_name='Sheet1')
         # Print the DataFrame with only the header row
@@ -394,6 +396,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         logger.info("Main program started.")
         config = configparser.ConfigParser()
         config.read('preProcessor/config.ini')
+        print("config file")
         code_start_time = time.time()  # capturing the start time of the code execution
         # Load the Excel file
         logger.info(f"printing excel file name: {excel_file}")
@@ -519,7 +522,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         #     logger.info(f"percentage completed: {progressBar_value}")
         #     socketio.emit('preProcessor', progressBar_value)
         #     logger.info(progress_bar.__str__())
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=5) as executor:
             print("inside parallel execution")
             futures = []
             # Submit each student for processing concurrently
@@ -534,9 +537,12 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         errorMessage = ""
         sessionResult = "Success"
         json_string = json.dumps(final_dict)
+        print("before insert into db")
         insertppreprocessed(userName, json_string, institutionId, sessionResult, errorMessage, backendProcessor)
+        print("before insert into db")
         code_end_time = time.time()  # capturing the end time of the code execution
         total_time = code_end_time - code_start_time  # calculating the total execution time
+        print("Total execution time: {:.2f} seconds".format(total_time))
         logger.info("Total execution time: {:.2f} seconds".format(total_time))  # logging the total execution time
         logger.info("Main program finished.")
 
@@ -558,7 +564,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
             return True, message
             #  need to handle this mixed cases response in main.py and front end to show either in logs or after run.
     except Exception as e:
-        errorMessage = f"An error occurred in testing single.py testing_main function: {e}"
+        errorMessage = f"An error occurred in TestingBulk.py testing_main function: {e}"
         logger.error(errorMessage)
         insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
         return False, "Failed"

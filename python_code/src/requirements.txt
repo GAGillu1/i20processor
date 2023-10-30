@@ -17,3 +17,4 @@ PyJWT
 requests
 flask_cors
 redis
+Crypto
