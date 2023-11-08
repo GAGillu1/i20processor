@@ -50,6 +50,9 @@ from preProcessor.test_wvpn import vpn_function
 from preProcessor.test_wovpn import vpn_function_bulk
 from sendemail import get_credentials, get_emails, send_email
 from totalpages import pages
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.PublicKey import RSA
+from base64 import b64encode, b64decode
 
 # import socketio
 
@@ -112,13 +115,25 @@ def process():
             excel_file_name = excel_file.filename
             excel_file.save(excel_file_name)
             instance = request.form.get('instance')
+            with open("privatekey.pem", "rb") as private_key_file:
+                private_key = RSA.import_key(private_key_file.read())
+            encrypted_message_username = b64decode(issm_username)
+            encrypted_message_password = b64decode(issm_password)
+            encrypted_message_instance = b64decode(instance)
+            cipher = PKCS1_OAEP.new(private_key)
+            decrypted_message_username = cipher.decrypt(encrypted_message_username)
+            print(f"decrypted username {decrypted_message_username.decode('utf-8')}")
+            decrypted_message_password = cipher.decrypt(encrypted_message_password)
+            print(f"decrypted password {decrypted_message_password.decode('utf-8')}")
+            decrypted_message_instance = cipher.decrypt(encrypted_message_instance)
+            print(f"decrypted instance {decrypted_message_instance.decode('utf-8')}")
             set_new_log_file()
             logger.info(f"started process function in app.py")
             socketio.emit('preProcessor', 1.0)
             if toggleButton != "false":
                 vpn_username = request.form.get('vpnUsername')
                 vpn_password = request.form.get('vpnPassword')
-                status, text = vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel_file_name, instance, socketio)
+                status, text = vpn_function(vpn_username, vpn_password, decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             else:
                 status, text = vpn_function_bulk(issm_username, issm_password, excel_file_name, instance, socketio)
             print(f"status: {status}, text: {text}")
