@@ -960,6 +960,6 @@ def institutiondata(institute):
 
 if __name__ == '__main__':
     # app.run(debug=True,port=8081)
-    socketio.run(app, debug=True, port=8081)
+    socketio.run(app,host="0.0.0.0", debug=True, port=8081)
     # loop = asyncio.get_event_loop()
     # loop.run_until_complete(asyncio.ensure_future(app.run()))

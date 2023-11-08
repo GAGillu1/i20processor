@@ -71,14 +71,14 @@ def connectiontest(nstancetype,client_url,username,pw, institutionid):
 
 
 # insertinstance('tesu', 'grad', 'tester', 'testerpwd' ,'A0494CF8-A800-47B7-93DB-0974B04A4568')
-def instanceinsert(url, type, username, password, universityid):
+def instanceinsert(url, type, username, password, universityid,instanceprocessor):
     try:
         print("inin i")
         password = password.encode('utf-8')
         encrypetedpwd = encryptsalt(password)
         print(encrypetedpwd)
-        print(url, type, username, universityid)
-        k = insertinstance(url, type, username, encrypetedpwd, universityid)
+        print(url, type, username, universityid,instanceprocessor)
+        k = insertinstance(url, type, username, encrypetedpwd, universityid,instanceprocessor)
         print(k)
         return 'Instance inserted successfully'
     except Exception as e:

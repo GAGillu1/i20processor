@@ -151,10 +151,10 @@ def insertprocessed(user,msg,institutionid,result,processor):
     dba.execute_query(query,[user,msg,institutionid,result,processor])
     dba.close()
 
-def insertinstance(url,msg,username,password,universityid):
+def insertinstance(url,msg,username,password,universityid,instanceprocessor):
     dba.connect()
-    query="insert into instance(jsonendpoint,jsontype,username,instancePassword,institutionID) values(?,?,?,?,?)"
-    dba.execute_query(query,[url,msg,username,password,universityid])
+    query="insert into instance(jsonendpoint,jsontype,username,instancePassword,institutionID,instanceprocessor) values(?,?,?,?,?,?)"
+    dba.execute_query(query,[url,msg,username,password,universityid,instanceprocessor])
     dba.close()
 
 def selectinstance(instancetype,institutionid):
@@ -234,7 +234,7 @@ def updateinstancedb(password,username,institutionid,type):
 
 def getinstances(institutionid):
     dba.connect()
-    query='select jsonendpoint,jsontype,username from instance where institutionID=?'
+    query='select jsonendpoint,jsontype,username,instanceprocessor from instance where institutionID=?'
     result = dba.execute_query(query,[institutionid])
     dba.close()
 
