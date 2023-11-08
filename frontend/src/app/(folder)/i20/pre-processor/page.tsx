@@ -17,7 +17,9 @@ import {
 } from "@/components/utils/myInputs";
 import ErrorMsg from "@/components/utils/errorMsg";
 import { toast } from "react-hot-toast";
-import getFormData from "@/components/utils/getFormData";
+import getFormData, {
+  getEncryptedFormData,
+} from "@/components/utils/getFormData";
 import { ProgressBar, Response } from "@/components/utils/progessBar";
 import { useRouter } from "next/navigation";
 
@@ -51,7 +53,8 @@ const Page = ({ searchParams }: sParams) => {
       setLoading(true);
       const res = await fetch("/api/i20/pre-processor", {
         method: "POST",
-        body: getFormData(values),
+        body: getEncryptedFormData(values),
+        // body: getFormData(values),
       });
       if (res.status === 200) {
         const blob = await res.blob();

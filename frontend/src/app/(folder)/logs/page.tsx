@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { logModel } from "@/components/utils/models";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { useMyContext } from "@/components/utils/myContext";
 
 const Tag = ({ value }: { value: string }) => {
   return (
@@ -29,6 +30,8 @@ const Logs = () => {
   const [expandedRows, setExpandedRows] = useState<
     DataTableExpandedRows | DataTableValueArray | undefined
   >(undefined);
+  const userData = useMyContext();
+  const isSuperUser = userData.role === "SuperUser";
   // const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const formatDate = (value: Date) => {
     // console.log(value);
@@ -112,7 +115,7 @@ const Logs = () => {
 
   const getLogs = async () => {
     try {
-      const res = await fetch("/api/logs", { cache: "no-store" });
+      const res = await fetch("/api/logs", { cache: "no-cache" });
       // const res = await fetch(
       //   "https://63fbe49b1ff79e133295a2c7.mockapi.io/v1/logModel"
       // );
@@ -175,46 +178,44 @@ const Logs = () => {
           expandedRows={expandedRows}
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
+          sortField="processedDate"
+          sortOrder={-1}
         >
-          <Column expander style={{ width: "5rem" }} />
-          {/* <Column
-            field="processedDate"
-            header="Date"
-            sortable
-            className="w-[25%] px-2"
-          /> */}
+          <Column expander className="w-[5%]" />
           <Column
             field="processedDate"
             header="Date"
             sortable
             body={dateBodyTemplate}
-            className="w-[20%] px-2"
+            className={`px-2 ${isSuperUser ? "w-[20%]" : "w-[25%]"}`}
           />
           <Column
             field="processedBy"
             sortable
             header="User"
-            className="w-[20%] px-2"
+            className={`px-2 ${isSuperUser ? "w-[20%]" : "w-[25%]"}`}
           />
           <Column
             field="result"
             header="Result"
             sortable
-            className="w-[10%] px-2"
+            className={`px-2 ${isSuperUser ? "w-[15%]" : "w-[25%]"}`}
             body={resultBodyTemplate}
           />
           <Column
             field="processor"
             header="Tool"
             sortable
-            className="w-[10%] px-2"
+            className={`px-2 ${isSuperUser ? "w-[15%]" : "w-[25%]"}`}
           />
-          <Column
-            field="institutionName"
-            header="Institution"
-            sortable
-            className="px-2"
-          />
+          {isSuperUser && (
+            <Column
+              field="institutionName"
+              header="Institution"
+              sortable
+              className="px-2"
+            />
+          )}
         </DataTable>
       </section>
     </main>

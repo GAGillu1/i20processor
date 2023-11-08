@@ -37,7 +37,7 @@
     "src/app/login/page.tsx",
     "src/app/(folder)/admin/users/loading.tsxers/loading.tsx",
     "dist/types/**/*.ts"
-  ],
+, "src/components/utils/getFormData.ts"  ],
   "exclude": [
     "node_modules"
   ]
