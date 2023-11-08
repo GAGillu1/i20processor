@@ -878,7 +878,8 @@ def isntance():
         username = request.form.get('username')
         password = request.form.get('password')
         institutionid = request.headers.get('institutionid')
-        msg = instanceinsert(url, type, username, password, institutionid)
+        instanceprocessor=request.headers.get('instanceprocessor')
+        msg = instanceinsert(url, type, username, password, institutionid,instanceprocessor)
         if msg == 'Instance inserted successfully':
             return jsonify({'message': 'Instance inserted successfully'})
         else:
@@ -918,7 +919,8 @@ def instancetype(type):
         username = request.form.get('username')
         password = request.form.get('password')
         institutionid = request.headers.get('institutionid')
-        result = updateinstance(password, username, institutionid, type)
+        instanceprocessor=request.headers.get('instanceprocessor')
+        result = updateinstance(password, username, institutionid, type,instanceprocessor)
         return {'message': result}
 
 

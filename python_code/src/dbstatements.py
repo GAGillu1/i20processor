@@ -225,10 +225,10 @@ def getprocessed(institutionid):
         return" No data returned from the query"
 
 
-def updateinstancedb(password,username,institutionid,type):
+def updateinstancedb(password,username,institutionid,type,instanceprocessor):
     dba.connect()
-    query="update instance set instancePassword =? ,username=? where institutionID=? and jsontype=?"
-    dba.execute_query(query,[password,username,institutionid,type])
+    query="update instance set instancePassword =? ,username=? where institutionID=? and jsontype=? and  instanceprocessor=?"
+    dba.execute_query(query,[password,username,institutionid,type,instanceprocessor])
     dba.close()
 
 

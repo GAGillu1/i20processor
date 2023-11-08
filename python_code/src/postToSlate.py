@@ -85,11 +85,11 @@ def instanceinsert(url, type, username, password, universityid,instanceprocessor
         return f"Error in inserting instance {e}"
 
 
-def updateinstance(password, username, institutionid, type):
+def updateinstance(password, username, institutionid, type,instanceprocessor):
     try:
         password = password.encode('utf-8')
         encrypetedpwd = encryptsalt(password)
-        k = updateinstancedb(encrypetedpwd, username, institutionid, type)
+        k = updateinstancedb(encrypetedpwd, username, institutionid, type,instanceprocessor)
         return "Updated successfully"
     except Exception as e:
         return f"Error in updating instance {e}"
