@@ -135,7 +135,7 @@ def process():
                 vpn_password = request.form.get('vpnPassword')
                 status, text = vpn_function(vpn_username, vpn_password, decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             else:
-                status, text = vpn_function_bulk(issm_username, issm_password, excel_file_name, instance, socketio)
+                status, text = vpn_function_bulk(decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             print(f"status: {status}, text: {text}")
             if status and text == "Partial success":
                 response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
