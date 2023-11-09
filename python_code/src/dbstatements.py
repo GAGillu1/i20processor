@@ -132,10 +132,10 @@ def updatepass(email,salt,hash):
     dba.close()
 
 
-def updateuser(user,fullname,email,role,active):
+def updateuser(user,fullname,email,role,active,username):
     dba.connect()
-    query="update users set fullname=?,userRole=?,active=? where email=?"
-    dba.execute_query(query,[fullname,role,active,email])
+    query="update users set fullname=?,userRole=?,active=?,username=? where email=?"
+    dba.execute_query(query,[fullname,role,active,username,email])
     dba.close()
 
 def updatesignature(username,fullname,email,signaturelength,signaturewidth,signaturexcordinate,signatureycordinate):
