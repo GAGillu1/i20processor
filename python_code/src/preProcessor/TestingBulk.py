@@ -569,4 +569,4 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         errorMessage = f"An error occurred in TestingBulk.py testing_main function: {e}"
         logger.error(errorMessage)
         insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
-        return False, "Failed"
+        return False, "Failure"

@@ -45,15 +45,12 @@ from login import checklogin, registeruser, forgotpassword1, users, userpopup, c
 from name import names_list, signaturefile, signadd
 from postToSlate import instanceinsert
 from postToSlate import post, updateinstance, instanceget, instancetypeget, connectiontest
-from preProcessor.issmfilelog import set_new_log_file, logger
+from preProcessor.issmfilelog import set_new_log_file, logger, close_file_handler
 from preProcessor.test_wvpn import vpn_function
 from preProcessor.test_wovpn import vpn_function_bulk
 from sendemail import get_credentials, get_emails, send_email
 from totalpages import pages
-from Crypto.Cipher import PKCS1_OAEP
-from Crypto.PublicKey import RSA
-from base64 import b64encode, b64decode
-
+from preProcessor.decrypt_input import decrypt_function
 # import socketio
 
 
@@ -115,29 +112,18 @@ def process():
             excel_file_name = excel_file.filename
             excel_file.save(excel_file_name)
             instance = request.form.get('instance')
-            current_work_dir = os.getcwd()
-            # parent_dir = os.path.dirname(current_work_dir)
-            preProcessorFolder = os.path.join(current_work_dir, 'preProcessor')
-            rsa_keygen_folder = os.path.join(preProcessorFolder, 'rsa_keygen')
-            with open(os.path.join(rsa_keygen_folder, f'privatekey.pem'), "rb") as private_key_file:
-                private_key = RSA.import_key(private_key_file.read())
-            encrypted_message_username = b64decode(issm_username)
-            encrypted_message_password = b64decode(issm_password)
-            encrypted_message_instance = b64decode(instance)
-            cipher = PKCS1_OAEP.new(private_key)
-            decrypted_message_username = cipher.decrypt(encrypted_message_username)
-            print(f"decrypted username {decrypted_message_username.decode('utf-8')}")
-            decrypted_message_password = cipher.decrypt(encrypted_message_password)
-            print(f"decrypted password {decrypted_message_password.decode('utf-8')}")
-            decrypted_message_instance = cipher.decrypt(encrypted_message_instance)
-            print(f"decrypted instance {decrypted_message_instance.decode('utf-8')}")
+            decrypted_message_username = decrypt_function(issm_username)
+            decrypted_message_password = decrypt_function(issm_password)
+            decrypted_message_instance = decrypt_function(instance)
             set_new_log_file()
             logger.info(f"started process function in app.py")
             socketio.emit('preProcessor', 1.0)
             if toggleButton != "false":
                 vpn_username = request.form.get('vpnUsername')
                 vpn_password = request.form.get('vpnPassword')
-                status, text = vpn_function(vpn_username, vpn_password, decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
+                decrypted_vpn_username = decrypt_function(vpn_username)
+                decrypted_vpn_password = decrypt_function(vpn_password)
+                status, text = vpn_function(decrypted_vpn_username, decrypted_vpn_password, decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             else:
                 status, text = vpn_function_bulk(decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             print(f"status: {status}, text: {text}")
@@ -159,6 +145,7 @@ def process():
                 logger.error(text)
                 response = make_response({'message': text}, http.HTTPStatus.UNAUTHORIZED)
                 return response, http.HTTPStatus.UNAUTHORIZED
+            close_file_handler()
     except Exception as e:
         logger.error("Exception in app.py exception", e)
         response = "Failed in Server please check the error."

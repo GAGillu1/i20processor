@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-
 def set_new_log_file():
     log_filename = os.path.join(log_folder, 'issmlog' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + '.log')
     file_handler = logging.FileHandler(log_filename)
@@ -18,6 +17,12 @@ def set_new_log_file():
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     return log_filename
+
+def close_file_handler():
+    for handler in logger.handlers:
+        if isinstance(handler, logging.FileHandler):
+            handler.close()
+            logger.removeHandler(handler)
 
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
