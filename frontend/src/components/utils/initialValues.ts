@@ -66,6 +66,7 @@ export const instanceIV = {
   username: "",
   password: "",
   endpoint: "",
+  instanceprocessor: "",
 };
 
 export const preProcessorIV = {

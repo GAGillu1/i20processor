@@ -76,6 +76,13 @@ const InstanceInfo = () => {
               <label htmlFor="endpoint">Endpoint</label>
               <Field name="endpoint" as="textarea" readOnly />
               <ErrorMsg name="endpoint" />
+              <label htmlFor="instanceprocessor">Processor Type</label>
+              <Field name="instanceprocessor" component="select" diasbled>
+                <option value="">Select Processor</option>
+                <option value="Preprocessor">Pre-Processor</option>
+                <option value="Postprocessor">Post-Processor</option>
+              </Field>
+              <ErrorMsg name="instanceprocessor" />
               <div className="flex gap-2 items-center justify-end pt-4">
                 <button
                   type="button"

@@ -6,11 +6,15 @@ import * as React from "react";
 
 const InstanceList = ({ ...props }) => {
   const searchParams = useSearchParams();
-  const filteredList = props.instanceList.filter(
+  let filteredList = props.instanceList.filter(
     (item: instanceModel) =>
-      item.type?.toLowerCase().includes(props.search.toLowerCase()) ||
-      props.filter === item.endpoint
+      props.filter === item.instanceprocessor || props.filter === ""
   );
+  filteredList = filteredList.filter(
+    (item: instanceModel) =>
+      item.type?.toLowerCase().includes(props.search.toLowerCase())
+  );
+  console.log("Filtered List", filteredList);
 
   return (
     <React.Fragment>

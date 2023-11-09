@@ -89,6 +89,7 @@ export const instanceSchema = Yup.object({
     .max(50, "You may only enter upto 50 characters")
     .required("Please enter a Password"),
   endpoint: Yup.string().required("Please enter a endpoint address"),
+  instanceprocessor: Yup.string().required("Please select a Processor type"),
 });
 
 export const NoVPNpreProcessorSchema = Yup.object({

@@ -83,6 +83,16 @@ const AddInstance = () => {
             <label htmlFor="endpoint">JSON Endpoint:</label>
             <Field name="endpoint" as="textarea" />
             <ErrorMsg name="endpoint" className="col-start-2 col-span-2" />
+            <label htmlFor="instanceprocessor">Processor Type:</label>
+            <Field name="instanceprocessor" as="select">
+              <option value="">Select Processor</option>
+              <option value="Preprocessor">Pre-Processor</option>
+              <option value="Postprocessor">Post-Processor</option>
+            </Field>
+            <ErrorMsg
+              name="instanceprocessor"
+              className="col-start-2 col-span-2"
+            />
             <div className="flex items-center justify-end pt-2 gap-2">
               <div className="" onClick={() => testInstance()}>
                 <MyButton

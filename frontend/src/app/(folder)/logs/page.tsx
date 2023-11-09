@@ -16,8 +16,10 @@ const Tag = ({ value }: { value: string }) => {
   return (
     <div className="flex justify-center items-center">
       <div
-        className={`p-1 w-20 text-center rounded text-white  text-sm tracking-wide ${
-          value === "Success" ? "bg-green-600" : "bg-red-600/90"
+        className={`p-1 w-32 text-center font-semibold rounded text-white  text-sm tracking-wide ${
+          value === "Success" ? "bg-green-600" : ""
+        } ${value === "Failure" ? "bg-red-600/80" : ""} ${
+          value === "Partial Success" ? "bg-yellow-500" : ""
         }`}
       >
         {value}
@@ -119,9 +121,6 @@ const Logs = () => {
   const getLogs = async () => {
     try {
       const res = await fetch("/api/logs", { cache: "no-cache" });
-      // const res = await fetch(
-      //   "https://63fbe49b1ff79e133295a2c7.mockapi.io/v1/logModel"
-      // );
       if (!res.ok) throw res;
       const data = await res.json();
       console.log("logData", data);

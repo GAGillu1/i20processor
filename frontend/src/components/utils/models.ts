@@ -59,6 +59,7 @@ export interface instanceModel {
   username?: string;
   password?: string;
   endpoint?: string;
+  instanceprocessor: string;
 }
 
 export interface preProcessorModel {

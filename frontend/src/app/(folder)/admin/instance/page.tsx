@@ -54,8 +54,8 @@ const Users = ({ searchParams }: sParams) => {
               id="filter"
             >
               <option value="">Select Filter...</option>
-              <option value="pre">Pre-Processor</option>
-              <option value="post">Post-Processor</option>
+              <option value="Preprocessor">Pre-Processor</option>
+              <option value="Postprocessor">Post-Processor</option>
             </select>
           </div>
           <div className="my-2 bg-slate-200 h-1 rounded-full" />
