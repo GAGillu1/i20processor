@@ -762,9 +762,10 @@ def userpop(user):
         email = request.form.get('email')
         role = request.form.get('role')
         status = request.form.get('active')
+        username=request.form.get('username')
         issm_log.logger.info(f"Update for user with {user}, Fullname :{fullname}. email:{email} and role :{role}")
         # updating based on the details given it the function userupdate
-        result = userupdate(user, fullname, email, role, status)
+        result = userupdate(user, fullname, email, role, status,username)
         if 'successfully' in result:
             fullname,role, upstatus,dbusername = updateuserdata(user)
 

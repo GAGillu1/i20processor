@@ -107,14 +107,13 @@ def checklogin(email, password):
         #reading excel file
         #df = pd.read_excel('user.xlsx')
         df=loginusers()
-        print(df)
         # filtering the dataframe with the username so we get filtered dataframe
         user_df = df.loc[df['email'] == email]
-        #  if the dataframe is not empty means we have userdata in dataframe which is below condition
+        #if the dataframe is not empty means we have userdata in dataframe which is below condition
         if not user_df.empty:
             salt = user_df['salt'].values[0]
             if salt:
-                #  checking the hashed password with the the value in DB
+                #checking the hashed password with the the value in DB
                 password_hash = bcrypt.hashpw(password.encode('utf-8'), salt.encode('utf-8'))
                 stored_hash = user_df['hash'].values[0].encode('utf-8')
                 if password_hash == stored_hash:
@@ -132,7 +131,6 @@ def checklogin(email, password):
     except pd.errors.EmptyDataError:
         return http.HTTPStatus.INTERNAL_SERVER_ERROR  # return 500 if Excel file is empty
     except Exception as e:
-        print(f"inside checklogin function {e}")
         return http.HTTPStatus.INTERNAL_SERVER_ERROR  # return 500 for all other errors
 # k=checklogin('illurugovardhanreddy@gmail.com','Gov6635')
 # print('output form k is ',k)
@@ -290,10 +288,10 @@ def change_password(email,password,current_password,institutionid):
     except Exception as e:
         return e
 """This is update user in excel given user,fullname,email,role """
-def userupdate(user,fullname,email,role,status):
+def userupdate(user,fullname,email,role,status,username):
    try:
 
-        updateuser(user,fullname,email,role,status)
+        updateuser(user,fullname,email,role,status,username)
         return "user updated successfully"
    except Exception as e:
 
