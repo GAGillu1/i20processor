@@ -88,3 +88,9 @@ export interface institutionModel {
   adminDisplayName: string;
   adminContact: string;
 }
+
+export interface preProcessorLogModel {
+  message: string;
+  status: string;
+  studentId: string;
+}

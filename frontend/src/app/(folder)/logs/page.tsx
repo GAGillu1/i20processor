@@ -8,7 +8,7 @@ import {
 import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { logModel } from "@/components/utils/models";
+import { logModel, preProcessorLogModel } from "@/components/utils/models";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { useMyContext } from "@/components/utils/myContext";
 
@@ -16,11 +16,11 @@ const Tag = ({ value }: { value: string }) => {
   return (
     <div className="flex justify-center items-center">
       <div
-        className={`p-1 w-20 text-center rounded text-white text-sm tracking-wide ${
-          value ? "bg-green-600" : "bg-red-600"
+        className={`p-1 w-20 text-center rounded text-white  text-sm tracking-wide ${
+          value === "Success" ? "bg-green-600" : "bg-red-600/90"
         }`}
       >
-        {value ? "Success" : "Failure"}
+        {value}
       </div>
     </div>
   );
@@ -107,6 +107,9 @@ const Logs = () => {
   const resultBodyTemplate = (rowData: logModel) => {
     return <Tag value={rowData.result} />;
   };
+  const statusBodyTemplate = (rowData: preProcessorLogModel) => {
+    return <Tag value={rowData.status} />;
+  };
 
   const [logData, setLogData] = useState([]);
   useEffect(() => {
@@ -154,6 +157,7 @@ const Logs = () => {
                 sortable
                 field="status"
                 header="Status"
+                body={statusBodyTemplate}
                 className="px-2 text-center"
               />
               <Column

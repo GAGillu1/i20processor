@@ -60,22 +60,22 @@ const Results = () => {
   };
   useEffect(() => {
     getResults();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return results.length > 0
-    ? bannerArr.map((item, i) => {
-        return results[i] ? (
+  return (
+    results.length > 0 &&
+    bannerArr.map((item, i) => {
+      return (
+        results[i] && (
           <React.Fragment key={i}>
             <p className="font-semibold">{item}</p>
             <p className="col-span-2">{results[i]}</p>
           </React.Fragment>
-        ) : (
-          ""
-        );
-      })
-    : "";
+        )
+      );
+    })
+  );
 };
 
 export const ProgressBar = () => {
