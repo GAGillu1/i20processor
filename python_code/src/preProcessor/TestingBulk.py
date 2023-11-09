@@ -537,9 +537,6 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         errorMessage = ""
         sessionResult = "Success"
         json_string = json.dumps(final_dict)
-        # print("before insert into db")
-        insertppreprocessed(userName, json_string, institutionId, sessionResult, errorMessage, backendProcessor)
-        # print("before insert into db")
         code_end_time = time.time()  # capturing the end time of the code execution
         total_time = code_end_time - code_start_time  # calculating the total execution time
         print("Total execution time: {:.2f} seconds".format(total_time))
@@ -548,19 +545,24 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
 
         if progress_bar.deferral_count > 0 and progress_bar.max_count == progress_bar.success_count:
             logger.info(f"Deferral cases in this batch run.")
-            message = "Partial success"
+            message = "Partial Success"
+            insertppreprocessed(userName, json_string, institutionId, message, errorMessage, backendProcessor)
             return True, message
         elif progress_bar.max_count == progress_bar.success_count:
             logger.info(f"No failure cases in this batch run.")
             message = "Success"
+            insertppreprocessed(userName, json_string, institutionId, message, errorMessage, backendProcessor)
             return True, message
         elif progress_bar.failure_count == progress_bar.max_count:
             logger.info(f"All cases in this batch run failed.")
-            message = "Failed"
+            message = "Failure"
+            insertppreprocessed(userName, json_string, institutionId, message, errorMessage, backendProcessor)
             return True, message
         else:
             logger.info(f"mixed cases i.e. success and failure both.")
-            message = "Failed"
+            message = "Failure"
+            sessionResult = "Partial Success"
+            insertppreprocessed(userName, json_string, institutionId, sessionResult, errorMessage, backendProcessor)
             return True, message
             #  need to handle this mixed cases response in main.py and front end to show either in logs or after run.
     except Exception as e:

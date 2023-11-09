@@ -141,7 +141,7 @@ def process():
             else:
                 status, text = vpn_function_bulk(decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             print(f"status: {status}, text: {text}")
-            if status and text == "Partial success":
+            if status and text == "Partial Success":
                 response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
                 response.headers['Content-Disposition'] = 'attachment; filename=duplicate issm.xlsx'
                 # logger.info(f"Process Completed")
@@ -151,7 +151,7 @@ def process():
             elif status and text == "Success":
                 response = make_response({'message': text})
                 return response, http.HTTPStatus.CREATED
-            elif status and text == "Failed":
+            elif status and text == "Failure":
                 response = make_response({'message': text + " Input issue - please fix the input"},
                                          http.HTTPStatus.BAD_REQUEST)
                 return response, http.HTTPStatus.BAD_REQUEST
@@ -162,7 +162,7 @@ def process():
     except Exception as e:
         logger.error("Exception in app.py exception", e)
         response = "Failed in Server please check the error."
-        logger.error(f"response in main.py preprocessor: {response}")
+        logger.error(f"response in app.py preprocessor: {response}")
         return response, http.HTTPStatus.INTERNAL_SERVER_ERROR
 
 
