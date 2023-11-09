@@ -115,8 +115,9 @@ def instancetypeget(institutionid, type):
     print('encpassword is ', encpassword)
     password = decryptsalt(encpassword)
     print("passwors is ", password)
+    instanceprocessor=result['instanceprocessor'][0]
     # result.rename(columns={'jsonendpoint': 'endpoint', 'jsontype': 'type'}, inplace=True)
-    finalresult = {'endpoint': endpoint, 'username': username, 'type': type, 'password': password}
+    finalresult = {'endpoint': endpoint, 'username': username, 'type': type, 'password': password,'instanceprocessor':instanceprocessor}
     # print(finalresult)
     return finalresult
 

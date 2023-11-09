@@ -187,7 +187,7 @@ def userdata(email):
 
 def getinstaceinfo(type,institutionid):
     dba.connect()
-    query="select jsonendpoint,username,instancePassword,jsontype from instance where jsontype=? and institutionID=? "
+    query="select jsonendpoint,username,instancePassword,jsontype,instanceprocessor from instance where jsontype=? and institutionID=? "
     result=dba.execute_query(query,[type,institutionid])
     dba.close()
     if result is not None:
