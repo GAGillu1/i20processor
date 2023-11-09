@@ -14,7 +14,7 @@ from flask import request
 # import time
 def vpn_function_bulk(issm_username, issm_password, excel_file, instance, socketio):
     status = None
-    message = ""
+    message = f"exception in test_wovpn.py file vpn_function"
     sessionResult = "Failure"
     backendProcessor = "Pre Processor"
     userName = request.headers.get('username')
@@ -23,8 +23,8 @@ def vpn_function_bulk(issm_username, issm_password, excel_file, instance, socket
     logger.info(f"institution in request header: {institutionId}")
     logResponse = ""
     try:
-        logger.info(f"starting vpn_function in test_wvpn file")
-        print(f"starting vpn_function in test_wvpn file")
+        logger.info(f"starting vpn_function in test_wovpn file")
+        print(f"starting vpn_function in test_wovpn file")
         if instance == "Prod":
             # input_url = "issm-prod.newhaven.edu"
             input_url = "https://issm-prod.newhaven.edu"
@@ -32,17 +32,15 @@ def vpn_function_bulk(issm_username, issm_password, excel_file, instance, socket
             input_url = "https://issm-test.newhaven.edu"
         else:
             message = "Wrong instance name entered"
-            errorMessage = "Wrong instance name entered"
-            insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
             raise Exception
         logger.info(f"input url: {input_url}")
         status, message = testing_main(input_url, excel_file, socketio, issm_username, issm_password)
         # browser.quit()  # irrespective of success or failure we are quitting the driver
         logger.info("new tab successfully redirected")
     except Exception as e:
-        errorMessage = f"exception in test_wvpn.py file vpn_function"
-        print(f"{errorMessage}, {e}")
-        insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
+        # errorMessage = f"exception in test_wovpn.py file vpn_function"
+        print(f"{message}, {e}")
+        insertppreprocessed(userName, logResponse, institutionId, sessionResult, message, backendProcessor)
     logger.info(f"Logout success and driver quit and status: {status}, message: {message}")
     # Close the WebDriver when done
     # browser.quit()

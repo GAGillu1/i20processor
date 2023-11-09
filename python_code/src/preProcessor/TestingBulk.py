@@ -228,13 +228,13 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
         # chrome_options.add_argument("--disable-dev-shm-usage")
         # # chrome_options.binary_location = '/usr/bin/google-chrome'
         # chrome_options.page_load_strategy = 'normal'
-        print("before start of webdriver")
+        # print("before start of webdriver")
         # browser = webdriver.Chrome(service=service, options=chrome_options)
         # commented the below line for amazon instance.
         browser = webdriver.Chrome()
-        print(f"printing url before chrome {url}")
+        # print(f"printing url before chrome {url}")
         browser.get(url)
-        print("after get")
+        # print("after get")
         time.sleep(2)
         browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(issm_username)
         browser.find_element(By.XPATH, '//*[@id="password"]').send_keys(issm_password)
@@ -382,12 +382,12 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
     logger.info(f"institution in request header: {institutionId}")
     logResponse = ""
     try:
-        print("before reading excel")
+        # print("before reading excel")
         df = pd.read_excel("preProcessor/Duplicate.xlsx", engine='openpyxl')
         # Clear the DataFrame of any existing data (excluding the header)
         data = df.drop(df.index.to_list()[0:], axis=0)
         # Save the DataFrame (header row only) to the same Excel file
-        print("before writing excel")
+        # print("before writing excel")
         with pd.ExcelWriter("preProcessor/Duplicate.xlsx", engine='openpyxl') as writer:
             data.to_excel(writer, index=False, sheet_name='Sheet1')
         # Print the DataFrame with only the header row
@@ -396,7 +396,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         logger.info("Main program started.")
         config = configparser.ConfigParser()
         config.read('preProcessor/config.ini')
-        print("config file")
+        # print("config file")
         code_start_time = time.time()  # capturing the start time of the code execution
         # Load the Excel file
         logger.info(f"printing excel file name: {excel_file}")
@@ -522,8 +522,8 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         #     logger.info(f"percentage completed: {progressBar_value}")
         #     socketio.emit('preProcessor', progressBar_value)
         #     logger.info(progress_bar.__str__())
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            print("inside parallel execution")
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            # print("inside parallel execution")
             futures = []
             # Submit each student for processing concurrently
             for std in students:
@@ -537,9 +537,9 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         errorMessage = ""
         sessionResult = "Success"
         json_string = json.dumps(final_dict)
-        print("before insert into db")
+        # print("before insert into db")
         insertppreprocessed(userName, json_string, institutionId, sessionResult, errorMessage, backendProcessor)
-        print("before insert into db")
+        # print("before insert into db")
         code_end_time = time.time()  # capturing the end time of the code execution
         total_time = code_end_time - code_start_time  # calculating the total execution time
         print("Total execution time: {:.2f} seconds".format(total_time))

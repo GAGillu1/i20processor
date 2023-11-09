@@ -115,7 +115,11 @@ def process():
             excel_file_name = excel_file.filename
             excel_file.save(excel_file_name)
             instance = request.form.get('instance')
-            with open("preProcessor/rsa_keygen/privatekey.pem", "rb") as private_key_file:
+            current_work_dir = os.getcwd()
+            # parent_dir = os.path.dirname(current_work_dir)
+            preProcessorFolder = os.path.join(current_work_dir, 'preProcessor')
+            rsa_keygen_folder = os.path.join(preProcessorFolder, 'rsa_keygen')
+            with open(os.path.join(rsa_keygen_folder, f'privatekey.pem'), "rb") as private_key_file:
                 private_key = RSA.import_key(private_key_file.read())
             encrypted_message_username = b64decode(issm_username)
             encrypted_message_password = b64decode(issm_password)

@@ -13,15 +13,15 @@ def AddIndividual(student, driver, check_val):
     config.read('preProcessor/config.ini')
 
     try:
-        logger.info("start of AddIndividual")
+        # logger.info("start of AddIndividual")
         wait = WebDriverWait(driver, 10)  # 10 seconds timeout
         #  print(student)
         #  template_url = domain_url + '/WizardPickTemplate.aspx?SysId=56527&Mode=F'
         # driver.get(domain_url + '/AddNewIndividual.aspx')
         # Find the username and password input fields using XPath
-        print(f"printing checkval {check_val}")
+        # print(f"printing checkval {check_val}")
         if check_val:
-            logger.info("Inside check val true condition")
+            # logger.info("Inside check val true condition")
             element = wait.until(
                 ec.visibility_of_element_located(
                     (By.XPATH, config['ID_XPATH']['last_name'])))
@@ -39,20 +39,20 @@ def AddIndividual(student, driver, check_val):
             Select(driver.find_element(By.ID, config['ID_XPATH']['department_id'])).select_by_visible_text(student.Department)
             # print("department id filled")
             driver.find_element(By.ID, config['ID_XPATH']['continue_btn']).click()
-            logger.info("after continue button add individual.aspx")
+            # logger.info("after continue button add individual.aspx")
             try:
                 time.sleep(2)
                 ignore_and_add_element = wait.until(
                     ec.element_to_be_clickable((By.ID, config['ID_XPATH']['ignore_and_add'])))
                 ignore_and_add_element.click()
-                logger.info("after ignore and add")
+                # logger.info("after ignore and add")
             except NoSuchElementException:
-                logger.info("no such element exception")
+                # logger.info("no such element exception")
                 pass
         #  ----------------Choose Template ---------------------------#
         #  need to modify the below code according to config.ini parameters
         time.sleep(2)
-        print("before select template")
+        # print("before select template")
         # Use the WebDriverWait to wait for the element to be visible and enabled
         element = wait.until(ec.element_to_be_clickable((By.ID, config['ID_XPATH']['select_template'])))
 
@@ -60,21 +60,21 @@ def AddIndividual(student, driver, check_val):
         Select(element).select_by_visible_text(student.Template)
         # Select(driver.find_element(By.ID, config['ID_XPATH']['select_template'])).select_by_visible_text(student.Template)
         # print("template filled")
-        print("after selecting template")
+        # print("after selecting template")
         driver.find_element(By.ID, config['ID_XPATH']['continue_btn']).click()
         # ----------------Fill F/M Information---------------------------#
         #  https://issm-test.newhaven.edu/WizardPickTemplate.aspx?SysId=13019&Mode=F
-        print("after continue button template")
+        # print("after continue button template")
         time.sleep(2)
         # Wait for and select an option in 'country_of_birth' element
         country_of_birth_element = wait.until(
             ec.presence_of_element_located((By.ID, config['ID_XPATH']['country_of_birth'])))
         Select(country_of_birth_element).select_by_visible_text(student.BirthCountry)
-        logger.info("after birth county")
+        # logger.info("after birth county")
         # Select(driver.find_element(By.ID, config['ID_XPATH']['country_of_birth'])).select_by_visible_text(student.BirthCountry)
         # print("birth country filled")
         Select(driver.find_element(By.ID, config['ID_XPATH']['country_of_citizenship'])).select_by_visible_text(student.Citizenship)
-        logger.info("citizenship filled")
+        # logger.info("citizenship filled")
         #  P4LevelEduDDL
         Select(driver.find_element(By.ID, config['ID_XPATH']['level_of_edu'])).select_by_visible_text(student.Level)
         # logger.info("level of education filled")
@@ -128,10 +128,10 @@ def AddIndividual(student, driver, check_val):
         Select(gender_element).select_by_visible_text(student.Gender)
         # Select(driver.find_element(By.ID, config['ID_XPATH']['gender'])).select_by_visible_text(student.Gender)
         #  Click Add Permanent Address
-        logger.info("gender filled")
+        # logger.info("gender filled")
         driver.find_element(By.ID, config['ID_XPATH']['add_permanent_addr']).click()
         # ----------------Fill Add/Edit Address Information---------------------------#
-        logger.info("add_permanent_addr")
+        # logger.info("add_permanent_addr")
         element = wait.until(
             ec.visibility_of_element_located(
                 (By.XPATH, config['ID_XPATH']['address_one'])))
@@ -186,10 +186,10 @@ def AddIndividual(student, driver, check_val):
         # final_status = driver.find_element(By.XPATH, config['ID_XPATH']['status_checker'])
         logger.info(f"final status: {final_status.text}")
         if final_status.text == "Complete":
-            logger.info(f"inside final status : {final_status.text}")
+            # logger.info(f"inside final status : {final_status.text}")
             return True, "Success"
         else:
-            logger.error(f"inside final status : {final_status.text}")
+            # logger.error(f"inside final status : {final_status.text}")
             return False, "Failed"
     except Exception as e:
         errorMessage = f"failed inside AddIndividual function of AddIndividual.py {e}"
