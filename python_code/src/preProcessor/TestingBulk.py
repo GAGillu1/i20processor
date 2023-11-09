@@ -144,6 +144,18 @@ def duplicate_steps(student, driver, domain_url, config):
         # print("success5")
         # time.sleep(1)
         # wait = WebDriverWait(driver, 10)  # 10 seconds timeout
+        element = driver.find_element(By.XPATH, config['ID_XPATH']['bio_last_name'])
+        value = element.get_attribute('value')
+        value_stripped = value.strip()
+        value_final = re.sub(r'[^A-Za-z\s]', ' ', value_stripped)
+        element.clear()
+        element.send_keys(value_final)
+        element = driver.find_element(By.XPATH, config['ID_XPATH']['bio_first_name'])
+        value = element.get_attribute('value')
+        value_stripped = value.strip()
+        value_final = re.sub(r'[^A-Za-z\s]', ' ', value_stripped)
+        element.clear()
+        element.send_keys(value_final)
         element = wait.until(
             ec.visibility_of_element_located(
                 (By.ID, config['ID_XPATH']['home_campus_id'])))
@@ -151,7 +163,7 @@ def duplicate_steps(student, driver, domain_url, config):
         # print("success6")
         element.clear()
         # time.sleep(1)
-        Select(driver.find_element(By.ID, config['ID_XPATH']['database_status'])).select_by_value("Deleted")
+        Select(driver.find_element(By.ID, config['ID_XPATH']['database_status'])).select_by_value(" ")
         # print("success7")
         # time.sleep(1)
         driver.find_element(By.ID, config['ID_XPATH']['save_button']).click()
@@ -260,7 +272,7 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
                 progress_bar.failure_count += 1
                 final_dict['processedRecords'].append({
                     'studentId': std.CampusID,
-                    'status': 'Failed',
+                    'status': 'Failure',
                     'message': f"Process failed for student with ID {std.CampusID} and name {std.GivenName}."
                 })
         except Exception as e:
@@ -268,7 +280,7 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
             progress_bar.failure_count += 1
             final_dict['processedRecords'].append({
                 'studentId': std.CampusID,
-                'status': 'Error',
+                'status': 'Failure',
                 'message': f"An error occurred for student with ID {std.CampusID}: {e}"
             })
             browser.quit()
@@ -283,7 +295,7 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
         progress_bar.failure_count += 1
         final_dict['processedRecords'].append({
             'studentId': std.CampusID,
-            'status': 'Error',
+            'status': 'Failure',
             'message': f"Process failed inside for process_student student : {std.CampusID} and error {e}"
         })
     return final_dict
