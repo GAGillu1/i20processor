@@ -131,24 +131,15 @@ def process():
             print(f"decrypted password {decrypted_message_password.decode('utf-8')}")
             decrypted_message_instance = cipher.decrypt(encrypted_message_instance)
             print(f"decrypted instance {decrypted_message_instance.decode('utf-8')}")
-            decoded_username = decrypted_message_username.decode('utf-8')
-            decoded_password = decrypted_message_password.decode('utf-8')
-            decoded_instance = decrypted_message_instance.decode('utf-8')
             set_new_log_file()
             logger.info(f"started process function in app.py")
             socketio.emit('preProcessor', 1.0)
             if toggleButton != "false":
                 vpn_username = request.form.get('vpnUsername')
                 vpn_password = request.form.get('vpnPassword')
-                encrypted_vpn_username = b64decode(vpn_username)
-                encrypted_vpn_password = b64decode(vpn_password)
-                decrypted_vpn_username = cipher.decrypt(encrypted_vpn_username)
-                decrypted_vpn_password = cipher.decrypt(encrypted_vpn_password)
-                decoded_vpn_username = decrypted_vpn_username.decode('utf-8')
-                decoded_vpn_password = decrypted_vpn_password.decode('utf-8')
-                status, text = vpn_function(decoded_vpn_username, decoded_vpn_password, decoded_username, decoded_password, excel_file_name, decoded_instance, socketio)
+                status, text = vpn_function(vpn_username, vpn_password, decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             else:
-                status, text = vpn_function_bulk(decoded_username, decoded_password, excel_file_name, decoded_instance, socketio)
+                status, text = vpn_function_bulk(decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             print(f"status: {status}, text: {text}")
             if status and text == "Partial success":
                 response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
@@ -356,6 +347,7 @@ def upload():
             # Total number of pages in i20
             num_pages = pages(pdf_filename)
             print(num_pages)
+            issm_log.logger.info(f"Total pages in file is {num_pages}")
             sevid = ""
             socketio.emit('rom', 1)
             successful = True
@@ -379,15 +371,19 @@ def upload():
                     # Storing total pages, total files afte splitting , total signatures added to session
                     session['Total_Pages'] = f"{num_pages}"
                     redis_client.set('Total_Pages', num_pages)
+
+
                     session['Total_Files'] = f"{int(numberoffiles)}"
                     redis_client.set('Total_Files', f"{numberoffiles}")
                     session['Total_Signatures'] = f"{totalsigns}"
+
                     redis_client.set('Total_Signatures', f"{totalsigns}")
 
                     issm_log.logger.info(
                         f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
             except Exception as e:
                 successful = False
+                insertprocessed(user, 'Failed in Split and Signature adding', institutionid, 'Failure', processor='ISSM to Slate')
                 socketio.emit('rom', -2)
                 session['Split_Failure'] = f"Splitting of file is failed {e}"
                 redis_client.set('Split_Failure', f"Splitting of file is failed {e}")
@@ -891,7 +887,7 @@ def isntance():
         username = request.form.get('username')
         password = request.form.get('password')
         institutionid = request.headers.get('institutionid')
-        instanceprocessor=request.headers.get('instanceprocessor')
+        instanceprocessor=request.form.get('instanceprocessor')
         msg = instanceinsert(url, type, username, password, institutionid,instanceprocessor)
         if msg == 'Instance inserted successfully':
             return jsonify({'message': 'Instance inserted successfully'})
