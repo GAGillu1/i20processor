@@ -522,6 +522,7 @@ def upload():
         institution = request.headers.get('institutionid')
 
         result = [s for s in [splitFailure, indexError, zipMessage] if s is not None and s != ""]
+        result=str.join(",",result)
         # print("result is ",result)
         if result is not None:
             insertprocessed(user, str(sevisids1), institution, str(result), processor='ISSM to Slate')
