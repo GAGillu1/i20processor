@@ -415,6 +415,7 @@ def upload():
             except Exception as e:
                 successful = False
                 session["index_error"] = f"Index file creation failed {e}"
+                insertprocessed(user, 'Index file creation error', institutionid, 'Failure', processor='ISSM to Slate')
                 redis_client.set('index_error', f"Index file creation failed")
                 issm_log.logger.error(f"Index file creation failed {e}")
 
@@ -452,6 +453,7 @@ def upload():
             except Exception as e:
                 successful = False
                 socketio.emit('rom', -4)
+                insertprocessed(user, 'Zipping failed', institutionid, 'Failure', processor='ISSM to Slate')
                 session['zipmsg'] = f"Files Zipping failed {e}"
                 redis_client.set('zipmsg', f"Files Zipping failed {e}")
                 issm_log.logger.error(f"Files Zipping failed {e}")
