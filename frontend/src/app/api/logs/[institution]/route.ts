@@ -1,4 +1,4 @@
-import { getToken } from "@/components/utils/getTokens";
+import { getToken } from "@/app/api/getTokens";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 const basePath = process.env.BASE_PATH as string;

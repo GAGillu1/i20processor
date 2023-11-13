@@ -77,7 +77,7 @@ const InstanceInfo = () => {
               <Field name="endpoint" as="textarea" readOnly />
               <ErrorMsg name="endpoint" />
               <label htmlFor="instanceprocessor">Processor Type</label>
-              <Field name="instanceprocessor" component="select" diasbled>
+              <Field name="instanceprocessor" component="select" disabled>
                 <option value="">Select Processor</option>
                 <option value="Preprocessor">Pre-Processor</option>
                 <option value="Postprocessor">Post-Processor</option>

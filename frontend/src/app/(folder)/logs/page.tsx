@@ -16,11 +16,11 @@ const Tag = ({ value }: { value: string }) => {
   return (
     <div className="flex justify-center items-center">
       <div
-        className={`p-1 w-32 text-center font-semibold rounded text-white  text-sm tracking-wide ${
-          value === "Success" ? "bg-green-600" : ""
-        } ${value === "Failure" ? "bg-red-600/80" : ""} ${
-          value === "Partial Success" ? "bg-yellow-500" : ""
-        }`}
+        className={`p-1 w-32 text-center  rounded bg-indigo-100  text-sm tracking-wide 
+        ${value === "Success" && "bg-indigo-300"} ${
+          value === "Failure" && "bg-indigo-100"
+        } ${value === "Partial Success" && "bg-indigo-200"}
+        `}
       >
         {value}
       </div>
@@ -36,12 +36,6 @@ const Logs = () => {
   const isSuperUser = userData.role === "SuperUser";
   // const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const formatDate = (value: Date) => {
-    // console.log(value);
-    // const offset = value.getTimezoneOffset();
-    // const hoursOffset = offset / 60;
-    // const estOffset = -5;
-    // const estHours = hoursOffset + estOffset;
-    // const estTime = new Date(value.getTime() + estHours * 60 * 60 * 1000);
     return value.toLocaleString("en-US", {
       day: "2-digit",
       month: "2-digit",
@@ -49,6 +43,7 @@ const Logs = () => {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
+      timeZoneName: "short",
     });
   };
   // const [filters, setFilters] = useState<DataTableFilterMeta>({
@@ -133,10 +128,7 @@ const Logs = () => {
 
   const rowExpansionTemplate = (rowData: logModel) => {
     let preProcessor = rowData.processedMsg;
-    const isPreprocessor = rowData.processor !== "ISSM to Slate";
     const isError = rowData.errorMessage === null || rowData.errorMessage;
-
-    // console.log(preProcessor);
     return (
       <div className="p-2">
         <h3>Processed I-20s</h3>

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "@/components/utils/getTokens";
+import { getToken } from "@/app/api/getTokens";
 
 const basePath = process.env.BASE_PATH as string;
 const institutionApi = process.env.INSTITUTION as string;

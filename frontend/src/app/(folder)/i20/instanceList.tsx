@@ -25,11 +25,14 @@ const InstanceList = () => {
   return (
     <React.Fragment>
       {instanceList.length > 0
-        ? instanceList.map((item: instanceModel) => (
-            <option value={item.type} key={item.type}>
-              {item.type}
-            </option>
-          ))
+        ? instanceList.map(
+            (item: instanceModel) =>
+              item.instanceprocessor === "Postprocessor" && (
+                <option value={item.type} key={item.type}>
+                  {item.type}
+                </option>
+              )
+          )
         : ""}
     </React.Fragment>
   );

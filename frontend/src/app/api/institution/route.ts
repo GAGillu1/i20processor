@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "../../../components/utils/getTokens";
+import { getToken } from "../getTokens";
 import { cookies } from "next/headers";
 import { object } from "yup";
 // -----------------------

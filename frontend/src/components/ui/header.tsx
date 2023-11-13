@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useMyContext } from "../utils/myContext";
 import { ProfileIcon } from "@/assets/myIcons";
-import { getGreeting } from "../utils/getTokens";
+import { getGreeting } from "../../app/api/getTokens";
 
 const Header = () => {
   const userData = useMyContext();

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "../../../components/utils/getTokens";
+import { getToken } from "../getTokens";
 // -----------------------
 // GET - ALL INSTANCES
 const basePath = process.env.BASE_PATH as string;
