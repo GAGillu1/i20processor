@@ -328,7 +328,7 @@ def upload():
             slaterequest = request.form['toSlate']
             i20type = request.form['i20Type']
             institutionid = request.headers.get('institutionid')
-            user = session.get('name')
+            user = request.headers.get('username')
             issm_log.logger.info(f"User logged in  :{user}")
             issm_log.logger.info(f"Intial I20. Received post request with files :{pdf_filename, issm, slate}")
             # Total number of pages in i20
@@ -358,7 +358,8 @@ def upload():
                     # Storing total pages, total files afte splitting , total signatures added to session
                     session['Total_Pages'] = f"{num_pages}"
                     redis_client.set('Total_Pages', num_pages)
-
+                    insertprocessed(user, 'Failed in Split and Signature adding', institutionid, 'Failure',
+                                    processor='ISSM to Slate')
 
                     session['Total_Files'] = f"{int(numberoffiles)}"
                     redis_client.set('Total_Files', f"{numberoffiles}")
@@ -439,16 +440,11 @@ def upload():
                     # if slate request is yes then depending on program the post function is called
                     if slaterequest == 'y':
                         stream = request.form['program']
-                        if stream == 'g':
-                            output = post(zip_filename, 'GR', institutionid)
-                            issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
-                            socketio.emit('rom', 5)
-                            # print(output)
-                        else:
-                            # print("goign to UG")
-                            output = post(zip_filename, 'UG', institutionid)
-                            issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
-                            socketio.emit('rom', 5)
+                        output = post(zip_filename, 'GR', institutionid)
+                        issm_log.logger.info(f"Response of files to slate {output}, stream is {stream}")
+                        socketio.emit('rom', 5)
+                        # print(output)
+
                         # print(output)
             except Exception as e:
                 successful = False

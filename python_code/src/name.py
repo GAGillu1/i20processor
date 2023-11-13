@@ -2,6 +2,7 @@
 import pandas as pd
 
 from dbstatements import selectinstitutions, selectsignature, selectusers, insertsignatures , selectsignaturename, updatesignature
+import issm_log
 
 
 def names_list():
@@ -20,6 +21,7 @@ def signaturefile(name):
     filtered_df = dataf[dataf["fullName"] == name]
     user = filtered_df.iloc[0]["userName"]
     file=user+".png"
+    issm_log.logger.info(f"Signature file is {file}")
     return file
 def signadd(username,length,width,xco,yco,institutionid):
    try:
