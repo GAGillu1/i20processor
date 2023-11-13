@@ -45,7 +45,7 @@ from login import checklogin, registeruser, forgotpassword1, users, userpopup, c
 from name import names_list, signaturefile, signadd
 from postToSlate import instanceinsert
 from postToSlate import post, updateinstance, instanceget, instancetypeget, connectiontest
-from preProcessor.issmfilelog import set_new_log_file, logger, close_file_handler
+from preProcessor.issmfilelog import set_new_log_file, logger
 from preProcessor.test_wvpn import vpn_function
 from preProcessor.test_wovpn import vpn_function_bulk
 from sendemail import get_credentials, get_emails, send_email
@@ -132,20 +132,24 @@ def process():
                 response.headers['Content-Disposition'] = 'attachment; filename=duplicate issm.xlsx'
                 # logger.info(f"Process Completed")
                 logger.info(response)
+                # close_file_handler()
                 return response, http.HTTPStatus.OK
                 # return "Success"
             elif status and text == "Success":
                 response = make_response({'message': text})
+                # close_file_handler()
                 return response, http.HTTPStatus.CREATED
             elif status and text == "Failure":
                 response = make_response({'message': text + " Input issue - please fix the input"},
                                          http.HTTPStatus.BAD_REQUEST)
+                # close_file_handler()
                 return response, http.HTTPStatus.BAD_REQUEST
             else:
                 logger.error(text)
+                # close_file_handler()
                 response = make_response({'message': text}, http.HTTPStatus.UNAUTHORIZED)
                 return response, http.HTTPStatus.UNAUTHORIZED
-            close_file_handler()
+
     except Exception as e:
         logger.error("Exception in app.py exception", e)
         response = "Failed in Server please check the error."
@@ -973,6 +977,6 @@ def institutiondata(institute):
 
 if __name__ == '__main__':
     # app.run(debug=True,port=8081)
-    socketio.run(app,host="0.0.0.0", debug=True, port=8081)
+    socketio.run(app, host="0.0.0.0", debug=True, port=8081)
     # loop = asyncio.get_event_loop()
     # loop.run_until_complete(asyncio.ensure_future(app.run()))
