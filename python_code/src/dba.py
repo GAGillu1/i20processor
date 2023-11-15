@@ -12,7 +12,7 @@ def connect():
         'server=DESKTOP-CLVI71Q\SQL-EXPRESS,1433;'
         'Database=issm_test;'
         'UID=SuperAdmin;'
-        'PWD=SuperAdmin;'
+        'PWD=#nXHa&Ydkx6q36Gf;'
         #'Trusted_Connection=yes;'
 
     )
