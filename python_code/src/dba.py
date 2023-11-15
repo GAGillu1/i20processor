@@ -9,10 +9,10 @@ def connect():
         #'Server=localhost\SQLEXPRESS;'
         #'Server=GOVARDHAN;'
         #'server=database-1.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
-        'server=database-2.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
+        'server=DESKTOP-CLVI71Q\SQL-EXPRESS,1433;'
         'Database=issm_test;'
-        'UID=admin;'
-        'PWD=password123;'
+        'UID=SuperAdmin;'
+        'PWD=SuperAdmin;'
         #'Trusted_Connection=yes;'
 
     )
