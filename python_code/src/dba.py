@@ -10,6 +10,7 @@ def connect():
         #'Server=GOVARDHAN;'
         #'server=database-1.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
         'server=DESKTOP-CLVI71Q\SQL-EXPRESS,1433;'
+        # 'Server=10.0.0.166,1433;'
         'Database=issm_test;'
         'UID=SuperAdmin;'
         'PWD=#nXHa&Ydkx6q36Gf;'
