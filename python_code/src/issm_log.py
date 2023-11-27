@@ -5,7 +5,7 @@ import os
 import pandas as pd
 from dbstatements import getprocessed
 
-cwd=os.getcwd()
+cwd = os.getcwd()
 parent_dir = os.path.dirname(cwd)
 log_folder = os.path.join(parent_dir,'log')
 print(log_folder)
