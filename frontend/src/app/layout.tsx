@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { MyContextProvider } from "@/components/utils/myContext";
 import { Toaster } from "react-hot-toast";
 import Socket from "../components/utils/websockets";
+import Footer from "@/components/ui/footer";
 
 export const metadata: Metadata = {
   title: "I-20 Processor",
@@ -26,6 +27,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={font.className}>
           {children}
+          <Footer />
           <Toaster />
           <Socket />
         </body>

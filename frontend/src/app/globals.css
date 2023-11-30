@@ -28,7 +28,13 @@ input[type="file"] {
 input[type="checkbox"] {
   @apply w-auto;
 }
-
+ol > li > ol > li,
+ol > li > ul > li {
+  @apply ml-4;
+}
+li {
+  @apply my-2;
+}
 button {
   @apply bg-indigo-100 rounded px-4 py-2 flex items-center gap-2 hover:bg-indigo-50 text-indigo-900 font-semibold tracking-wide;
 }

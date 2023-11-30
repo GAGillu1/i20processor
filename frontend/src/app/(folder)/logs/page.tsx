@@ -16,7 +16,7 @@ const Tag = ({ value }: { value: string }) => {
   return (
     <div className="flex justify-center items-center">
       <div
-        className={`p-1 w-32 text-center  rounded bg-indigo-100  text-sm tracking-wide 
+        className={`p-1 w-32 text-center  rounded bg-indigo-100  text-sm tracking-wide text-indigo-950 
         ${value === "Success" && "bg-indigo-300"} ${
           value === "Failure" && "bg-indigo-100"
         } ${value === "Partial Success" && "bg-indigo-200"}

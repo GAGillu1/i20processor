@@ -1,5 +1,5 @@
 "use client";
-import { AdminIcon, DsoIcon, LogsIcon } from "@/assets/myIcons";
+import { AdminIcon, DsoIcon, HeaderI20Icon, LogsIcon } from "@/assets/myIcons";
 import { HomeIcon } from "@/assets/myIcons";
 import { I20Icon } from "@/assets/myIcons";
 import { LogoutIcon } from "@/assets/myIcons";
@@ -29,8 +29,12 @@ const NavBar = () => {
   return (
     <nav className="py-12 px-10 flex flex-col h-screen items-center font-semibold text-gray-600 justify-between tracking-wider top-0">
       <div className="pt-3">
-        <Link href={"/"} className="font-extrabold text-3xl text-indigo-700 ">
-          I-20 Processor
+        <Link
+          href={"/"}
+          className="flex font-extrabold text-3xl text-indigo-700 items-center"
+        >
+          <HeaderI20Icon />
+          I20 Processor
         </Link>
       </div>
       <div className="flex gap-4 justify-between flex-col">
@@ -76,11 +80,16 @@ const NavBar = () => {
         </Link>
       </div>
       <div>
-        <Link href={"/support"} className="navLink text-slate-500 font-normal">
-          <SupportIcon /> Support
+        <Link
+          href={"/help"}
+          className={`navLink text-slate-500 font-normal mb-1 ${
+            path.includes("help") ? "activeNavLink" : ""
+          }`}
+        >
+          <SupportIcon /> Help
         </Link>
         <button
-          className="font-normal text-slate-500 bg-indigo-50"
+          className="font-normal text-slate-500 bg-indigo-50/80"
           onClick={() => logoutUser()}
         >
           <LogoutIcon />

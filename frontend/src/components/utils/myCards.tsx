@@ -12,7 +12,10 @@ import {
   UniversityIcon,
   UsersIcon,
 } from "@/assets/myIcons";
+import Image from "next/image";
 import Link from "next/link";
+import x from "@/public/preProcessor.png";
+import { usePathname } from "next/navigation";
 // -------------------------------
 // CARD
 export const Card = ({ ...props }) => {
@@ -38,12 +41,35 @@ export const CardLg = ({ ...props }) => {
         <div className="bg-indigo-50 rounded-l-lg flex items-center justify-center">
           {props.children}
         </div>
-        <div className="col-span-5 bg-white rounded-r-lg p-2">
-          <h3 className="text-indigo-900">{props.title} </h3>
-          <p className="pt-2">{props.description}</p>
+        <div className="col-span-5 bg-white rounded-r-lg py-2 px-4">
+          <h3 className="text-indigo-900 ">{props.title} </h3>
+          <p className=" text-justify py-1">{props.description}</p>
         </div>
       </section>
     </Link>
+  );
+};
+// -------------------------------
+// HELPER CARD
+export const HelperCard = ({ ...props }) => {
+  const [icon, image, instructions] = props.children;
+  return (
+    <div>
+      <section className="grid grid-cols-5 rounded-lg bg-white  text-justify">
+        <div className="bg-indigo-50 rounded-tl-lg flex items-center justify-center">
+          {icon}
+        </div>
+        <div className="col-span-4 rounded-r-lg px-4 py-2 border-b-2 border-indigo-50">
+          <h3 className="text-indigo-900">{props.title}</h3>
+          <p className="py-1">{props.description}</p>
+        </div>
+        <div className="col-span-3 p-2">{image}</div>
+        <div className="col-span-2 p-2">
+          <h2 className="p-0">Instructions</h2>
+          <div className="px-2">{instructions}</div>
+        </div>
+      </section>
+    </div>
   );
 };
 // -------------------------------
@@ -159,8 +185,10 @@ export const InstitutionCard = () => {
 // -------------------------------
 // USERS CARD
 export const UsersCardLg = () => {
+  const path = usePathname();
+
   return (
-    <CardLg link="/admin/users" title="Users" description={lorem}>
+    <CardLg link={`${path}/users`} title="Users" description={usersDesc}>
       <UsersIcon className="w-16 h-16 text-indigo-900 mx-auto" />
     </CardLg>
   );
@@ -168,48 +196,74 @@ export const UsersCardLg = () => {
 
 // -------------------------------
 // INSTANCE CARD
-const instanceDesc =
-  "<ul className='list-disc'><li>Add Instanace</li><li>Update Instanace</li><li>Delete Instanace</li></ul>";
 export const InstanceCardLg = () => {
+  const path = usePathname();
+
   return (
-    <CardLg link="/admin/instance" title="Instance" description={lorem}>
+    <CardLg
+      link={`${path}/instance`}
+      title="Instance"
+      description={instanceDesc}
+    >
       <InstanceIcon className="w-16 h-16 text-indigo-900 mx-auto" />
     </CardLg>
   );
 };
 // -------------------------------
-// UNIVERSITY CARD
+// INSTITUTION CARD
 export const InstitutionCardLg = () => {
+  const path = usePathname();
   return (
-    <CardLg link="/admin/institution" title="Institution" description={lorem}>
+    <CardLg
+      link={`${path}/institution`}
+      title="Institution"
+      description={institutionDesc}
+    >
       <UniversityIcon className="w-16 h-16 text-indigo-900 mx-auto" />
     </CardLg>
   );
 };
 
-const lorem =
-  "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Soluta excepturi quidem quisquam fugiat! Animi praesentium ut neque expedita explicabo nobis hic quisquam velit. Cupiditate, quasi ullam minus numquam doloribus porro?";
-
 // -------------------------------
 // PRE-PROCESSOR CARD
 export const PreProcessorCardLg = () => {
+  const path = usePathname();
+
   return (
-    <CardLg link="/i20/pre-processor" title="Pre-processor" description={lorem}>
+    <CardLg
+      link={`${path}/pre-processor`}
+      title="Pre-processor"
+      description={preProcessorDesc}
+    >
       <PreProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
     </CardLg>
   );
 };
-
 // -------------------------------
 // POST-PROCESSOR CARD
 export const PostProcessingCardLg = () => {
+  const path = usePathname();
+
   return (
     <CardLg
-      link="/i20/post-processor"
+      link={`${path}/post-processor`}
       title="Post-processor"
-      description={lorem}
+      description={postProcessorDesc}
     >
       <PostProcessingIcon className="w-16 h-16 text-indigo-900 mx-auto" />
     </CardLg>
   );
 };
+// -------------------------------
+// CARD DESCRIPTIONS
+export const preProcessorDesc =
+  "The Pre-Processing stage encompasses a series of essential tasks that must be executed prior to the principal processing of the i20 instance. This tool is designed to streamline the i20 process for each student by automatically populating all requisite fields. This ensures a seamless and efficient workflow, thereby enhancing the overall productivity of the process.";
+export const postProcessorDesc =
+  "The Post-Processing stage is a critical phase that entails the division of the batch file and the allocation of documents to the corresponding students within the institution. This tool is engineered to automate these tasks, thereby ensuring a smooth and efficient distribution process. This not only enhances the operational workflow but also ensures accuracy and consistency in document assignment. ";
+
+export const institutionDesc =
+  "The Institution field likely refers to the educational institution or organization involved in the i20 process. This could encompass the school, college, or university that is tasked with the issuance of i20 documents. This field serves as a crucial identifier, linking each i20 document to its respective issuing authority.";
+export const instanceDesc =
+  "The Instance operates as a centralized nexus or repository where all instances and endpoints are meticulously configured. This system is fully customizable, offering the flexibility to tailor its functionalities according to the unique requirements of each client. This adaptability ensures that the system can effectively cater to a diverse range of operational needs, thereby enhancing its utility and efficiency.";
+export const usersDesc =
+  "The Users window is designed for entries related to individuals or entities that interact with the i20 system. This could encompass administrators, students, or other stakeholders who play a role in the i20 process. This field serves as a key identifier, facilitating the tracking and management of user interactions within the system.";

@@ -16,8 +16,8 @@ const NotFound = () => {
           <Link className="mr-2 button" href="/">
             Home
           </Link>
-          <Link className="ml-2 button" href="/support">
-            Support
+          <Link className="ml-2 button" href="/help">
+            Help
           </Link>
         </div>
       </section>

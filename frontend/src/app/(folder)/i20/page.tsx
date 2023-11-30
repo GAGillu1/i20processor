@@ -1,3 +1,4 @@
+"use client";
 import {
   PostProcessingCardLg,
   PreProcessorCardLg,
@@ -6,7 +7,7 @@ import {
 const Admin = () => {
   return (
     <main className="w-[95%] mx-auto ">
-      <h2 className="">I20 tools</h2>
+      <h2>I20 tools</h2>
       <section className="grid gap-3 ">
         <PreProcessorCardLg />
         <PostProcessingCardLg />
