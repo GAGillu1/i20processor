@@ -16,6 +16,7 @@ import {
   PostProcessingCard,
   PreProcessingCard,
 } from "@/components/utils/myCards";
+import { motion } from "framer-motion";
 
 // const Page = () => {
 //   return (
@@ -112,13 +113,17 @@ const Page = ({
     <main className="  bg-indigo-200 ">
       <div className="grid grid-cols-5 w-[90%] min-h-screen mx-auto">
         <div className="col-span-3 flex items-center ">
-          <div className="text-indigo-800 font-semibold">
+          <motion.div
+            className="text-indigo-800 font-semibold"
+            initial={{ opacity: 1, x: 400, scale: 2 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+          >
             <p className="leading-none">Welcome to,</p>
             <h1 className="text-9xl font-black tracking-tight">
               I-20 Processor
             </h1>
             <p>One stop for all the I-20 needs.</p>
-          </div>
+          </motion.div>
         </div>
         <Formik
           initialValues={loginIV}
@@ -126,7 +131,11 @@ const Page = ({
           onSubmit={(values) => postLogin(values)}
         >
           {
-            <section className="p-12 bg-gray-50  my-auto rounded-lg  font-semibold text-gray-700 w-[75%] col-span-2 justify-self-end">
+            <motion.section
+              className="p-12 bg-gray-50  my-auto rounded-lg  font-semibold text-gray-700 w-[75%] col-span-2 justify-self-end"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
               <h2 className="text-5xl mb-6 px-0">Login</h2>
               <Form className="flex flex-col gap-1">
                 <label htmlFor="username">Email</label>
@@ -150,7 +159,7 @@ const Page = ({
                   />
                 </div>
               </Form>
-            </section>
+            </motion.section>
           }
         </Formik>
         {forgotPwd && <MyModal />}

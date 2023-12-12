@@ -1,10 +1,7 @@
+"use client";
 /* eslint-disable react/no-unescaped-entities */
 import { UsersIcon } from "@/assets/myIcons";
-import {
-  HelperCard,
-  instanceDesc,
-  usersDesc,
-} from "@/components/utils/myCards";
+import { HelperCard, instanceDesc } from "@/components/utils/myCards";
 import Image from "next/image";
 import addInstanceImage from "@/public/addInstance.png";
 import instanceInfoImage from "@/public/instanceInfo.png";
@@ -28,49 +25,38 @@ const Page = () => {
             className="rounded w-full my-2"
           />
         </div>
-        <ol className="list-decimal list-inside ">
+        <ul>
           <li>
-            Add Instance
-            <ul>
+            <span className="font-semibold"> Add Instance:</span>
+            <ol className="list-decimal list-inside pl-4">
+              <li>Fill in Instance Name.</li>
+              <li>Enter valid username.</li>
+              <li>Populate valid password.</li>
+              <li>Save JSON Endpoint value in the field.</li>
+              <li>Select processor type (Post-Processor or Pre-Processor).</li>
               <li>
-                To introduce a new CRM instance, users must input specific
-                details, including Instance Name, Username, Password, JSON
-                Endpoint, and Processor Type (pre-processor or post-processor).
-                Subsequently, users can choose to test the instance, ensuring
-                the accuracy of the provided details, or register it,
-                effectively creating a new instance within the portal.
+                You can Test Instance, and if working as expected, click on
+                Register.
+              </li>
+            </ol>
+          </li>
+          <li>
+            <span className="font-semibold">Filter Instance:</span>
+            <ul className="pl-4">
+              <li>
+                Select either pre-processor or post-processor in dropdown.
               </li>
             </ul>
           </li>
           <li>
-            Filter Instance:
-            <ul>
-              <li>
-                The "Filter Instance" option enables users to streamline their
-                view by selecting either pre-processor or post-processor. This
-                facilitates a focused display of all instances corresponding to
-                the chosen filter value.
-              </li>
-            </ul>
+            <span className="font-semibold">View Instance:</span>
+            <ol className="list-decimal list-inside pl-4">
+              <li>Click on the instance you want to edit.</li>
+              <li>You can edit either the username or password.</li>
+              <li>Click on save to persist data.</li>
+            </ol>
           </li>
-          <li>
-            Edit Instance:
-            <ul>
-              <li>
-                Within the available instances, users can select and edit any
-                instance by modifying the values initially entered during the
-                addition of the instance. Post-editing, users can save the
-                updated values, ensuring accurate and up-to-date instance
-                information.
-              </li>
-              <li>
-                These functionalities contribute to an organized and
-                user-friendly interface, enhancing the efficiency of managing
-                and maintaining instances within the portal.
-              </li>
-            </ul>
-          </li>
-        </ol>
+        </ul>
       </HelperCard>
     </main>
   );

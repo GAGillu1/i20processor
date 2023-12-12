@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable react/no-unescaped-entities */
 import { UsersIcon } from "@/assets/myIcons";
 import { HelperCard, institutionDesc } from "@/components/utils/myCards";
@@ -42,46 +44,50 @@ const Page = () => {
             className="rounded w-full my-2"
           />
         </div>
-        <ol className="list-decimal list-inside ">
+        <ul>
           <li>
             Add Institution:
-            <ul>
+            <ol className="list-decimal list-inside ">
+              <li>Enter Institution Name.</li>
+              <li>Fill in CRM value.</li>
               <li>
-                This feature necessitates the input of various details:
-                <ol className="ml-4 list-decimal list-inside">
-                  <li>Institution Name</li>
+                Primary contact details start with Full Name; please enter
+                accordingly.
+              </li>
+              <li>Populate Display Name.</li>
+              <li>Enter Email Address.</li>
+              <li>Enter contact Number.</li>
+              <li>Click on the add button to create a new Institution.</li>
+            </ol>
+          </li>
+          <li>
+            View Institution:
+            <ol>
+              <li>Search bar to search for a particular institution.</li>
+              <li>Click on any institution.</li>
+              <li>
+                Institution Info will be available on the screen with three
+                buttons.
+              </li>
+              <li>
+                <ol>
                   <li>
-                    CRM (Customer Relationship Management) module associated
-                    with the institution.
+                    Institution User List: Click to view users who come under
+                    this particular institution.
                   </li>
                   <li>
-                    Primary Contact Information, including Full Name, Display
-                    Name, Email ID, and Contact Number.
+                    Institution Logs: Click to view logs only particular to this
+                    institution.
+                  </li>
+                  <li>
+                    Edit button: Click to edit all values mentioned in Add New
+                    Institution.
                   </li>
                 </ol>
               </li>
-            </ul>
+            </ol>
           </li>
-          <li>
-            Additional Features:
-            <ul>
-              <li>Institution User List:</li>
-              <ol className="ml-8">
-                <li>
-                  Displays a list of users affiliated with the specific
-                  organization.
-                </li>
-              </ol>
-              <li>Institution Logs:</li>
-              <ol>
-                <li>
-                  Provides a comprehensive log of all activities associated with
-                  this organization.
-                </li>
-              </ol>
-            </ul>
-          </li>
-        </ol>
+        </ul>
       </HelperCard>
     </main>
   );

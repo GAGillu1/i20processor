@@ -12,41 +12,46 @@ import {
   UniversityIcon,
   UsersIcon,
 } from "@/assets/myIcons";
-import Image from "next/image";
 import Link from "next/link";
-import x from "@/public/preProcessor.png";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { AnimationVariants } from "./variants";
+
 // -------------------------------
 // CARD
 export const Card = ({ ...props }) => {
   return (
-    <Link href={props.href}>
-      <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
-        <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
-          {props.children}
+    <motion.div variants={AnimationVariants.card}>
+      <Link href={props.href}>
+        <div className="bg-white rounded-lg w-40 h-40 hover:scale-105 duration-300 transform group">
+          <div className="bg-indigo-50 rounded-t-lg h-28 w-full items-center flex">
+            {props.children}
+          </div>
+          <div className="flex items-center justify-center h-12">
+            <h3 className="font-semibold text-lg ">{props.title}</h3>
+          </div>
         </div>
-        <div className="flex items-center justify-center h-12">
-          <h3 className="font-semibold text-lg ">{props.title}</h3>
-        </div>
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 // -------------------------------
 // LARGE CARD
 export const CardLg = ({ ...props }) => {
   return (
-    <Link href={props.link}>
-      <section className="grid grid-cols-6 rounded-lg hover:scale-105 duration-300">
-        <div className="bg-indigo-50 rounded-l-lg flex items-center justify-center">
-          {props.children}
+    <motion.div variants={AnimationVariants.card}>
+      <Link href={props.link}>
+        <div className="grid grid-cols-6 rounded-lg hover:scale-105 duration-300">
+          <div className="bg-indigo-50 rounded-l-lg flex items-center justify-center">
+            {props.children}
+          </div>
+          <div className="col-span-5 bg-white rounded-r-lg py-2 px-4">
+            <h3 className="text-indigo-900 ">{props.title} </h3>
+            <p className=" text-justify py-1">{props.description}</p>
+          </div>
         </div>
-        <div className="col-span-5 bg-white rounded-r-lg py-2 px-4">
-          <h3 className="text-indigo-900 ">{props.title} </h3>
-          <p className=" text-justify py-1">{props.description}</p>
-        </div>
-      </section>
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 // -------------------------------
@@ -54,22 +59,20 @@ export const CardLg = ({ ...props }) => {
 export const HelperCard = ({ ...props }) => {
   const [icon, image, instructions] = props.children;
   return (
-    <div>
-      <section className="grid grid-cols-5 rounded-lg bg-white  text-justify">
-        <div className="bg-indigo-50 rounded-tl-lg flex items-center justify-center">
-          {icon}
-        </div>
-        <div className="col-span-4 rounded-r-lg px-4 py-2 border-b-2 border-indigo-50">
-          <h3 className="text-indigo-900">{props.title}</h3>
-          <p className="py-1">{props.description}</p>
-        </div>
-        <div className="col-span-3 p-2">{image}</div>
-        <div className="col-span-2 p-2">
-          <h2 className="p-0">Instructions</h2>
-          <div className="px-2">{instructions}</div>
-        </div>
-      </section>
-    </div>
+    <section className="grid grid-cols-5 rounded-lg bg-white  text-justify">
+      <div className="bg-indigo-50 rounded-tl-lg flex items-center justify-center">
+        {icon}
+      </div>
+      <div className="col-span-4 rounded-r-lg px-4 py-2 border-b-2 border-indigo-50">
+        <h3 className="text-indigo-900">{props.title}</h3>
+        <p className="py-1">{props.description}</p>
+      </div>
+      <div className="col-span-3 p-2">{image}</div>
+      <div className="col-span-2 p-2">
+        <h2 className="p-0">Instructions</h2>
+        <div className="px-2">{instructions}</div>
+      </div>
+    </section>
   );
 };
 // -------------------------------

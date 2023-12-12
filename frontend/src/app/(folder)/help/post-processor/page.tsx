@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable react/no-unescaped-entities */
 import { PostProcessingIcon } from "@/assets/myIcons";
 import { HelperCard, postProcessorDesc } from "@/components/utils/myCards";

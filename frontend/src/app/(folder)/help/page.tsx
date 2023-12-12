@@ -7,6 +7,8 @@ import {
   PreProcessorCardLg,
   UsersCardLg,
 } from "@/components/utils/myCards";
+import { motion } from "framer-motion";
+import { AnimationVariants } from "@/components/utils/variants";
 
 const Help = () => {
   const userData = useMyContext();
@@ -16,14 +18,19 @@ const Help = () => {
 
   return (
     <main className="w-[95%] mx-auto ">
-      <h2 className="">Select your help</h2>
-      <section className="grid gap-3 pb-4">
+      <h2>Select your help</h2>
+      <motion.section
+        className="grid gap-3 pb-4"
+        initial="initial"
+        animate="animate"
+        variants={AnimationVariants.container}
+      >
         <PreProcessorCardLg />
         <PostProcessingCardLg />
         {isAdmin && <InstanceCardLg />}
         {isAdmin && <UsersCardLg />}
         {isSuperUser && <InstitutionCardLg />}
-      </section>
+      </motion.section>
     </main>
   );
 };

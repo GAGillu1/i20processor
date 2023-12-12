@@ -1,3 +1,4 @@
+"use client";
 import { UsersIcon } from "@/assets/myIcons";
 import { HelperCard, usersDesc } from "@/components/utils/myCards";
 import Image from "next/image";
@@ -53,30 +54,6 @@ const Page = () => {
               <li>Finally, Click on Add Signature.</li>
               <li>Now click on save to persist the data.</li>
             </ol>
-          </li>
-          <li>
-            Edit User Details and Roles:
-            <ul>
-              <li>
-                Modify user information such as Display Name, Full Name, Email
-                Address, and Role assignments.
-              </li>
-            </ul>
-          </li>
-          <li>
-            Add Signature:
-            <ul>
-              <li>
-                Administrators, and the respective user, have the privilege to
-                incorporate digital signatures.
-              </li>
-              <li className="italic">
-                <span className="not-italic">Note:</span> The addition of Super
-                User is restricted to developers or product owners, and
-                organizational administrators possess full access control over
-                their user management tasks.
-              </li>
-            </ul>
           </li>
         </ul>
       </HelperCard>

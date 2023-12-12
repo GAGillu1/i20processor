@@ -10,6 +10,8 @@ import { toast } from "react-hot-toast";
 import UserInfo from "./userInfo";
 import AddUser from "./addUser";
 import UserList from "./userList";
+import { motion } from "framer-motion";
+import { AnimationVariants } from "@/components/utils/variants";
 
 const Users = ({ searchParams }: sParams) => {
   const [userList, setUserList] = useState<userModel[]>([]);
@@ -41,7 +43,12 @@ const Users = ({ searchParams }: sParams) => {
   };
 
   return (
-    <main className="w-[95%] mx-auto">
+    <motion.main
+      className="w-[95%] mx-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h1 className=" p-4 font-bold text-slate-700 text-xl">
         {institution ? institution : ""} User List
       </h1>
@@ -72,7 +79,12 @@ const Users = ({ searchParams }: sParams) => {
           </ul>
         </div>
 
-        <div className="bg-white rounded-lg p-4 ">
+        <motion.div
+          className="bg-white rounded-lg p-4 "
+          initial="initial"
+          animate="animate"
+          variants={AnimationVariants.container}
+        >
           {showUser && (
             <Suspense fallback={<Loading />}>
               <UserInfo />
@@ -88,9 +100,9 @@ const Users = ({ searchParams }: sParams) => {
               <AddSign />
             </Suspense>
           )}
-        </div>
+        </motion.div>
       </section>
-    </main>
+    </motion.main>
   );
 };
 

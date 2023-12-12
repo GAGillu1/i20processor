@@ -1,3 +1,4 @@
+"use client";
 import { PreProcessingIcon } from "@/assets/myIcons";
 import { HelperCard, preProcessorDesc } from "@/components/utils/myCards";
 import Image from "next/image";

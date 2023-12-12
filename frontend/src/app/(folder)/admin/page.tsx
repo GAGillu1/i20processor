@@ -5,20 +5,32 @@ import {
   InstitutionCardLg,
   UsersCardLg,
 } from "@/components/utils/myCards";
+import { motion } from "framer-motion";
+import { AnimationVariants } from "@/components/utils/variants";
 
 const Admin = () => {
   const userData = useMyContext();
   const isSuperUser = userData.role === "SuperUser";
 
   return (
-    <main className="w-[95%] mx-auto ">
+    <motion.main
+      className="w-[95%] mx-auto "
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2 className="">Admin tools</h2>
-      <section className="grid gap-3 ">
+      <motion.section
+        className="grid gap-3 "
+        initial="initial"
+        animate="animate"
+        variants={AnimationVariants.container}
+      >
         <InstanceCardLg />
         <UsersCardLg />
         {isSuperUser && <InstitutionCardLg />}
-      </section>
-    </main>
+      </motion.section>
+    </motion.main>
   );
 };
 
