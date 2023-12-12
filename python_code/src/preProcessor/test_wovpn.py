@@ -1,13 +1,8 @@
 import sys
 sys.path.append("preProcessor")
 sys.path.append("src")
-# from selenium.common import NoSuchElementException
-# from selenium.webdriver.common.by import By
 from TestingBulk import testing_main
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as ec
 from issmfilelog import logger
-# from selenium.webdriver.chrome.service import Service
 from dbstatements import insertppreprocessed
 # from python_code.src.dbstatements import insertppreprocessed
 from flask import request
@@ -24,7 +19,7 @@ def vpn_function_bulk(issm_username, issm_password, excel_file, instance, socket
     logResponse = ""
     try:
         logger.info(f"starting vpn_function in test_wovpn file")
-        print(f"starting vpn_function in test_wovpn file")
+        # print(f"starting vpn_function in test_wovpn file")
         if instance == "Prod":
             # input_url = "issm-prod.newhaven.edu"
             input_url = "https://issm-prod.newhaven.edu"

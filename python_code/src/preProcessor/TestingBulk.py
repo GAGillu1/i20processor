@@ -234,7 +234,8 @@ def duplicate_check(student, driver, domain_url, config, progress_bar):
 
 def process_student(url, config, progress_bar, final_dict, issm_username, issm_password, socketio, std):
     try:
-        # chrome_options = webdriver.ChromeOptions()
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_experimental_option("detach", True)
         # chrome_options.add_argument("--no-sandbox")
         # chrome_options.add_argument("--headless")
         # chrome_options.add_argument("--disable-dev-shm-usage")
@@ -244,6 +245,7 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
         # browser = webdriver.Chrome(service=service, options=chrome_options)
         # commented the below line for amazon instance.
         browser = webdriver.Chrome()
+        # browser = webdriver.Remote(command_executor="http://172.19.26.222:4444/wd/hub", options=chrome_options)
         # print(f"printing url before chrome {url}")
         browser.get(url)
         # print("after get")
@@ -393,6 +395,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
     institutionId = request.headers.get('institutionid')
     logger.info(f"institution in request header: {institutionId}")
     logResponse = ""
+    df = pd.DataFrame()
     try:
         # print("before reading excel")
         df = pd.read_excel("preProcessor/Duplicate.xlsx", engine='openpyxl')
@@ -534,7 +537,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         #     logger.info(f"percentage completed: {progressBar_value}")
         #     socketio.emit('preProcessor', progressBar_value)
         #     logger.info(progress_bar.__str__())
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=8) as executor:
             # print("inside parallel execution")
             futures = []
             # Submit each student for processing concurrently
