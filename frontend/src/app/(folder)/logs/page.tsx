@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 import { logModel, preProcessorLogModel } from "@/components/utils/models";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { useMyContext } from "@/components/utils/myContext";
+import { motion } from "framer-motion";
 
 const Tag = ({ value }: { value: string }) => {
   return (
@@ -163,7 +164,12 @@ const Logs = () => {
     );
   };
   return (
-    <main className="w-[80%] mx-auto">
+    <motion.main
+      className="w-[80%] mx-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2>Logs</h2>
       <section className="bg-white rounded-lg p-1">
         <DataTable
@@ -213,7 +219,7 @@ const Logs = () => {
           )}
         </DataTable>
       </section>
-    </main>
+    </motion.main>
   );
 };
 

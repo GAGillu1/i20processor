@@ -8,6 +8,7 @@ import { MyButton } from "../../../../components/utils/myInputs";
 import { useEffect, useState } from "react";
 import getFormData from "../../../../components/utils/getFormData";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 const AddInstance = () => {
   const [loading, setLoading] = useState(false);
   const [testing, setTesting] = useState(false);
@@ -58,7 +59,11 @@ const AddInstance = () => {
     return null;
   };
   return (
-    <section>
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Formik
         initialValues={instanceIV}
         validationSchema={instanceSchema}
@@ -112,7 +117,7 @@ const AddInstance = () => {
           </Form>
         </section>
       </Formik>
-    </section>
+    </motion.section>
   );
 };
 

@@ -31,18 +31,20 @@ const Page = () => {
       >
         <UsersIcon className="w-16 h-16 text-indigo-900 mx-auto" />
         <div className="">
-          <Image
-            src={addInstitutionImage}
-            objectFit="contain"
-            alt="Add Instance Screenshot"
-            className="rounded w-full"
-          />
-          <Image
-            src={institutionInfoImage}
-            objectFit="contain"
-            alt="Instance Info Screenshot"
-            className="rounded w-full my-2"
-          />
+          <div className="">
+            <Image
+              src={addInstitutionImage}
+              alt="Add Instance Screenshot"
+              className="rounded hover:scale-150 duration-300 hover:translate-x-28 hover:-translate-y-6"
+            />
+          </div>
+          <div className="">
+            <Image
+              src={institutionInfoImage}
+              alt="Instance Info Screenshot"
+              className="rounded ml-2 hover:scale-150 duration-300 hover:-translate-x-28 hover:-translate-y-7"
+            />
+          </div>
         </div>
         <ul>
           <li>

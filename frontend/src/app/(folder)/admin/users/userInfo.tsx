@@ -14,6 +14,7 @@ import getFormData from "@/components/utils/getFormData";
 import { userSchema } from "@/components/utils/valSchemas";
 import { MyButton, Toggle } from "@/components/utils/myInputs";
 import { useMyContext } from "@/components/utils/myContext";
+import { motion } from "framer-motion";
 
 const UserInfo = () => {
   const [userInfo, setUserInfo] = useState<userModel>(userInfoIV);
@@ -68,7 +69,11 @@ const UserInfo = () => {
   };
 
   return (
-    <section>
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h1 className="text-center font-bold text-xl text-slate-700 py-2">
         User Info
       </h1>
@@ -147,7 +152,7 @@ const UserInfo = () => {
           </section>
         </Formik>
       )}
-    </section>
+    </motion.section>
   );
 };
 

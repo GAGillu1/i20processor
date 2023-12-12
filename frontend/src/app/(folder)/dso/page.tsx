@@ -15,6 +15,7 @@ import {
 } from "@/components/utils/myInputs";
 import { toast } from "react-hot-toast";
 import getFormData from "@/components/utils/getFormData";
+import { motion } from "framer-motion";
 
 const dsoSchema = Yup.object({
   // dso: Yup.mixed().required("Please select a DSO"),
@@ -52,7 +53,12 @@ const Dso = () => {
   }
 
   return (
-    <main className="main">
+    <motion.main
+      className="main"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2>DSO</h2>
       <section className="section">
         <h2 className="formHeader">Import I20</h2>
@@ -97,7 +103,7 @@ const Dso = () => {
           </section>
         </Formik>
       </section>
-    </main>
+    </motion.main>
   );
 };
 

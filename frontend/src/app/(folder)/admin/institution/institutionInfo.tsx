@@ -12,6 +12,7 @@ import { institutionSchema } from "@/components/utils/valSchemas";
 import { institutionIV } from "@/components/utils/initialValues";
 import { MyButton, Toggle } from "@/components/utils/myInputs";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const InstitutionInfo = () => {
   const [institutionInfo, setInstitutionInfo] =
@@ -62,7 +63,11 @@ const InstitutionInfo = () => {
   };
 
   return (
-    <section>
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h1 className="text-center font-bold text-xl text-slate-700 py-2">
         Institution Info
       </h1>
@@ -129,7 +134,7 @@ const InstitutionInfo = () => {
           </section>
         </Formik>
       )}
-    </section>
+    </motion.section>
   );
 };
 

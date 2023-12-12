@@ -10,6 +10,7 @@ import { addUserIV } from "@/components/utils/initialValues";
 import { addUserSchema } from "@/components/utils/valSchemas";
 import { MyButton } from "@/components/utils/myInputs";
 import { useMyContext } from "@/components/utils/myContext";
+import { motion } from "framer-motion";
 
 const AddUser = () => {
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,11 @@ const AddUser = () => {
     }
   };
   return (
-    <section>
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2 className="text-center">Add New user</h2>
       <Formik
         initialValues={addUserIV}
@@ -77,7 +82,7 @@ const AddUser = () => {
           </Form>
         </section>
       </Formik>
-    </section>
+    </motion.section>
   );
 };
 

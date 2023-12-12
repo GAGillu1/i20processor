@@ -10,6 +10,7 @@ import InstitutionList from "./institutionList";
 import InstitutionInfo from "./institutionInfo";
 import AddUniversity from "./addInstitution";
 import InstitutionLogs from "./institutionLogs";
+import { motion } from "framer-motion";
 
 const Institution = ({ searchParams }: sParams) => {
   const [institutionList, setInstitutionList] = useState<userModel[]>([]);
@@ -37,7 +38,12 @@ const Institution = ({ searchParams }: sParams) => {
   return showLogs ? (
     <InstitutionLogs />
   ) : (
-    <main className="w-[95%] mx-auto">
+    <motion.main
+      className="w-[95%] mx-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h1 className=" p-4 font-bold text-slate-700 text-xl">
         Institution List
       </h1>
@@ -94,7 +100,7 @@ const Institution = ({ searchParams }: sParams) => {
           )}
         </div>
       </section>
-    </main>
+    </motion.main>
   );
 };
 

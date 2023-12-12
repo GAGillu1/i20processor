@@ -10,23 +10,25 @@ const Page = () => {
     <main className="w-[95%] mx-auto">
       <HelperCard link="/i20/users" title="Users" description={usersDesc}>
         <UsersIcon className="w-16 h-16 text-indigo-900 mx-auto" />
-        <div>
-          <Image
-            src={addUserImage}
-            objectFit="contain"
-            alt="Add User Screenshot"
-            className="rounded w-full"
-          />
-          <Image
-            src={addSignImage}
-            objectFit="contain"
-            alt="Add Sign Screenshot"
-            className="rounded w-full my-2"
-          />
+        <div className="flex flex-col gap-2">
+          <div className="">
+            <Image
+              src={addUserImage}
+              alt="Add User Screenshot"
+              className="rounded w-full"
+            />
+          </div>
+          <div className="">
+            <Image
+              src={addSignImage}
+              alt="Add Sign Screenshot"
+              className="rounded w-full"
+            />
+          </div>
         </div>
         <ul>
           <li>
-            <li className="font-semibold">Add User:</li>
+            <p className="font-semibold">Add User:</p>
             <ol className="list-decimal list-inside pl-4">
               <li>
                 Enter Display name (Name to be displayed in I20Processor).
@@ -38,7 +40,7 @@ const Page = () => {
             </ol>
           </li>
           <li>
-            <li className="font-semibold">View User:</li>
+            <p className="font-semibold">View User:</p>
             <ol className="list-decimal list-inside pl-4">
               <li>Click on a user to view his details.</li>
               <li>To activate/deactivate, use toggle.</li>

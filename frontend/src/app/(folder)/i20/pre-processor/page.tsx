@@ -22,6 +22,7 @@ import getFormData, {
 } from "@/components/utils/getFormData";
 import { ProgressBar, Response } from "@/components/utils/progessBar";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 const Page = ({ searchParams }: sParams) => {
   const router = useRouter();
@@ -81,7 +82,12 @@ const Page = ({ searchParams }: sParams) => {
     }
   }
   return (
-    <main className="main">
+    <motion.main
+      className="main"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2>I20 Pre-processor</h2>
       <section className="section">
         {showResults ? (
@@ -185,7 +191,7 @@ const Page = ({ searchParams }: sParams) => {
         )}
       </section>
       {loading && <ProgressBar />}
-    </main>
+    </motion.main>
   );
 };
 

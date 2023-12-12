@@ -9,6 +9,7 @@ import { institutionModel } from "@/components/utils/models";
 import { institutionIV } from "@/components/utils/initialValues";
 import { institutionSchema } from "@/components/utils/valSchemas";
 import { MyButton, PhInput } from "@/components/utils/myInputs";
+import { motion } from "framer-motion";
 
 const AddUniversity = () => {
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,11 @@ const AddUniversity = () => {
     }
   };
   return (
-    <section>
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2 className="text-center">Add New Institution</h2>
       <Formik
         initialValues={institutionIV}
@@ -67,7 +72,7 @@ const AddUniversity = () => {
           </Form>
         </section>
       </Formik>
-    </section>
+    </motion.section>
   );
 };
 

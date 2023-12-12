@@ -10,6 +10,7 @@ import { instanceModel } from "@/components/utils/models";
 import getFormData from "@/components/utils/getFormData";
 import { instanceSchema } from "@/components/utils/valSchemas";
 import { instanceIV } from "@/components/utils/initialValues";
+import { motion } from "framer-motion";
 
 const InstanceInfo = () => {
   const [instanceInfo, setInstanceInfo] = useState<instanceModel>(instanceIV);
@@ -52,7 +53,11 @@ const InstanceInfo = () => {
   };
 
   return (
-    <section>
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h1 className="text-center font-bold text-xl text-slate-700 py-2">
         Instance Info
       </h1>
@@ -103,7 +108,7 @@ const InstanceInfo = () => {
           </section>
         </Formik>
       )}
-    </section>
+    </motion.section>
   );
 };
 

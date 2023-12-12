@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { logModel } from "@/components/utils/models";
 import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 
 const Tag = ({ value }: { value: string }) => {
   return (
@@ -96,7 +97,12 @@ const InstitutionLogs = () => {
     );
   };
   return (
-    <main className="w-[80%] mx-auto">
+    <motion.main
+      className="w-[80%] mx-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2>{institution} Logs</h2>
       <section className="bg-white rounded-lg p-1">
         <DataTable
@@ -133,7 +139,7 @@ const InstitutionLogs = () => {
           <Column field="processor" header="Tool" className="w-[25%] px-2" />
         </DataTable>
       </section>
-    </main>
+    </motion.main>
   );
 };
 

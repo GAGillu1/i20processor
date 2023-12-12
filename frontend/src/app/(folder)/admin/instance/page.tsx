@@ -9,6 +9,7 @@ import AddInstance from "@/app/(folder)/admin/instance/addInstance";
 import { toast } from "react-hot-toast";
 import InstanceList from "./instanceList";
 import InstanceInfo from "./instanceInfo";
+import { motion } from "framer-motion";
 
 const Users = ({ searchParams }: sParams) => {
   const [findInstance, setFindInstance] = useState("");
@@ -34,7 +35,12 @@ const Users = ({ searchParams }: sParams) => {
   };
 
   return (
-    <main className="w-[95%] mx-auto">
+    <motion.main
+      className="w-[95%] mx-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h1 className=" p-4 font-bold text-slate-700 text-xl">Instance List</h1>
       <section className="grid grid-cols-2 gap-2  min-h-[70vh]">
         <div className="bg-white rounded-lg p-4">
@@ -93,7 +99,7 @@ const Users = ({ searchParams }: sParams) => {
           )}
         </div>
       </section>
-    </main>
+    </motion.main>
   );
 };
 

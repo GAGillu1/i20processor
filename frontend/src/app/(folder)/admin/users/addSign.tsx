@@ -12,6 +12,7 @@ import { signModel } from "../../../../components/utils/models";
 import getFormData from "../../../../components/utils/getFormData";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const AddSign = () => {
   const username = useSearchParams()?.get("user");
@@ -41,7 +42,11 @@ const AddSign = () => {
     }
   };
   return (
-    <section>
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="flex justify-between items-center pt-2 pb-4">
         <Link href={`/admin/users?user=${username}`}>
           <BackIcon />
@@ -105,7 +110,7 @@ const AddSign = () => {
           </Form>
         </section>
       </Formik>
-    </section>
+    </motion.section>
   );
 };
 
