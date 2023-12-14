@@ -888,7 +888,8 @@ def isntance():
     if request.method == 'GET':
         institutionid = request.headers.get('institutionid')
         result = instanceget(institutionid)
-        result_dict = result.to_dict(orient='records')  if result !='No data returned from the query.' else []
+        print(";;;;;",result)
+        result_dict = result.to_dict(orient='records')  
         return jsonify({'message': 'Fetched instances', 'data': result_dict})
 @app.route('/instance/test',methods=['GET','POST'])
 def instancetesting():
