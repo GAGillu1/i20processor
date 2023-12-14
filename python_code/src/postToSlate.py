@@ -98,7 +98,10 @@ def updateinstance(password, username, institutionid, type,instanceprocessor):
 def instanceget(institutionid):
     try:
         result = getinstances(institutionid)
-        result.rename(columns={'jsonendpoint': 'endpoint', 'jsontype': 'type'}, inplace=True)
+        print("aaaa",result)
+        print(type(result))
+        print(result!='No data returned from the query.')
+        result.rename(columns={'jsonendpoint': 'endpoint', 'jsontype': 'type'}, inplace=True) if result !='No data returned from the query.' else None
         return result
     except Exception as e:
         return "error ininstance get ", e
