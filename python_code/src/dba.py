@@ -1,9 +1,12 @@
 import pyodbc
 import pandas as pd
+
 conn = None
 
 def connect():
     global conn
+    #onn = pymssql.connect(server="172.19.97.157", port="1433", user="SuperAdmin", password="#nXHa&Ydkx6q36Gf", database="issm_test")
+
     conn = pyodbc.connect(
         'Driver={ODBC Driver 17 for SQL Server};'
         #'Server=localhost\SQLEXPRESS;'
