@@ -16,6 +16,10 @@ textarea {
   @apply rounded p-1 outline-none font-normal text-slate-600 bg-slate-200 outline outline-2 -outline-offset-1 hover:outline-indigo-400 active:outline-indigo-500 focus:outline-indigo-500 w-full disabled:hover:outline-none read-only:opacity-70 disabled:opacity-70 read-only:hover:outline-none read-only:focus:outline-none;
 }
 
+select {
+  @apply bg-slate-300 disabled:bg-slate-200 text-slate-950 disabled:text-slate-600;
+}
+
 input[type="file"] {
   @apply block w-full text-sm text-slate-500
       file:mr-4 file:py-2 file:px-4

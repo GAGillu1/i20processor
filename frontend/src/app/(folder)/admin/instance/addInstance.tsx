@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import getFormData from "../../../../components/utils/getFormData";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
+import { revalidateTag } from "next/cache";
 const AddInstance = () => {
   const [loading, setLoading] = useState(false);
   const [testing, setTesting] = useState(false);
@@ -22,6 +23,7 @@ const AddInstance = () => {
         body: getFormData(values),
       });
       if (!res.ok) throw res;
+      revalidateTag("instanceList");
       const data = await res.json();
       console.log(data);
       toast.success(data.message);

@@ -5,6 +5,7 @@ import { useMyContext } from "./myContext";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const progress = ["w-1/6", "w-2/6", "w-3/6", "w-4/6", "w-full", "w-full"];
 
@@ -95,7 +96,12 @@ const PreProcessorProgressBar = () => {
   const p = Math.floor((status / maxCount) * 100);
 
   return (
-    <section className="section">
+    <motion.section
+      className="section"
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -50 }}
+    >
       <div className="w-[90%] mx-auto">
         <h3 className="animate-pulse text-center">{`${
           status < 6 ? preArr[status] : progressText
@@ -107,7 +113,7 @@ const PreProcessorProgressBar = () => {
           />
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 const PostProcessorProgressBar = () => {
@@ -115,7 +121,12 @@ const PostProcessorProgressBar = () => {
   const status = Math.abs(data.postProcessStatus);
 
   return (
-    <section className="section">
+    <motion.section
+      className="section"
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -50 }}
+    >
       <div className="w-[90%] mx-auto">
         <h3 className="animate-pulse text-center">{`${postArr[status]}`}</h3>
         <div className="mt-4 h-2 w-full rounded-full bg-slate-200">
@@ -127,14 +138,19 @@ const PostProcessorProgressBar = () => {
           />
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
 export const Response = () => {
   const path = usePathname();
   return (
-    <section className="w-[90%] mx-auto">
+    <motion.section
+      className="w-[90%] mx-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2 className="formHeader">Results</h2>
       <div className="grid grid-cols-3 gap-y-2">
         <Results />
@@ -144,6 +160,6 @@ export const Response = () => {
           <button>Got it!</button>
         </Link>
       </div>
-    </section>
+    </motion.section>
   );
 };

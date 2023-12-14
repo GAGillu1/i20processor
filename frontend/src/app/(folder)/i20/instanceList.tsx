@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import * as React from "react";
 import { toast } from "react-hot-toast";
 
-const InstanceList = () => {
+const InstanceList = ({ type }: { type: string }) => {
   const [instanceList, setInstanceList] = useState<instanceModel[]>([]);
 
   useEffect(() => {
@@ -12,7 +12,9 @@ const InstanceList = () => {
 
   const getInstanceList = async () => {
     try {
-      const res = await fetch("/api/instance");
+      const res = await fetch("/api/instance", {
+        next: { tags: ["instanceList"] },
+      });
       if (!res.ok) throw res;
       const { data } = await res.json();
       setInstanceList(data);
@@ -27,7 +29,7 @@ const InstanceList = () => {
       {instanceList.length > 0
         ? instanceList.map(
             (item: instanceModel) =>
-              item.instanceprocessor === "Postprocessor" && (
+              item.instanceprocessor === type && (
                 <option value={item.type} key={item.type}>
                   {item.type}
                 </option>

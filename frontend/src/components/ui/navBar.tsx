@@ -8,6 +8,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMyContext, useContextDispatch } from "../utils/myContext";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
+import { AnimationVariants } from "../utils/variants";
 
 const NavBar = () => {
   const path = usePathname();
@@ -37,7 +39,12 @@ const NavBar = () => {
           I20 Processor
         </Link>
       </div>
-      <div className="flex gap-4 justify-between flex-col">
+      <motion.div
+        className="flex gap-4 justify-between flex-col"
+        initial="initial"
+        animate="animate"
+        variants={AnimationVariants.container}
+      >
         <Link
           href={"/"}
           className={`navLink ${path === "/" ? "activeNavLink" : ""}`}
@@ -78,7 +85,7 @@ const NavBar = () => {
           <LogsIcon />
           Logs
         </Link>
-      </div>
+      </motion.div>
       <div>
         <Link
           href={"/help"}

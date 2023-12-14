@@ -5,6 +5,7 @@ import { MyContextProvider } from "@/components/utils/myContext";
 import { Toaster } from "react-hot-toast";
 import Socket from "../components/utils/websockets";
 import Footer from "@/components/ui/footer";
+import { AnimatePresence } from "framer-motion";
 
 export const metadata: Metadata = {
   title: "I-20 Processor",

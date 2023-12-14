@@ -23,6 +23,7 @@ import getFormData, {
 import { ProgressBar, Response } from "@/components/utils/progessBar";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import InstanceList from "../instanceList";
 
 const Page = ({ searchParams }: sParams) => {
   const router = useRouter();
@@ -103,10 +104,6 @@ const Page = ({ searchParams }: sParams) => {
             <section className="w-[90%] mx-auto">
               <h2 className="formHeader">Import I20</h2>
               <Form className="grid grid-cols-3 gap-y-2 items-center">
-                {/* <Field as="select" name="instance" className="col-span-2">
-                <option value="">Select Instance</option>
-                <DsoList />
-              </Field> */}
                 <label htmlFor="vpn">VPN</label>
                 <div className="col-span-2 ">
                   <Field
@@ -142,7 +139,10 @@ const Page = ({ searchParams }: sParams) => {
                 )}
                 <h3 className="col-span-3 text-center">CRM Credentials</h3>
                 <label htmlFor="instance">Instance:</label>
-                <Field name="instance" className="col-span-2" />
+                <Field as="select" name="instance" className="col-span-2">
+                  <option value="">Select Instance</option>
+                  <InstanceList type="Preprocessor" />
+                </Field>
                 <ErrorMsg name="instance" className="col-span-2 col-start-2" />
                 <label htmlFor="issmUsername">Username</label>
                 <Field

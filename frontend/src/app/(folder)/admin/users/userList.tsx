@@ -1,6 +1,6 @@
 "use client";
 import { userModel } from "@/components/utils/models";
-import { AnimationVariants } from "@/components/utils/variants";
+import { AnimationVariants as ListAnimationVariants } from "@/components/utils/variants";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -28,7 +28,7 @@ const UserList = ({ ...props }) => {
             }
             href={"/admin/users/?user=" + item.email}
           >
-            <motion.div variants={AnimationVariants.card}>
+            <motion.div variants={ListAnimationVariants.card}>
               {item.fullname}
             </motion.div>
           </Link>

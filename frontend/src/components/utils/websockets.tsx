@@ -5,8 +5,8 @@ import { useContextDispatch } from "./myContext";
 
 export default function Socket() {
   const [host, setHost] = useState("");
-  // const socket = io(host);
-  const socket = io(host, { autoConnect: false });
+  const socket = io(host);
+  // const socket = io(host, { autoConnect: false });
 
   const dispatch = useContextDispatch();
   const getHostname = async () => {

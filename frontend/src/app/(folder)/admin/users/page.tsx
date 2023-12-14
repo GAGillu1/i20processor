@@ -11,7 +11,7 @@ import UserInfo from "./userInfo";
 import AddUser from "./addUser";
 import UserList from "./userList";
 import { motion } from "framer-motion";
-import { AnimationVariants } from "@/components/utils/variants";
+import { ListAnimationVariants } from "@/components/utils/variants";
 
 const Users = ({ searchParams }: sParams) => {
   const [userList, setUserList] = useState<userModel[]>([]);
@@ -74,17 +74,17 @@ const Users = ({ searchParams }: sParams) => {
               />
             </div>
           </div>
-          <ul className="flex flex-col gap-2 mt-4 overflow-y-auto h-[55vh]">
+          <motion.ul
+            className="flex flex-col gap-2 mt-4 overflow-y-auto h-[55vh]"
+            initial="initial"
+            animate="animate"
+            variants={ListAnimationVariants.container}
+          >
             <UserList userList={userList} search={findUser} />
-          </ul>
+          </motion.ul>
         </div>
 
-        <motion.div
-          className="bg-white rounded-lg p-4 "
-          initial="initial"
-          animate="animate"
-          variants={AnimationVariants.container}
-        >
+        <div className="bg-white rounded-lg p-4 ">
           {showUser && (
             <Suspense fallback={<Loading />}>
               <UserInfo />
@@ -100,7 +100,7 @@ const Users = ({ searchParams }: sParams) => {
               <AddSign />
             </Suspense>
           )}
-        </motion.div>
+        </div>
       </section>
     </motion.main>
   );

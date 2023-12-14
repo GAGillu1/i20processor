@@ -125,7 +125,7 @@ const Page = ({ searchParams }: sParams) => {
                     <label htmlFor="instance">Instance:</label>
                     <Field as="select" name="instance" className="col-span-2">
                       <option value="">Select Instance</option>
-                      <InstanceList />
+                      <InstanceList type="Postprocessor" />
                     </Field>
                   </>
                 )}
