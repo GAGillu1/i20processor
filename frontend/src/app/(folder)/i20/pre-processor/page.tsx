@@ -58,21 +58,31 @@ const Page = ({ searchParams }: sParams) => {
         body: getEncryptedFormData(values),
         // body: getFormData(values),
       });
-      if (res.status === 200) {
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
-        const downloadLink = document.createElement("a");
-        downloadLink.href = url;
-        downloadLink.setAttribute("download", "Duplicate_Issm_Records.xlsx");
-        downloadLink.click();
-        window.URL.revokeObjectURL(url);
-        toast.success("Download Successful!");
-        router.push("/i20/pre-processor?result=true");
-      } else if (res.status === 201) {
-        const data = await res.json();
-        toast.success(data.message);
-      } else {
-        throw res;
+      switch (res.status) {
+        case 200: {
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const downloadLink = document.createElement("a");
+          downloadLink.href = url;
+          downloadLink.setAttribute("download", "Duplicate_Issm_Records.xlsx");
+          downloadLink.click();
+          window.URL.revokeObjectURL(url);
+          toast.success("Download Successful!");
+          router.push("/i20/pre-processor?result=true");
+        }
+        case 201: {
+          router.push("/i20/pre-processor?result=true");
+          const data = await res.json();
+          toast.success(data.message);
+        }
+        case 400: {
+          router.push("/i20/pre-processor?result=true");
+          const data = await res.json();
+          toast.error(data.message);
+        }
+        default: {
+          throw res;
+        }
       }
     } catch (err: any) {
       const data = await err.json();

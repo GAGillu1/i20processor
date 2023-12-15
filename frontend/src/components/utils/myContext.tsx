@@ -130,6 +130,13 @@ function MyReducer(data: data, action: any) {
         preProcessorState: action.action,
       };
     }
+    case "preProcessorMethod": {
+      // console.log("Pre-process Context", action.action);
+      return {
+        ...data,
+        preProcessorMethod: action.action,
+      };
+    }
     case "postProcessorState": {
       // console.log("Post-process Context", action.action);
       return {
@@ -150,6 +157,7 @@ const initialData = {
   loggedIn: false,
   dsoSign: false,
   preProcessStatus: 0,
+  preProcessorMethod: 1,
   postProcessStatus: 0,
   preProcessMaxCount: 0,
   preProcessorState: {},
@@ -164,6 +172,7 @@ interface data {
   loggedIn: boolean;
   dsoSign: boolean;
   preProcessStatus: number;
+  preProcessorMethod: number;
   postProcessStatus: number;
   preProcessMaxCount: number;
   preProcessorState: Object;

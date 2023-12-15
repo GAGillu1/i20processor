@@ -43,9 +43,14 @@ export default function Socket() {
       console.log("PreProcess Max Count", value);
       dispatch({ type: "preProcessMaxCount", action: value });
     }
+    function onPreProcessMethodUpdate(value: number) {
+      console.log("Pre-Processor Method", value);
+      dispatch({ type: "preProcessorMethod", action: value });
+    }
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+    socket.on("whichMethod", onPreProcessMethodUpdate);
     socket.on("rom", onPostProcessUpdate);
     socket.on("preProcessor", onPreProcessUpdate);
     socket.on("preProcessorMaxCount", onPreProcessMaxCount);
@@ -53,6 +58,7 @@ export default function Socket() {
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
+      socket.off("whichMethod", onPreProcessMethodUpdate);
       socket.off("rom", onPostProcessUpdate);
       socket.off("preProcessor", onPreProcessUpdate);
       socket.off("preProcessorMaxCount", onPreProcessMaxCount);

@@ -12,9 +12,7 @@ const InstanceList = ({ type }: { type: string }) => {
 
   const getInstanceList = async () => {
     try {
-      const res = await fetch("/api/instance", {
-        next: { tags: ["instanceList"] },
-      });
+      const res = await fetch("/api/instance");
       if (!res.ok) throw res;
       const { data } = await res.json();
       setInstanceList(data);
@@ -27,14 +25,13 @@ const InstanceList = ({ type }: { type: string }) => {
   return (
     <React.Fragment>
       {instanceList.length > 0
-        ? instanceList.map(
-            (item: instanceModel) =>
-              item.instanceprocessor === type && (
-                <option value={item.type} key={item.type}>
-                  {item.type}
-                </option>
-              )
-          )
+        ? instanceList
+            .filter((item) => item.instanceprocessor === type)
+            .map((item) => (
+              <option value={item.type} key={item.type}>
+                {item.type}
+              </option>
+            ))
         : ""}
     </React.Fragment>
   );

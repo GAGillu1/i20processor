@@ -2,18 +2,30 @@
 import ErrorMsg from "@/components/utils/errorMsg";
 import { instanceIV } from "@/components/utils/initialValues";
 import { instanceModel } from "@/components/utils/models";
-import { instanceSchema } from "@/components/utils/valSchemas";
+import {
+  instanceSchema,
+  preProcessorInstanceSchema,
+} from "@/components/utils/valSchemas";
 import { Field, Form, Formik, useFormikContext } from "formik";
 import { MyButton } from "../../../../components/utils/myInputs";
 import { useEffect, useState } from "react";
 import getFormData from "../../../../components/utils/getFormData";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { revalidateTag } from "next/cache";
 const AddInstance = () => {
   const [loading, setLoading] = useState(false);
   const [testing, setTesting] = useState(false);
   const [formData, setFormData] = useState<instanceModel>(instanceIV);
+  const [isPreProcessor, setisPreProcessor] = useState(false);
+
+  const CurrentValues = () => {
+    const { values }: { values: instanceModel } = useFormikContext();
+    useEffect(() => {
+      setisPreProcessor(values.instanceprocessor === "Preprocessor");
+      setFormData(values);
+    }, [values]);
+    return null;
+  };
   const addInstance = async (values: instanceModel) => {
     try {
       // console.log(values);
@@ -23,7 +35,6 @@ const AddInstance = () => {
         body: getFormData(values),
       });
       if (!res.ok) throw res;
-      revalidateTag("instanceList");
       const data = await res.json();
       console.log(data);
       toast.success(data.message);
@@ -34,6 +45,7 @@ const AddInstance = () => {
       setLoading(false);
     }
   };
+
   const testInstance = async () => {
     try {
       // console.log(values);
@@ -53,13 +65,7 @@ const AddInstance = () => {
       setTesting(false);
     }
   };
-  const CurrentValues = () => {
-    const { values }: { values: instanceModel } = useFormikContext();
-    useEffect(() => {
-      setFormData(values);
-    }, [values]);
-    return null;
-  };
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -68,7 +74,9 @@ const AddInstance = () => {
     >
       <Formik
         initialValues={instanceIV}
-        validationSchema={instanceSchema}
+        validationSchema={
+          isPreProcessor ? preProcessorInstanceSchema : instanceSchema
+        }
         onSubmit={(values: instanceModel) => addInstance(values)}
       >
         <section>

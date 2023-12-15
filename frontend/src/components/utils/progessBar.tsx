@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 
 const progress = ["w-1/6", "w-2/6", "w-3/6", "w-4/6", "w-full", "w-full"];
 
-const bannerArr = [
+const postBannerArr = [
   "Add Sign:",
   "Split Failure:",
   "Total Files:",
@@ -22,6 +22,14 @@ const bannerArr = [
   "Sign Message:",
   "Split Message",
   "Zip Message:",
+];
+
+const preBannerArr = [
+  "Total:",
+  "Processed:",
+  "Success:",
+  "Failure:",
+  "Deferral:",
 ];
 
 const postArr = [
@@ -44,6 +52,8 @@ const preArr = [
 const Results = () => {
   const [results, setResults] = useState([]);
   const path = usePathname();
+  const bannerArr =
+    path === "/i20/pre-processor" ? preBannerArr : postBannerArr;
   const api = "/api" + path;
   const getResults = async () => {
     try {
@@ -61,6 +71,7 @@ const Results = () => {
   };
   useEffect(() => {
     getResults();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -155,9 +166,12 @@ export const Response = () => {
       <div className="grid grid-cols-3 gap-y-2">
         <Results />
       </div>
-      <div className="flex justify-center items-center mt-4">
+      <div className="flex justify-center gap-4 items-center mt-4">
         <Link href={path}>
           <button>Got it!</button>
+        </Link>
+        <Link href={"/logs"}>
+          <button>Logs</button>
         </Link>
       </div>
     </motion.section>

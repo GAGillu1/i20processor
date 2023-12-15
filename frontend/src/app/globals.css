@@ -17,7 +17,7 @@ textarea {
 }
 
 select {
-  @apply bg-slate-300 disabled:bg-slate-200 text-slate-950 disabled:text-slate-600;
+  @apply bg-slate-300 disabled:bg-slate-200 text-slate-950  outline outline-2 -outline-offset-1 disabled:text-slate-600 hover:outline-indigo-400 active:outline-indigo-500 focus:outline-indigo-500 disabled:focus:outline-none disabled:hover:outline-none;
 }
 
 input[type="file"] {
