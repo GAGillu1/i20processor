@@ -133,10 +133,13 @@ def process():
                 status, text, json_response = vpn_function_bulk(decrypted_message_username, decrypted_message_password,
                                                                 excel_file_name, decrypted_message_instance, socketio)
             print(f"status: {status}, text: {text}, json_response: {json_response}")
+
+            redis_client.rpush("preProcessorJson", json_response)
+            redis_client.set("preProcessorText", text)
             if status and text == "Partial Success":
                 # response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
                 # response.headers['Content-Disposition'] = 'attachment; filename=duplicate issm.xlsx'
-                response = make_response({'message': text, 'data': json_response})
+                response = make_response({'message': text})
                 # logger.info(f"Process Completed")
                 logger.info(response)
                 # close_file_handler()
@@ -144,13 +147,13 @@ def process():
                 # return "Success"
             elif status and text == "Success":
                 # response = make_response({'message': text})
-                response = make_response({'message': text, 'data': json_response})
+                response = make_response({'message': text})
                 # close_file_handler()
                 return response, http.HTTPStatus.CREATED
             elif status and text == "Failure":
                 # response = make_response({'message': text + " Input issue - please fix the input"},
                 #                          http.HTTPStatus.BAD_REQUEST)
-                response = make_response({'message': text + " Input issue - please fix the input", 'data': json_response}, http.HTTPStatus.BAD_REQUEST)
+                response = make_response({'message': text + " Input issue - please fix the input"}, http.HTTPStatus.BAD_REQUEST)
                 # close_file_handler()
                 return response, http.HTTPStatus.BAD_REQUEST
             else:
@@ -158,6 +161,14 @@ def process():
                 # close_file_handler()
                 response = make_response({'message': text}, http.HTTPStatus.UNAUTHORIZED)
                 return response, http.HTTPStatus.UNAUTHORIZED
+        if request.method == "GET":
+            final_json_reponse = redis_client.lrange("preProcessorJson", 0, -1)
+            json_response = [x.decode("utf-8") for x in final_json_reponse]
+            redis_text = redis_client.get("preProcessorText")
+            text = redis_text.decode('utf-8')
+            logger.info("text is ", text)
+            response = make_response({'message': text, 'data': json_response})
+            return response, http.HTTPStatus.OK
 
     except Exception as e:
         logger.error("Exception in app.py exception", e)
