@@ -9,7 +9,7 @@ def connect():
 
     conn = pyodbc.connect(
         'Driver={ODBC Driver 17 for SQL Server};'
-        #'Server=localhost\SQLEXPRESS;'
+        #'Server=localhost;'
         #'Server=GOVARDHAN;'
         #'server=database-1.cz8ykoavtu1t.us-east-2.rds.amazonaws.com;'
         # 'server=DESKTOP-CLVI71Q\SQL-EXPRESS,1433;'
@@ -18,7 +18,7 @@ def connect():
         'Database=issm_test;'
         'UID=SuperAdmin;'
         'PWD=#nXHa&Ydkx6q36Gf;'
-        #'Trusted_Connection=yes;'
+        # 'Trusted_Connection=yes;'
 
     )
 

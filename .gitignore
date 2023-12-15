@@ -7,3 +7,7 @@ package.json
 .idea/misc.xml
 .gitignore
 .DS_Store
+main_env/
+python_code/src/preProcessor/Duplicate.xlsx
+*.log
+*.xlsx

@@ -29,11 +29,26 @@ class ProgressBar:
         self.failure_count = 0
         self.deferral_count = 0
 
-    def getProcessCount(self):
+    def get_process_count(self):
         return self.processed_count
 
     def __str__(self):
-        return f"ProgressBar(processed_count={self.processed_count}, success_count={self.success_count}, failure_count={self.failure_count}, deferral_count={self.deferral_count}, max_count={self.max_count})"
+        return (f"ProgressBar(processed_count={self.processed_count}, success_count={self.success_count}, "
+                f"failure_count={self.failure_count}, deferral_count={self.deferral_count}, "
+                f"max_count={self.max_count})")
+
+    def to_list(self):
+        return [
+            self.processed_count,
+            self.success_count,
+            self.failure_count,
+            self.deferral_count,
+            self.max_count
+        ]
+
+    def to_json(self):
+        data_list = self.to_list()
+        return json.dumps(data_list)
 
 def adding_to_excel(student, driver, config, progress_bar):
     logger.info(f"inside adding_to_excel function for {student.CampusID}")
@@ -287,9 +302,9 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
             })
             browser.quit()
         progress_bar.processed_count += 1
-        progressBar_value = math.floor((progress_bar.processed_count / progress_bar.max_count) * 6)
-        logger.info(f"percentage completed: {progressBar_value}")
-        socketio.emit('preProcessor', progressBar_value)
+        progress_bar_value = math.floor((progress_bar.processed_count / progress_bar.max_count) * 6)
+        logger.info(f"percentage completed: {progress_bar_value}")
+        socketio.emit('preProcessor', progress_bar_value)
         logger.info(progress_bar.__str__())
         browser.quit()
     except Exception as e:
@@ -418,7 +433,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         workbook = openpyxl.load_workbook(excel_file)
         # Select the specific sheet
         sheet = workbook['Export']  # Replace 'Sheet1' with the name of your sheet
-
+        socketio.emit('preProcessor', 2.0)
         # Read the header row
         header_row = sheet[1]
         header_values = [cell.value for cell in header_row]
@@ -542,15 +557,16 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
             futures = []
             # Submit each student for processing concurrently
             for std in students:
-                future = executor.submit(process_student, url, config, progress_bar, final_dict, issm_username, issm_password, socketio, std)
+                future = executor.submit(process_student, url, config, progress_bar,
+                                         final_dict, issm_username, issm_password, socketio, std)
                 futures.append(future)
         # Wait for all threads to finish
         for future in futures:
             future.result()
         # Access the final_dict after all processing is done
         print(final_dict)
-        errorMessage = ""
-        sessionResult = "Success"
+        error_message = ""
+        session_result = "Success"
         json_string = json.dumps(final_dict)
         code_end_time = time.time()  # capturing the end time of the code execution
         total_time = code_end_time - code_start_time  # calculating the total execution time
@@ -558,30 +574,32 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         logger.info("Total execution time: {:.2f} seconds".format(total_time))  # logging the total execution time
         logger.info("Main program finished.")
 
+        json_response = progress_bar.to_json()
+        print(json_response)
         if progress_bar.deferral_count > 0 and progress_bar.max_count == progress_bar.success_count:
             logger.info(f"Deferral cases in this batch run.")
             message = "Partial Success"
-            insertppreprocessed(userName, json_string, institutionId, message, errorMessage, backendProcessor)
-            return True, message
+            insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
+            return True, message, json_response
         elif progress_bar.max_count == progress_bar.success_count:
             logger.info(f"No failure cases in this batch run.")
             message = "Success"
-            insertppreprocessed(userName, json_string, institutionId, message, errorMessage, backendProcessor)
-            return True, message
+            insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
+            return True, message, json_response
         elif progress_bar.failure_count == progress_bar.max_count:
             logger.info(f"All cases in this batch run failed.")
             message = "Failure"
-            insertppreprocessed(userName, json_string, institutionId, message, errorMessage, backendProcessor)
-            return True, message
+            insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
+            return True, message, json_response
         else:
             logger.info(f"mixed cases i.e. success and failure both.")
             message = "Failure"
-            sessionResult = "Partial Success"
-            insertppreprocessed(userName, json_string, institutionId, sessionResult, errorMessage, backendProcessor)
-            return True, message
+            session_result = "Partial Success"
+            insertppreprocessed(userName, json_string, institutionId, session_result, error_message, backendProcessor)
+            return True, message, json_response
             #  need to handle this mixed cases response in main.py and front end to show either in logs or after run.
     except Exception as e:
-        errorMessage = f"An error occurred in TestingBulk.py testing_main function: {e}"
-        logger.error(errorMessage)
-        insertppreprocessed(userName, logResponse, institutionId, sessionResult, errorMessage, backendProcessor)
+        error_message = f"An error occurred in TestingBulk.py testing_main function: {e}"
+        logger.error(error_message)
+        insertppreprocessed(userName, logResponse, institutionId, session_result, error_message, backendProcessor)
         return False, "Failure"

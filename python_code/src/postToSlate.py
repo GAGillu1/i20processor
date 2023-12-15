@@ -98,8 +98,8 @@ def updateinstance(password, username, institutionid, type,instanceprocessor):
 def instanceget(institutionid):
     try:
         result = getinstances(institutionid)
-        print("aaaa",result)
-        print(type(result))
+        if isinstance(result, str):
+            return "Empty"
         result.rename(columns={'jsonendpoint': 'endpoint', 'jsontype': 'type'}, inplace=True)
         return result
     except Exception as e:
