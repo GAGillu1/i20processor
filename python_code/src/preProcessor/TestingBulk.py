@@ -39,11 +39,11 @@ class ProgressBar:
 
     def to_list(self):
         return [
+            self.max_count,
             self.processed_count,
             self.success_count,
             self.failure_count,
-            self.deferral_count,
-            self.max_count
+            self.deferral_count
         ]
 
     def to_json(self):
