@@ -46,10 +46,6 @@ class ProgressBar:
             self.deferral_count
         ]
 
-    def to_json(self):
-        data_list = self.to_list()
-        return json.dumps(data_list)
-
 def adding_to_excel(student, driver, config, progress_bar):
     logger.info(f"inside adding_to_excel function for {student.CampusID}")
     try:
@@ -574,7 +570,7 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         logger.info("Total execution time: {:.2f} seconds".format(total_time))  # logging the total execution time
         logger.info("Main program finished.")
 
-        json_response = progress_bar.to_json()
+        json_response = progress_bar.to_list()
         print(json_response)
         if progress_bar.deferral_count > 0 and progress_bar.max_count == progress_bar.success_count:
             logger.info(f"Deferral cases in this batch run.")

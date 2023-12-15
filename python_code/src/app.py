@@ -134,7 +134,7 @@ def process():
                                                                 excel_file_name, decrypted_message_instance, socketio)
             print(f"status: {status}, text: {text}, json_response: {json_response}")
 
-            redis_client.rpush("preProcessorJson", json_response)
+            redis_client.rpush("preProcessorJson", *json_response)
             redis_client.set("preProcessorText", text)
             if status and text == "Partial Success":
                 # response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
@@ -163,11 +163,18 @@ def process():
                 return response, http.HTTPStatus.UNAUTHORIZED
         if request.method == "GET":
             final_json_reponse = redis_client.lrange("preProcessorJson", 0, -1)
+            print()
             json_response = [x.decode("utf-8") for x in final_json_reponse]
             redis_text = redis_client.get("preProcessorText")
             text = redis_text.decode('utf-8')
-            logger.info("text is ", text)
+            print(f"text is: {text}")
+            print(json_response)
             response = make_response({'message': text, 'data': json_response})
+            keys_to_delete = [
+                'preProcessorText', 'preProcessorJson'
+            ]
+            for key in keys_to_delete:
+                redis_client.delete(key)
             return response, http.HTTPStatus.OK
 
     except Exception as e:
