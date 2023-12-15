@@ -7,3 +7,4 @@ package.json
 .idea/misc.xml
 .gitignore
 .DS_Store
+main_env/
