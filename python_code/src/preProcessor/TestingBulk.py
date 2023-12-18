@@ -298,9 +298,8 @@ def process_student(url, config, progress_bar, final_dict, issm_username, issm_p
             })
             browser.quit()
         progress_bar.processed_count += 1
-        progress_bar_value = math.floor((progress_bar.processed_count / progress_bar.max_count) * 6)
-        logger.info(f"percentage completed: {progress_bar_value}")
-        socketio.emit('preProcessor', progress_bar_value)
+        logger.info(f"percentage completed: {progress_bar.processed_count}")
+        socketio.emit('preProcessor', progress_bar.processed_count)
         logger.info(progress_bar.__str__())
         browser.quit()
     except Exception as e:

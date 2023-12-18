@@ -50,6 +50,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         time.sleep(1)
         logger.info("before entering username")
         print("before entering username")
+        socketio.emit('preProcessor', 2.0)
         browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(vpn_username)
         time.sleep(1)
         logger.info(f"before credentials")
@@ -57,6 +58,7 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
         browser.find_element(By.XPATH, '//*[@id="credential"]').send_keys(vpn_password)
         time.sleep(1)
         browser.find_element(By.ID, 'login_button').click()
+        socketio.emit('preProcessor', 3.0)
         try:
             time.sleep(1)
             vpn_login_error = browser.find_element(By.ID, 'err_val')
@@ -102,10 +104,12 @@ def vpn_function(vpn_username, vpn_password, issm_username, issm_password, excel
             new_tab_url = browser.current_url
             # logger.info("URL of the new tab:", new_tab_url)
             # time.sleep(2)
+            socketio.emit('preProcessor', 4.0)
             browser.find_element(By.XPATH, '//*[@id="username"]').send_keys(issm_username)
             browser.find_element(By.XPATH, '//*[@id="password"]').send_keys(issm_password)
             # log_message(f"Process started for student with ID {std.CampusID} and name {std.GivenName}.")
             browser.find_element(By.ID, 'login-button').click()
+            socketio.emit('preProcessor', 5.0)
             # time.sleep(2)
             # text_login = ""
             try:
