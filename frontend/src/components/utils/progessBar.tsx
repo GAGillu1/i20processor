@@ -91,21 +91,32 @@ const Results = () => {
 };
 
 export const ProgressBar = () => {
+  const data = useMyContext();
   const path = usePathname();
+  const method = data.preProcessorMethod;
+  const threshold = method === 2 ? 1 : 6;
+  const offset = method === 2 ? 0 : 5;
+
   return path === "/i20/pre-processor" ? (
-    <PreProcessorProgressBar />
+    <PreProcessorProgressBar threshold={threshold} offset={offset} />
   ) : (
     <PostProcessorProgressBar />
   );
 };
 
-const PreProcessorProgressBar = () => {
+const PreProcessorProgressBar = ({
+  offset,
+  threshold,
+}: {
+  offset: number;
+  threshold: number;
+}) => {
   const data = useMyContext();
   const status = data.preProcessStatus;
-  const maxCount = data.preProcessMaxCount + 5;
-  const progressText = "Processed " + (status - 5) + "/" + (maxCount - 5);
+  const maxCount = data.preProcessMaxCount + offset;
+  const progressText =
+    "Processing " + (status - offset) + "/" + (maxCount - offset);
   const p = Math.floor((status / maxCount) * 100);
-
   return (
     <motion.section
       className="section"
@@ -115,7 +126,7 @@ const PreProcessorProgressBar = () => {
     >
       <div className="w-[90%] mx-auto">
         <h3 className="animate-pulse text-center">{`${
-          status < 6 ? preArr[status] : progressText
+          status < threshold ? preArr[status] : progressText
         }`}</h3>
         <div className="mt-4 h-2 w-full rounded-full bg-slate-200">
           <div
@@ -168,7 +179,7 @@ export const Response = () => {
       </div>
       <div className="flex justify-center gap-4 items-center mt-4">
         <Link href={path}>
-          <button>Got it!</button>
+          <button>Done</button>
         </Link>
         <Link href={"/logs"}>
           <button>Logs</button>
