@@ -41,7 +41,7 @@ from dsodependedntsignature import depensignature
 from dsodependentsignsplit import depi20signature
 from fitzsplit import splitsignature, sign_details
 from login import checklogin, registeruser, forgotpassword1, users, userpopup, change_password, deleteuser, \
-    userupdate, updateuserdata, token_required
+    userupdate, updateuserdata, token_required, check
 from name import names_list, signaturefile, signadd
 from postToSlate import instanceinsert
 from postToSlate import post, updateinstance, instanceget, instancetypeget, connectiontest
@@ -105,10 +105,9 @@ def process():
     try:
         if request.method == "POST":
             # zip_filename = 'files.zip'
-            json_response = None
             issm_username = request.form.get('issmUsername')
             issm_password = request.form.get('issmPassword')
-            toggle_button = request.form.get('vpn')
+            toggleButton = request.form.get('vpn')
             excel_file = request.files['excelFile']
             excel_file_name = excel_file.filename
             excel_file.save(excel_file_name)
@@ -119,41 +118,30 @@ def process():
             set_new_log_file()
             logger.info(f"started process function in app.py")
             socketio.emit('preProcessor', 1.0)
-            if toggle_button != "false":
+            if toggleButton != "false":
                 vpn_username = request.form.get('vpnUsername')
                 vpn_password = request.form.get('vpnPassword')
                 decrypted_vpn_username = decrypt_function(vpn_username)
                 decrypted_vpn_password = decrypt_function(vpn_password)
-                socketio.emit('whichMethod', 1)
-                status, text = vpn_function(decrypted_vpn_username, decrypted_vpn_password, decrypted_message_username,
-                                            decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
-
+                status, text = vpn_function(decrypted_vpn_username, decrypted_vpn_password, decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
             else:
-                socketio.emit('whichMethod', 2)
-                status, text, json_response = vpn_function_bulk(decrypted_message_username, decrypted_message_password,
-                                                                excel_file_name, decrypted_message_instance, socketio)
-            print(f"status: {status}, text: {text}, json_response: {json_response}")
-
-            redis_client.rpush("preProcessorJson", *json_response)
-            redis_client.set("preProcessorText", text)
+                status, text = vpn_function_bulk(decrypted_message_username, decrypted_message_password, excel_file_name, decrypted_message_instance, socketio)
+            print(f"status: {status}, text: {text}")
             if status and text == "Partial Success":
-                # response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
-                # response.headers['Content-Disposition'] = 'attachment; filename=duplicate issm.xlsx'
-                response = make_response({'message': text})
+                response = make_response(send_file('preProcessor/Duplicate.xlsx', as_attachment=True))
+                response.headers['Content-Disposition'] = 'attachment; filename=duplicate issm.xlsx'
                 # logger.info(f"Process Completed")
                 logger.info(response)
                 # close_file_handler()
                 return response, http.HTTPStatus.OK
                 # return "Success"
             elif status and text == "Success":
-                # response = make_response({'message': text})
                 response = make_response({'message': text})
                 # close_file_handler()
                 return response, http.HTTPStatus.CREATED
             elif status and text == "Failure":
-                # response = make_response({'message': text + " Input issue - please fix the input"},
-                #                          http.HTTPStatus.BAD_REQUEST)
-                response = make_response({'message': text + " Input issue - please fix the input"}, http.HTTPStatus.BAD_REQUEST)
+                response = make_response({'message': text + " Input issue - please fix the input"},
+                                         http.HTTPStatus.BAD_REQUEST)
                 # close_file_handler()
                 return response, http.HTTPStatus.BAD_REQUEST
             else:
@@ -161,21 +149,6 @@ def process():
                 # close_file_handler()
                 response = make_response({'message': text}, http.HTTPStatus.UNAUTHORIZED)
                 return response, http.HTTPStatus.UNAUTHORIZED
-        if request.method == "GET":
-            final_json_reponse = redis_client.lrange("preProcessorJson", 0, -1)
-            print()
-            json_response = [x.decode("utf-8") for x in final_json_reponse]
-            redis_text = redis_client.get("preProcessorText")
-            text = redis_text.decode('utf-8')
-            print(f"text is: {text}")
-            print(json_response)
-            response = make_response({'message': text, 'data': json_response})
-            keys_to_delete = [
-                'preProcessorText', 'preProcessorJson'
-            ]
-            for key in keys_to_delete:
-                redis_client.delete(key)
-            return response, http.HTTPStatus.OK
 
     except Exception as e:
         logger.error("Exception in app.py exception", e)
@@ -610,7 +583,7 @@ def login():
             password = decoded_credentials[1]
             # print(username)
             session['name'] = decoded_credentials[0]
-            result = checklogin(username, password)
+            result = check(username, password)
 
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
