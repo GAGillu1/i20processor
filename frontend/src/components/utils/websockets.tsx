@@ -30,21 +30,21 @@ export default function Socket() {
     }
 
     function onPostProcessUpdate(value: number) {
-      console.log("PostProcess Update", value);
+      // console.log("PostProcess Update", value);
       dispatch({ type: "postProcessUpdate", action: value });
     }
 
     function onPreProcessUpdate(value: number) {
-      console.log("PreProcess Update", value);
+      // console.log("PreProcess Update", value);
       dispatch({ type: "preProcessUpdate", action: value });
     }
 
     function onPreProcessMaxCount(value: number) {
-      console.log("PreProcess Max Count", value);
+      // console.log("PreProcess Max Count", value);
       dispatch({ type: "preProcessMaxCount", action: value });
     }
     function onPreProcessMethodUpdate(value: number) {
-      console.log("Pre-Processor Method", value);
+      // console.log("Pre-Processor Method", value);
       dispatch({ type: "preProcessorMethod", action: value });
     }
 
