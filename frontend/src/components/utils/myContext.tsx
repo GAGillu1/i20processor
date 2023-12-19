@@ -95,7 +95,7 @@ function MyReducer(data: data, action: any) {
     }
 
     case "userUpdate": {
-      console.log(action.data);
+      // console.log(action.data);
       return {
         ...data,
         fullname: action.action.fullname,
@@ -103,21 +103,21 @@ function MyReducer(data: data, action: any) {
       };
     }
     case "preProcessUpdate": {
-      console.log("Pre-process Context", action.action);
+      // console.log("Pre-process Context", action.action);
       return {
         ...data,
         preProcessStatus: action.action,
       };
     }
     case "preProcessMaxCount": {
-      console.log("Pre-processMaxCount Context", action.action);
+      // console.log("Pre-processMaxCount Context", action.action);
       return {
         ...data,
         preProcessMaxCount: action.action,
       };
     }
     case "postProcessUpdate": {
-      console.log("Post-process Context", action.action);
+      // console.log("Post-process Context", action.action);
       return {
         ...data,
         postProcessStatus: action.action,

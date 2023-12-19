@@ -58,11 +58,11 @@ const Results = () => {
   const getResults = async () => {
     try {
       const res = await fetch(api);
-      console.log("res status", res.status);
+      // console.log("res status", res.status);
       if (!res.ok) throw res;
       const data = await res.json();
-      console.log(data);
-      console.log(Object.values(data.data));
+      // console.log(data);
+      // console.log(Object.values(data.data));
       setResults(Object.values(data.data));
     } catch (err: any) {
       const data = await err.json();
