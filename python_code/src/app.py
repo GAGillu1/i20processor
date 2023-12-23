@@ -349,41 +349,33 @@ def upload():
                     length, width, xcoordinate, ycoordinate = sign_details(name)
                     # Getting signature file name
                     signature_file = signaturefile(name)
-                    if os.path.isfile(signature_file):
-                        # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
-                        sevid, totalpages, totalsigns = splitsignature(pdf_filename, signature_file, length, width,
-                                                                       xcoordinate, ycoordinate)
-                        socketio.emit('rom', 2)
-                        sev = sevid
-                        key = "sevis"
-                        redis_client.rpush(key, *sev)
-                        # sevid, totalpagessplit = splitting(pdf_filename)
-                        totalpagessplit = totalpages / 3
-                        numberoffiles = totalpagessplit
-                        # Storing total pages, total files afte splitting , total signatures added to session
-                        session['Total_Pages'] = f"{num_pages}"
-                        redis_client.set('Total_Pages', num_pages)
-                        insertprocessed(user, 'Failed in Split and Signature adding', institutionid, 'Failure',
-                                        processor='ISSM to Slate')
+                    # Splitting and signatures are added and all the sevis ids's are returned as list , total pages in i20 and toatal signatures added
+                    sevid, totalpages, totalsigns = splitsignature(pdf_filename, signature_file, length, width,
+                                                                   xcoordinate, ycoordinate)
+                    socketio.emit('rom', 2)
+                    sev = sevid
+                    key = "sevis"
+                    redis_client.rpush(key, *sev)
+                    # sevid, totalpagessplit = splitting(pdf_filename)
+                    totalpagessplit = totalpages / 3
+                    numberoffiles = totalpagessplit
+                    # Storing total pages, total files afte splitting , total signatures added to session
+                    session['Total_Pages'] = f"{num_pages}"
+                    redis_client.set('Total_Pages', num_pages)
+                    insertprocessed(user, 'Failed in Split and Signature adding', institutionid, 'Failure',
+                                    processor='ISSM to Slate')
 
-                        session['Total_Files'] = f"{int(numberoffiles)}"
-                        redis_client.set('Total_Files', f"{numberoffiles}")
-                        session['Total_Signatures'] = f"{totalsigns}"
+                    session['Total_Files'] = f"{int(numberoffiles)}"
+                    redis_client.set('Total_Files', f"{numberoffiles}")
+                    session['Total_Signatures'] = f"{totalsigns}"
 
-                        redis_client.set('Total_Signatures', f"{totalsigns}")
+                    redis_client.set('Total_Signatures', f"{totalsigns}")
 
-                        issm_log.logger.info(
-                            f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
-
-                    else:
-                        successful = False
-                        insertprocessed(user, 'Failed in Split and Signature adding', institutionid, 'Failure',
-                                        processor='ISSM to Slate')
-                        issm_log.logger.error("Failed in Split and Signature adding")
+                    issm_log.logger.info(
+                        f"Total Pages in i20: {num_pages}. Total Files after splitting: {int(numberoffiles)} Total signatures added are {totalsigns}")
             except Exception as e:
                 successful = False
                 insertprocessed(user, 'Failed in Split and Signature adding', institutionid, 'Failure', processor='ISSM to Slate')
-                issm_log.logger.error("Failed in Split and Signature adding")
                 socketio.emit('rom', -2)
                 session['Split_Failure'] = f"Splitting of file is failed {e}"
                 redis_client.set('Split_Failure', f"Splitting of file is failed {e}")
@@ -591,7 +583,7 @@ def login():
             password = decoded_credentials[1]
             # print(username)
             session['name'] = decoded_credentials[0]
-            result = checklogin(username, password)
+            result = check(username, password)
 
             # the return of the function is tuple then its login successful and a token is assigned to a user and sent to front end .
             # HTTPS status codes are also returned
