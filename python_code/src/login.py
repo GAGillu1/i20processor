@@ -306,27 +306,3 @@ def updateuserdata(user):
         status=data['active'].values[0]
         username=data['userName'].values[0]
         return fullname,userRole,status,username
-
-def check(email, password):
-    try:
-        df = pd.read_excel('users.xlsx')
-        print(df)
-        user_df = df.loc[df['email'] == email]
-        print(user_df)
-        if not user_df.empty:
-            salt = user_df['salt'].values[0]
-            if salt:
-                password_hash = bcrypt.hashpw(password.encode('utf-8'), salt.encode('utf-8'))
-                stored_hash = user_df['hash'].values[0].encode('utf-8')
-                if password_hash == stored_hash:
-                        roles=user_df['userRole'].values[0]
-                        institutionId=user_df['institutionId'].values[0]
-                        fullname=user_df['fullname'].values[0]
-                        username=user_df['userName'].values[0]
-                        institutionname=user_df['institutionName'].values[0]
-                        return http.HTTPStatus.OK, roles, institutionId, fullname, institutionname, username
-        return http.HTTPStatus.UNAUTHORIZED
-    except pd.errors.EmptyDataError:
-        return http.HTTPStatus.INTERNAL_SERVER_ERROR  # return 500 if Excel file is empty
-    except Exception as e:
-        return http.HTTPStatus.INTERNAL_SERVER_ERROR  # return 500 for all other errors
