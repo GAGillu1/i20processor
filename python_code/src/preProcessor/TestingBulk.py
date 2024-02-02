@@ -17,7 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from issmfilelog import logger
 from selenium.webdriver.support import expected_conditions as ec
-# from dbstatements import insertppreprocessed
+from dbstatements import insertppreprocessed
 from final_log_excel import insert_into_excel_file
 # from python_code.src.dbstatements import insertppreprocessed
 from flask import request
@@ -575,32 +575,32 @@ def testing_main(url, excel_file, socketio, issm_username, issm_password):
         if progress_bar.deferral_count > 0 and progress_bar.max_count == progress_bar.success_count:
             logger.info(f"Deferral cases in this batch run.")
             message = "Partial Success"
-            # insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
+            insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
             insert_into_excel_file(userName, json_string, institutionId, message, error_message, backendProcessor)
             return True, message, json_response
         elif progress_bar.max_count == progress_bar.success_count:
             logger.info(f"No failure cases in this batch run.")
             message = "Success"
-            # insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
+            insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
             insert_into_excel_file(userName, json_string, institutionId, message, error_message, backendProcessor)
             return True, message, json_response
         elif progress_bar.failure_count == progress_bar.max_count:
             logger.info(f"All cases in this batch run failed.")
             message = "Failure"
-            # insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
+            insertppreprocessed(userName, json_string, institutionId, message, error_message, backendProcessor)
             insert_into_excel_file(userName, json_string, institutionId, message, error_message, backendProcessor)
             return True, message, json_response
         else:
             logger.info(f"mixed cases i.e. success and failure both.")
             message = "Failure"
             session_result = "Partial Success"
-            # insertppreprocessed(userName, json_string, institutionId, session_result, error_message, backendProcessor)
+            insertppreprocessed(userName, json_string, institutionId, session_result, error_message, backendProcessor)
             insert_into_excel_file(userName, json_string, institutionId, session_result, error_message, backendProcessor)
             return True, message, json_response
             #  need to handle this mixed cases response in main.py and front end to show either in logs or after run.
     except Exception as e:
         error_message = f"An error occurred in TestingBulk.py testing_main function: {e}"
         logger.error(error_message)
-        # insertppreprocessed(userName, logResponse, institutionId, session_result, error_message, backendProcessor)
+        insertppreprocessed(userName, logResponse, institutionId, session_result, error_message, backendProcessor)
         insert_into_excel_file(userName, logResponse, institutionId, session_result, error_message, backendProcessor)
         return False, "Failure"

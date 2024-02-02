@@ -17,7 +17,7 @@ def connect():
         'Server=172.19.97.157,1433;'
         'Database=issm_test;'
         'UID=SuperAdmin;'
-        'PWD=#nXHa&Ydkx6q36Gf;'
+        'PWD=emopoeagncoe123$;'
         # 'Trusted_Connection=yes;'
 
     )

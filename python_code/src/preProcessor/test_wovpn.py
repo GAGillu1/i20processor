@@ -3,7 +3,7 @@ sys.path.append("preProcessor")
 sys.path.append("src")
 from TestingBulk import testing_main
 from issmfilelog import logger
-# from dbstatements import insertppreprocessed
+from dbstatements import insertppreprocessed
 # from python_code.src.dbstatements import insertppreprocessed
 from final_log_excel import insert_into_excel_file
 from flask import request
@@ -37,7 +37,7 @@ def vpn_function_bulk(issm_username, issm_password, excel_file, instance, socket
     except Exception as e:
         # errorMessage = f"exception in test_wovpn.py file vpn_function"
         print(f"{message}, {e}")
-        # insertppreprocessed(user_name, log_response, institution_id, session_result, message, backend_processor)
+        insertppreprocessed(user_name, log_response, institution_id, session_result, message, backend_processor)
         insert_into_excel_file(user_name, log_response, institution_id, session_result, message, backend_processor)
     logger.info(f"Logout success and driver quit and status: {status}, message: {message}")
     # Close the WebDriver when done
